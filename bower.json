@@ -1,0 +1,9 @@
+{
+  "name": "MEAN",
+  "version": "0.0.7",
+  "dependencies": {
+    "angular": "~1.4",
+    "angular-route": "~1.4",
+    "angular-resource": "~1.4.7"
+  }
+}

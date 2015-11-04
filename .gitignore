@@ -1,0 +1,7 @@
+config/env/*
+node_modules/**
+public/lib/**
+*.swo
+*.swp
+*.DS_Store
+

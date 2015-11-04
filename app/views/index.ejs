@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+</head>
+<body>
+    <h1><%= title %></h1>
+    <% if(user) { %>
+        <a href="/signout">Sign out</a>
+    <% } else { %>
+        <a href="/signup">Sign Up</a>
+        <a href="/signin">Sign In</a>
+    <% }%>
+
+    <ul>
+        <li><a href="/#!/articles">List Articles</a></li>
+        <li><a href="/#!/articles/create">Create Article</a></li>
+    </ul>
+
+    <section ng-view></section>
+
+    <script type="text/javascript" charset="utf-8">
+        window.user = <%- user || 'null' %>
+    </script>
+
+    <script src="/lib/angular/angular.js"></script>
+    <script src="/lib/angular-route/angular-route.js"></script>
+    <script src="/lib/angular-resource/angular-resource.js"></script>
+
+    <script src="/auth/users.client.module.js"></script>
+    <script src="/auth/services/authentication.client.service.js"></script>
+
+    <script src="/example/example.client.module.js"></script>
+    <script src="/example/example.client.routes.js"></script>
+    <script src="/example/controllers/example.client.controller.js"></script>
+
+    <script src="/articles/articles.client.module.js"></script>
+    <script src="/articles/articles.client.routes.js"></script>
+    <script src="/articles/controllers/articles.client.controller.js"></script>
+    <script src="/articles/services/articles.client.service.js"></script>
+
+    <script src="/application.js"></script>
+</body>
+</html>

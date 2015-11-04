@@ -1,0 +1,21 @@
+# User's resumes collections
+/user/:user_id/resumes
+
+# Resume resource
+/resumes/:resume_id
+GET
+
+# Resume's sections collection
+/resumes/:resume_id/sections
+
+# Basicinfos
+/basicinfos/:id
+
+# Bullet list resource
+/bulletlists/:id
+
+# Work list resource
+/worklists/:id
+
+# Textsection resource
+/textsections/:id
