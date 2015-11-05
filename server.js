@@ -15,4 +15,3 @@ db.init(function (err) {
     console.log('[ MODE: ' + process.env.NODE_ENV + ' ] Server running at http://localhost:3000');
 
 });
-

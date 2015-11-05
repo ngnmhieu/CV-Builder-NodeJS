@@ -13,5 +13,9 @@
     "morgan": "^1.6.1",
     "passport": "^0.3.0",
     "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "should": "^7.1.1",
+    "supertest": "^1.1.0"
   }
 }
