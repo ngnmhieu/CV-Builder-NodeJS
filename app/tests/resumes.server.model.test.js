@@ -1,18 +1,24 @@
 var mongo = require('../../config/mongodb'),
     should = require('should');
 
-// mongodb client
-var db;
+var db, resumes;
 
-var runModelTest = function (done) {
+before(function (done) {
+    mongo.init(function (err, client) {
+        db = client;
+        resumes = require('../models/resumes.server.model');
+        done();
+    });
+});
 
-    var resumes = require('../models/resumes.server.model');
+describe('Resume Model', function (done) {
 
     afterEach(function () {
         db.collection('resumes').drop();
     });
-    
+
     it('should create an empty resume', function (done) {
+
         resumes.createEmpty(function (err, result) {
             should.not.exists(err);
             result.insertedCount.should.be.exactly(1);
@@ -20,15 +26,16 @@ var runModelTest = function (done) {
         });
     });
 
-    it('the resume has default name and no section', function () {
-        
+    it('has default name and no section', function (done) {
+
+        var resumes = require('../models/resumes.server.model');
+
         resumes.createEmpty(function (err, result) {
 
             should.not.exists(err);
 
-            db.collection('resumes').findOne({ _id: result.insertedId })
-            .then(function (err, result) {
-                result.name.should.equals("Unnamed CV");
+            db.collection('resumes').findOne({ _id: result.insertedId }, function (err, result) {
+                result.name.should.equal("Unnamed CV");
                 result.sections.should.be.empty();
                 done();
             });
@@ -36,12 +43,5 @@ var runModelTest = function (done) {
 
     });
 
-};
-
-it('Connecting to database...', function (done) {
-    mongo.init(function (err, client) {
-        db = client;
-        describe('Resume Model', runModelTest);
-        done();
-    });
 });
+

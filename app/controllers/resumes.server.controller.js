@@ -26,7 +26,7 @@ exports.create = function (req, res) {
     resumes.createEmpty(function (err, result) {
         if (err) throw err;
 
-        res.location('/resumes/' + result.insertedIds[0]);
+        res.location('/resumes/' + result.insertedId);
 
         res.sendStatus(201);
     });
@@ -48,7 +48,7 @@ exports.sections = function (req, res) {
  */
 exports.remove = function (req, res) {
 
-    resumes.collection.removeById(req.resumeObj._id, function (err, result) {
+    resumes.collection.deleteOne({_id: req.resumeObj._id}, function (err, result) {
         if (err) throw err;
         res.sendStatus(200);
     });
