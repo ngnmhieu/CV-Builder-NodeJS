@@ -19,6 +19,7 @@ module.exports = function(app) {
 
     app.route("/resumes/:resume_id/bulletlists/:bulletlist_id")
         .get(bulletlists.read)
+        .put(bulletlists.update)
         .delete(bulletlists.remove);
 
     app.param('resume_id', resumes.byId);
