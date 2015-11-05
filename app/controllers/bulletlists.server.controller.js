@@ -28,9 +28,7 @@ exports.create = function (req, res) {
  */
 exports.remove = function (req, res) {
 
-    var list = req.bulletList;
-
-    bulletlists.collection.removeById(list._id, function (err) {
+    bulletlists.deleteById(req.resume, req.bulletList, function (err) {
         if (err) throw err;
         res.sendStatus(200);
     });
@@ -43,6 +41,11 @@ exports.read = function (req, res) {
     res.json(req.bulletList);
 };
 
+/**
+ * Middleware method
+ * Fetch the requested bulletlist,
+ * the bulletlist must belongs to the requested resume
+ */
 exports.byId = function (req, res, next, id) {
 
     var listId = ObjectId(id);
@@ -73,3 +76,17 @@ exports.byId = function (req, res, next, id) {
     });
         
 };
+
+/**
+ * PUT /resumes/:resume_id/bulletlists/:bulletlist_id
+ */
+exports.update = function (req, res) {
+
+    var list = bulletlists.getNewList(req.body);
+
+    bulletlists.collection.updateOne({_id: req.bulletList._id}, list, function (err, result) {
+        if (err) throw err;
+
+        res.sendStatus(200);
+    });
+}
