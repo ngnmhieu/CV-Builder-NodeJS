@@ -34,7 +34,7 @@ exports.create = function (req, res) {
 
 exports.sections = function (req, res) {
 
-    var resume = req.resume;
+    var resume = req.resumeObj;
 
     if (!Array.isArray(resume.sections)) {
         resume.sections = [];

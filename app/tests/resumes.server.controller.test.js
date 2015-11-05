@@ -59,5 +59,24 @@ describe('Resume REST API', function () {
             });
         });
 
+        it('should return the sections of the resume for /resumes/:resume_id/sections', function (done) {
+
+            db.collection('resumes').insertOne({
+                name       : "Unnamed CV",
+                created_at : new Date(),
+                updated_at : new Date(),
+                sections   : ['section1', 'section2']
+            }, function (err, result) {
+                request(app.express)
+                .get('/resumes/' + result.insertedId + '/sections')
+                .expect(200)
+                .end(function (err, result) {
+                    result.body.should.containDeep(['section1', 'section2']);
+                    done();
+                });
+            });
+            
+        });
+
     });
 });
