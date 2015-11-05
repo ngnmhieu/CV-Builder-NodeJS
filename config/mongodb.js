@@ -8,6 +8,6 @@ var host   = config.mongodb.host,
 module.exports.init = function (callback) {
     client.connect('mongodb://' + host + port + '/' + dbname, function (err, db) {
         module.exports.client = db;
-        callback(err);
+        callback(err, db);
     });
 };
