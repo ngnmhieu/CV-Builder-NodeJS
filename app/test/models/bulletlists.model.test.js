@@ -118,13 +118,28 @@ describe('Bulletlist Model', function (done) {
         });
     });
 
-    it('#updateById should not update a bullet list when provided with invalid parameters', function (done) {
+    it('1#updateById should not update a bullet list when attributes are missing', function (done) {
         
         db.collection('bulletlists').insertOne({
             name          : 'Empty Bullet List',
             items         : [],
             order         : 1,
             ordered_items : false
+        }, function (err, listRes) {
+
+            bulletlists.updateById(listRes.ops[0], {}, function (err, updateResult) {
+                should.exists(err);
+                done();
+            });
+        });
+    });
+
+    it('2#updateById should not update a work list when provided with invalid parameters', function (done) {
+        db.collection('bulletlists').insertOne({
+            name          : 'Empty Bullet List',
+            items         : [true, false], // invalid, must be strings
+            order         : 1,
+            ordered_items : true
         }, function (err, listRes) {
 
             bulletlists.updateById(listRes.ops[0], {}, function (err, updateResult) {
