@@ -1,4 +1,5 @@
 var should = require('should'),
+    helpers = require('./helpers'),
     request = require('supertest');
 
 var app, db;
@@ -17,9 +18,9 @@ describe('Resume REST API', function () {
         db.collection('resumes').drop();
     });
     
-    describe('Good path', function () {
+    describe('Good paths', function () {
 
-        it('should get a resume for GET /resumes/:resume_id', function (done) {
+        it('[GET] should get a resume for /resumes/:resume_id', function (done) {
 
             db.collection('resumes').insertOne({
                 name       : "My CV",
@@ -39,14 +40,14 @@ describe('Resume REST API', function () {
             });
         });
 
-        it('should create an empty resume for POST /resumes', function (done) {
+        it('[POST] should create an empty resume for /resumes', function (done) {
             request(app.express).post('/resumes')
             .expect('Location', /\/resumes\/([0-9a-f]{12})/)
             .expect(201)
             .end(done);
         });
 
-        it('should delete a resume for DELETE /resumes/:resume_id', function (done) {
+        it('[DELETE] should delete a resume for /resumes/:resume_id', function (done) {
             db.collection('resumes').insertOne({
                 name       : "Unnamed CV",
                 created_at : new Date(),
@@ -59,7 +60,7 @@ describe('Resume REST API', function () {
             });
         });
 
-        it('should return the sections of the resume for /resumes/:resume_id/sections', function (done) {
+        it('[GET] should return the sections of the resume for /resumes/:resume_id/sections', function (done) {
 
             db.collection('resumes').insertOne({
                 name       : "Unnamed CV",
@@ -75,7 +76,38 @@ describe('Resume REST API', function () {
                     done();
                 });
             });
-            
+        });
+
+    });
+
+    describe('Sad paths', function () {
+
+        it('[GET] should send 404 NOT FOUND for a non-existent resume /resumes/:resume_id', function (done) {
+            request(app.express)
+            .get('/resumes/123456789abc123456789abc')
+            .expect(404)
+            .end(done);
+        });
+
+        it('[GET] should send 404 NOT FOUND for a non-existent resume /resumes/:resume_id/sections', function (done) {
+            request(app.express)
+            .get('/resumes/123456789abc123456789abc/sections')
+            .expect(404)
+            .end(done);
+        });
+
+        it('[DELETE] should send 404 NOT FOUND for a non-existent resume', function (done) {
+            request(app.express)
+            .delete('/resumes/123456789abc123456789abc')
+            .expect(404)
+            .end(done);
+        });
+
+        it('should handle invalid :resume_id correctly', function (done) {
+            request(app.express)
+            .get('/resumes/invalid_id')
+            .expect(404)
+            .end(done);
         });
 
     });

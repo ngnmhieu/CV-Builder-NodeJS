@@ -1,4 +1,5 @@
 var mongo = require('../../config/mongodb'),
+    helpers = require('./helpers'),
     should = require('should');
 
 var db, resumes;

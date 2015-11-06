@@ -9,16 +9,6 @@ exports.read = function (req, res) {
 };
 
 /**
- * _TODO: just for testing purpose
- * GET /resumes
- */
-exports.list = function (req, res) {
-    resumes.collection.find().toArray(function (err, result) {
-        res.json(result);
-    });
-};
-
-/**
  * POST /resumes/
  */
 exports.create = function (req, res) {
@@ -55,6 +45,12 @@ exports.remove = function (req, res) {
 };
 
 exports.byId = function (req, res, next, id) {
+
+    // validate id, must be 24 hex characters long
+    if (!id.match(/^[0-9a-f]{24}$/i)) {
+        res.sendStatus(404);
+        return;
+    }
 
     resumes.collection.findOne({_id: ObjectId(id)}, function (err, result) {
     
