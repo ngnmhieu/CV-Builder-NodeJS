@@ -65,3 +65,38 @@ exports.deleteById = function (resume, list, callback) {
             bulletlists.deleteOne({_id: list._id}, callback);
     });
 };
+
+/**
+ * @param a bulletlist object from request
+ * @return true if valid, else false
+ */
+var validate = function (params) {
+
+    if (!params) return false;
+
+    if (!params.name) return false;
+
+    if (!Array.isArray(params.items)) return false;
+
+    if (params.ordered_items === undefined) return false;
+
+    // _TODO: order must be unique ? order property in sections
+    
+    return true;
+};
+
+/**
+ * Update an existing bulletlist
+ * _TODO: consider insert a new one if the requested bulletlist is not found
+ */
+exports.updateById = function (list, params, callback) {
+
+    if (!validate(params)) {
+        callback('validation_error');
+        return;
+    }
+
+    var newList = exports.getNewList(params);
+
+    bulletlists.updateOne({_id: list._id}, newList, callback);
+};

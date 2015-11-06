@@ -55,6 +55,15 @@ describe('Bulletlist Model', function (done) {
 
     });
 
+    var insertEmptyBulletList = function (callback) {
+        db.collection('bulletlists').insertOne({
+            name          : 'Empty Bullet List',
+            items         : [],
+            order         : 1,
+            ordered_items : false
+        }, callback)
+    };
+
     it('#deleteById should delete a bulletlist, and remove it from resumes.sections', function (done) {
         db.collection('bulletlists').insertOne({
             name          : 'Empty Bullet List',
@@ -78,6 +87,49 @@ describe('Bulletlist Model', function (done) {
                         })
                     });
                 });
+            });
+        });
+    });
+
+    it('#updateById should update a bullet list', function (done) {
+
+        db.collection('bulletlists').insertOne({
+            name          : 'Empty Bullet List',
+            items         : [],
+            order         : 1,
+            ordered_items : false
+        }, function (err, listRes) {
+
+            bulletlists.updateById(listRes.ops[0], {
+                name: 'A New Bullet List',
+                items: ['item1'],
+                order: 2,
+                ordered_items: true
+            }, function (err, updateResult) {
+
+                db.collection('bulletlists').findOne({_id: listRes.insertedId}, function (err, list) {
+                    list.name.should.equal('A New Bullet List');
+                    list.items.should.not.be.empty();
+                    list.order.should.equal(2);
+                    list.ordered_items.should.be.true();
+                    done();
+                });
+            });
+        });
+    });
+
+    it('#updateById should not update a bullet list when provided with invalid parameters', function (done) {
+        
+        db.collection('bulletlists').insertOne({
+            name          : 'Empty Bullet List',
+            items         : [],
+            order         : 1,
+            ordered_items : false
+        }, function (err, listRes) {
+
+            bulletlists.updateById(listRes.ops[0], {}, function (err, updateResult) {
+                should.exists(err);
+                done();
             });
         });
     });

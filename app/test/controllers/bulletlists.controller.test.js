@@ -53,7 +53,12 @@ describe('Bulletlist REST API', function () {
             request(app.express).post(getBulletListURI(resume._id))
             .expect('Location', /\/resumes\/[0-9a-f]{24}\/bulletlists\/[0-9a-f]{24}/)
             .expect(201)
-            .end(done);
+            .end(function (err, result) {
+                if (err) 
+                    done(err);
+                else 
+                    request(app.express).get(result.headers.location).expect(200).end(done);
+            });
         });
 
         it('[DELETE] should delete a bullet list /resumes/:resume_id/bulletlists/:bulletlist_id', function (done) {
@@ -64,7 +69,19 @@ describe('Bulletlist REST API', function () {
             });
         });
 
-        it('[PUT] should update a bullet list');
+        it('[PUT] should update an existing bullet list', function (done) {
+            bulletlists.createEmpty(resume, function (err, listResult) {
+                request(app.express).put(getBulletListURI(resume._id, listResult.insertedId))
+                .set('Content-Type', 'application/json')
+                .send({
+                    name: 'A bullet list',
+                    items: ['item1', 'item2'],
+                    ordered_items: false
+                })
+                .expect(200)
+                .end(done);
+            });
+        });
     });
 
     describe('Sad paths', function () {
@@ -92,6 +109,24 @@ describe('Bulletlist REST API', function () {
             .end(done);
         });
 
-        it('[PUT] should not update bullet list with invalid data');
+        it('[PUT] should not update bullet list with malformed request entity', function(done) {
+            bulletlists.createEmpty(resume, function (err, listResult) {
+                request(app.express).put(getBulletListURI(resume._id, listResult.insertedId))
+                .set('Content-Type', 'application/json')
+                .send('invalid data')
+                .expect(400)
+                .end(done);
+            });
+        });
+
+        it('[PUT] should not update bullet list with semantics invalid data ', function(done) {
+            bulletlists.createEmpty(resume, function (err, listResult) {
+                request(app.express).put(getBulletListURI(resume._id, listResult.insertedId))
+                .set('Content-Type', 'application/json')
+                .send({})
+                .expect(422)
+                .end(done);
+            });
+        });
     });
 });

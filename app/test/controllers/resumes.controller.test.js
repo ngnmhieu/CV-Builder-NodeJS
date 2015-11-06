@@ -45,7 +45,12 @@ describe('Resume REST API', function () {
             request(app.express).post('/resumes')
             .expect('Location', /\/resumes\/([0-9a-f]{24})/)
             .expect(201)
-            .end(done);
+            .end(function (err, result) {
+                if (err) 
+                    done(err);
+                else 
+                    request(app.express).get(result.headers.location).expect(200).end(done);
+            });
         });
 
         it('[DELETE] should delete a resume for /resumes/:resume_id', function (done) {

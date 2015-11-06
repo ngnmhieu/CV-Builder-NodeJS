@@ -87,10 +87,15 @@ exports.byId = function (req, res, next, id) {
  */
 exports.update = function (req, res) {
 
-    var list = bulletlists.getNewList(req.body);
-
-    bulletlists.collection.updateOne({_id: req.bulletList._id}, list, function (err, result) {
-        if (err) throw err;
+    bulletlists.updateById(req.bulletList, req.body, function (err, result) {
+        if (err) {
+            switch(err) {
+                case 'validation_error': 
+                    res.sendStatus(422); return;
+                default:
+                    throw err;
+            }
+        }
 
         res.sendStatus(200);
     });
