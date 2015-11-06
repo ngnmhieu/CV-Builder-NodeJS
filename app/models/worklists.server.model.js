@@ -33,10 +33,9 @@ exports.getNewList = function (params) {
     }
 
     return {
-        name          : params.name ? params.name.toString() : "New worklist",
-        items         : items,
-        order         : params.order ? parseInt(params.order) : 0,
-        ordered_items : params.ordered_items ? Boolean(params.ordered_items) : false,
+        name  : params.name ? params.name.toString()  : "New worklist",
+        items : items,
+        order : params.order ? parseInt(params.order) : 0
     };
 };
 
@@ -98,6 +97,7 @@ var validate = function (params) {
         var item = params.items[i];
         if (item.title === undefined) return false;
         if (item.institution === undefined) return false;
+        // _TODO: startDate endDate is in string if request from client
         if (!(item.startDate instanceof Date)) return false;
         if (!(item.endDate instanceof Date)) return false;
         if (item.tillNow === undefined) return false;

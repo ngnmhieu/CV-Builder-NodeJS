@@ -3,6 +3,7 @@ module.exports = function(app) {
 
     var resumes     = require('../controllers/resumes.server.controller');
     var bulletlists = require('../controllers/bulletlists.server.controller');
+    var worklists   = require('../controllers/worklists.server.controller');
 
     /**
      * Resume
@@ -30,4 +31,18 @@ module.exports = function(app) {
 
     app.param('resume_id', resumes.byId);
     app.param('bulletlist_id', bulletlists.byId);
+
+    /**
+     * Worklist
+     */
+    app.route("/resumes/:resume_id/worklists/")
+        .post(worklists.create);
+
+    app.route("/resumes/:resume_id/worklists/:worklist_id")
+        .get(worklists.read)
+        .put(worklists.update)
+        .delete(worklists.remove);
+
+    app.param('resume_id', resumes.byId);
+    app.param('worklist_id', worklists.byId);
 }
