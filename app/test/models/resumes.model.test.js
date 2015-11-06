@@ -1,5 +1,5 @@
-var mongo = require('../../config/mongodb'),
-    helpers = require('./helpers'),
+var helpers = require('../helpers'),
+    mongo = require('../../../config/mongodb'),
     should = require('should');
 
 var db, resumes;
@@ -7,7 +7,7 @@ var db, resumes;
 before(function (done) {
     mongo.init(function (err, client) {
         db = client;
-        resumes = require('../models/resumes.server.model');
+        resumes = require('../../models/resumes.server.model');
         done();
     });
 });
@@ -28,8 +28,6 @@ describe('Resume Model', function (done) {
     });
 
     it('has default name and no section', function (done) {
-
-        var resumes = require('../models/resumes.server.model');
 
         resumes.createEmpty(function (err, result) {
 

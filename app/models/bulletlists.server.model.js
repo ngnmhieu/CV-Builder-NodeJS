@@ -59,7 +59,7 @@ exports.deleteById = function (resume, list, callback) {
 
     resumes.updateOne(
         {_id: resume._id},
-        { '$pull': { 'sections': {_id: resume._id} } },
+        { '$pull': { 'sections': {_id: list._id} } },
         function (err, result) {
             if (err) throw err;                
             bulletlists.deleteOne({_id: list._id}, callback);

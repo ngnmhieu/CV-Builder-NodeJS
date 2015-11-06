@@ -20,11 +20,11 @@ exports.init = function (callback) {
 
         var app = express();
 
-        app.listen(config.app.port);
+        exports.httpServer = app.listen(config.app.port);
 
         exports.express = app;
 
-        console.log('[ MODE: ' + process.env.NODE_ENV + ' ] Server running at http://localhost:3000');
+        console.log('[ MODE: ' + process.env.NODE_ENV + ' ] Server running at http://localhost:'+ config.app.port);
 
         if (typeof callback === 'function')
             callback();

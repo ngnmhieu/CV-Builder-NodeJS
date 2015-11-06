@@ -1,15 +1,19 @@
-var should = require('should'),
-    helpers = require('./helpers'),
+var helpers = require('../helpers'),
+    should = require('should'),
     request = require('supertest');
 
 var app, db;
 
 before(function (done) {
-   app = require('../../app');
+   app = require('../../../app');
    app.init(function () {
-       db = require('../../config/mongodb').client;
+       db = require('../../../config/mongodb').client;
        done();
    });
+});
+
+after(function () {
+   app.httpServer.close(); 
 });
 
 describe('Resume REST API', function () {
@@ -35,7 +39,7 @@ describe('Resume REST API', function () {
                     var resume = result.body;
                     resume.name.should.equal("My CV");
                     resume.sections.should.be.empty();
-                    done();
+                    done(err);
                 });
             });
         });
@@ -73,7 +77,7 @@ describe('Resume REST API', function () {
                 .expect(200)
                 .end(function (err, result) {
                     result.body.should.containDeep(['section1', 'section2']);
-                    done();
+                    done(err);
                 });
             });
         });
