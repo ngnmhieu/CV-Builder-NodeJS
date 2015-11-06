@@ -22,12 +22,12 @@ exports.getNewList = function (params) {
         for (var i in params.items) {
             var item = params.items[i]
             items.push({
-                title: String(item.title),
-                institution: String(item.title),
-                startDate: item.startDate,
-                endDate: item.endDate,
-                tillNow: Boolean(item.tillNow),
-                desc: String(item.title)
+                title       : String(item.title),
+                institution : String(item.title),
+                startDate   : (item.startDate instanceof Date) ? item.startDate : new Date(item.startDate),
+                endDate     : (item.endDate instanceof Date)   ? item.endDate   : new Date(item.endDate),
+                tillNow     : Boolean(item.tillNow),
+                desc        : String(item.title)
             });
         }
     }
@@ -81,6 +81,14 @@ exports.deleteById = function (resume, list, callback) {
 };
 
 /**
+ * @param date string represents date in json or Date object
+ * @return boolean
+ */
+var isDate = function (date) {
+    return date instanceof Date || !isNaN(new Date(date));
+};
+
+/**
  * @param a worklist object from request
  * @return true if valid, else false
  */
@@ -97,9 +105,8 @@ var validate = function (params) {
         var item = params.items[i];
         if (item.title === undefined) return false;
         if (item.institution === undefined) return false;
-        // _TODO: startDate endDate is in string if request from client
-        if (!(item.startDate instanceof Date)) return false;
-        if (!(item.endDate instanceof Date)) return false;
+        if (!isDate(item.startDate)) return false;
+        if (!isDate(item.endDate)) return false;
         if (item.tillNow === undefined) return false;
         if (item.desc === undefined) return false;
     }
