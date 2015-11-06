@@ -48,6 +48,11 @@ exports.read = function (req, res) {
  */
 exports.byId = function (req, res, next, id) {
 
+    if (!ObjectId.isValid(id)) {
+        res.sendStatus(404);
+        return;
+    }
+
     var listId = ObjectId(id);
 
     var resume = req.resumeObj;

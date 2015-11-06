@@ -6,8 +6,13 @@ var host   = config.mongodb.host,
     port   = config.mongodb.port ? ':' + config.mongodb.port : '';
 
 module.exports.init = function (callback) {
-    client.connect('mongodb://' + host + port + '/' + dbname, function (err, db) {
-        module.exports.client = db;
-        callback(err, db);
-    });
+    // establish connection only once
+    if (!module.exports.client) {
+        client.connect('mongodb://' + host + port + '/' + dbname, function (err, db) {
+            module.exports.client = db;
+            callback(err);
+        });
+    } else {
+        callback();
+    }
 };

@@ -6,7 +6,7 @@ var db, bulletlists, resumes;
 
 before(function (done) {
     mongo.init(function (err, client) {
-        db = client;
+        db = require('../../../config/mongodb').client;
         bulletlists = require('../../models/bulletlists.server.model');
         resumes = require('../../models/resumes.server.model');
         done();

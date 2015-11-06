@@ -5,8 +5,8 @@ var helpers = require('../helpers'),
 var db, resumes;
 
 before(function (done) {
-    mongo.init(function (err, client) {
-        db = client;
+    mongo.init(function (err) {
+        db      = mongo.client;
         resumes = require('../../models/resumes.server.model');
         done();
     });

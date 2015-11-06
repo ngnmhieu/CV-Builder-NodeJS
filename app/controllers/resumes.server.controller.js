@@ -46,8 +46,7 @@ exports.remove = function (req, res) {
 
 exports.byId = function (req, res, next, id) {
 
-    // validate id, must be 24 hex characters long
-    if (!id.match(/^[0-9a-f]{24}$/i)) {
+    if (!ObjectId.isValid(id)) {
         res.sendStatus(404);
         return;
     }

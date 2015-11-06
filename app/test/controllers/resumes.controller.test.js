@@ -2,21 +2,23 @@ var helpers = require('../helpers'),
     should = require('should'),
     request = require('supertest');
 
-var app, db;
-
-before(function (done) {
-   app = require('../../../app');
-   app.init(function () {
-       db = require('../../../config/mongodb').client;
-       done();
-   });
-});
-
-after(function () {
-   app.httpServer.close(); 
-});
+var app, db, resumes;
 
 describe('Resume REST API', function () {
+
+    before(function (done) {
+        app = require('../../../app');
+        app.init(function () {
+            db = require('../../../config/mongodb').client;
+            resumes = require('../../models/resumes.server.model');
+            done();
+        });
+    });
+
+    after(function (done) {
+        app.httpServer.close(); 
+        done();
+    });
 
     afterEach(function () {
         db.collection('resumes').drop();
@@ -26,18 +28,13 @@ describe('Resume REST API', function () {
 
         it('[GET] should get a resume for /resumes/:resume_id', function (done) {
 
-            db.collection('resumes').insertOne({
-                name       : "My CV",
-                created_at : new Date(),
-                updated_at : new Date(),
-                sections   : []
-            }, function (err, result) {
+            resumes.createEmpty(function (err, result) {
                 request(app.express).get('/resumes/' + result.insertedId)
                 .expect('Content-Type', /json/)
                 .expect(200)
                 .end(function (err, result) {
                     var resume = result.body;
-                    resume.name.should.equal("My CV");
+                    resume.name.should.equal("Unnamed CV");
                     resume.sections.should.be.empty();
                     done(err);
                 });
@@ -46,18 +43,13 @@ describe('Resume REST API', function () {
 
         it('[POST] should create an empty resume for /resumes', function (done) {
             request(app.express).post('/resumes')
-            .expect('Location', /\/resumes\/([0-9a-f]{12})/)
+            .expect('Location', /\/resumes\/([0-9a-f]{24})/)
             .expect(201)
             .end(done);
         });
 
         it('[DELETE] should delete a resume for /resumes/:resume_id', function (done) {
-            db.collection('resumes').insertOne({
-                name       : "Unnamed CV",
-                created_at : new Date(),
-                updated_at : new Date(),
-                sections   : []
-            }, function (err, result) {
+            resumes.createEmpty(function (err, result) {
                 request(app.express).delete('/resumes/' + result.insertedId)
                 .expect(200)
                 .end(done);
