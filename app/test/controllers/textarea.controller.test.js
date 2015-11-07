@@ -40,7 +40,7 @@ describe('Textarea REST API', function () {
         return '/resumes/' + resumeId + '/textareas' + (textareaId ? '/' + textareaId : '');
     };
 
-    describe('Good paths', function () {
+    describe('Happy paths', function () {
         it('[GET] should return a textarea /resumes/:resume_id/textareas/:textarea_id', function (done) {
             textareas.createEmpty(resume, function (err, result) {
                 request(app.express).get(getTextareaURI(resume._id, result.insertedId))

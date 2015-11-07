@@ -39,7 +39,7 @@ describe('Worklist REST API', function () {
         return '/resumes/' + resumeId + '/worklists' + (workListId ? '/' + workListId : '');
     };
 
-    describe('Good paths', function () {
+    describe('Happy paths', function () {
         it('[GET] should return a work list /resumes/:resume_id/worklists/:worklist_id', function (done) {
             worklists.createEmpty(resume, function (err, listResult) {
                 request(app.express).get(getWorkListURI(resume._id, listResult.insertedId))

@@ -24,7 +24,7 @@ describe('Resume REST API', function () {
         db.collection('resumes').drop();
     });
     
-    describe('Good paths', function () {
+    describe('Happy paths', function () {
 
         it('[GET] should get a resume for /resumes/:resume_id', function (done) {
 

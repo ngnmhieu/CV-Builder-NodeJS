@@ -39,7 +39,7 @@ describe('Bulletlist REST API', function () {
         return '/resumes/' + resumeId + '/bulletlists' + (bulletListId ? '/' + bulletListId : '');
     };
 
-    describe('Good paths', function () {
+    describe('Happy paths', function () {
         it('[GET] should return a bullet list /resumes/:resume_id/bulletlists/:bulletlist_id', function (done) {
             bulletlists.createEmpty(resume, function (err, listResult) {
                 request(app.express).get(getBulletListURI(resume._id, listResult.insertedId))
@@ -120,7 +120,7 @@ describe('Bulletlist REST API', function () {
             });
         });
 
-        it('[PUT] should not update bullet list with semantics invalid data ', function(done) {
+        it('[PUT] should not update bullet list with semantics invalid data', function(done) {
             bulletlists.createEmpty(resume, function (err, listResult) {
                 request(app.express).put(getBulletListURI(resume._id, listResult.insertedId))
                 .set('Content-Type', 'application/json')
