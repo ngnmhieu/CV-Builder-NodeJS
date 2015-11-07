@@ -101,5 +101,50 @@ describe('Textarea REST API', function () {
         });
     });
 
+    describe('Sad paths', function () {
+
+        it('[GET] should return 404 for a textarea which doesnt exists', function (done) {
+            request(app.express).get(getTextareaURI(resume._id, '0123456789ab0123456789ef'))
+            .expect(404)
+            .end(done);
+        });
+
+        it('[GET] should return 404 for a textarea, which doesnt belong to a given resume', function (done) {
+            resumes.createEmpty(function (err, res) {
+                var anotherResume = res.ops[0];
+                textareas.createEmpty(anotherResume, function (err, textResult) {
+                    request(app.express).get(getTextareaURI(resume._id, textResult.insertedId))
+                    .expect(404)
+                    .end(done);
+                });
+            });
+        });
+
+        it('Should return 404 for a invalid :textarea_id', function (done) {
+            request(app.express).get(getTextareaURI(resume._id, '0123456789xy0123456789zt'))
+            .expect(404)
+            .end(done);
+        });
+
+        it('[PUT] should not update textarea with malformed request entity', function(done) {
+            textareas.createEmpty(resume, function (err, textResult) {
+                request(app.express).put(getTextareaURI(resume._id, textResult.insertedId))
+                .set('Content-Type', 'application/json')
+                .send('invalid data')
+                .expect(400)
+                .end(done);
+            });
+        });
+
+        it('[PUT] should not update textarea with semantics invalid data ', function(done) {
+            textareas.createEmpty(resume, function (err, textResult) {
+                request(app.express).put(getTextareaURI(resume._id, textResult.insertedId))
+                .set('Content-Type', 'application/json')
+                .send({})
+                .expect(422)
+                .end(done);
+            });
+        });
+    });
 
 });

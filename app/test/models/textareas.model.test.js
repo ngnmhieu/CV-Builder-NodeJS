@@ -113,32 +113,33 @@ describe('Textarea Model', function (done) {
         });
     });
 
-    // it('1#updateById should not update a textarea when attributes are missing', function (done) {
-    //     db.collection('textareas').insertOne({
-    //         name          : 'Empty Textarea',
-    //     }, function (err, listRes) {
-    //
-    //         textareas.updateById(listRes.ops[0], {}, function (err, updateResult) {
-    //             should.exists(err);
-    //             done();
-    //         });
-    //     });
-    // });
-    //
-    // it('2#updateById should not update a textarea when invalid parameters are provided', function (done) {
-    //     db.collection('textareas').insertOne({
-    //         name  : 'Empty Textarea',
-    //         order : 1
-    //     }, function (err, listRes) {
-    //
-    //         textareas.updateById(listRes.ops[0], {
-    //             name  : 'A New Textarea',
-    //             order : 1
-    //         }, function (err, updateResult) {
-    //             should.exists(err);
-    //             done();
-    //         });
-    //     });
-    // });
+    it('1#updateById should not update a textarea when attributes are missing', function (done) {
+        db.collection('textareas').insertOne({
+            name          : 'Empty Textarea',
+        }, function (err, listRes) {
+
+            textareas.updateById(listRes.ops[0], {}, function (err, updateResult) {
+                should.exists(err);
+                done();
+            });
+        });
+    });
+
+    it('2#updateById should not update a textarea when invalid parameters are provided', function (done) {
+        db.collection('textareas').insertOne({
+            name    : 'Empty Textarea',
+            content : null,
+            order   : 1
+        }, function (err, listRes) {
+
+            textareas.updateById(listRes.ops[0], {
+                name  : 'A New Textarea',
+                order : 1
+            }, function (err, updateResult) {
+                should.exists(err);
+                done();
+            });
+        });
+    });
 });
 
