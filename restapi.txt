@@ -3,24 +3,24 @@
 
 # Resume resource
 /resumes/(:resume_id)
-Methods: GET, POST, DELETE
+Methods: GET, POST, DELETE, PATCH
 
 # Resume's sections collection
 /resumes/:resume_id/sections
 Methods: GET
 
+# Basicinfo
+/resumes/:resume_id/basicinfo
+Methods: GET, PUT
+
 # Bullet list resource
 /resumes/:resume_id/bulletlists/(:bulletlist_id)
-Methods: GET, POST, DELETE, (PUT is being implemented)
+Methods: GET, POST, DELETE, PUT
 
 # Work list resource
-/resumes/:resume_id/worklists/(worklist_id)
-Methods: GET, POST, DELETE, (PUT is being implemented)
+/resumes/:resume_id/worklists/(:worklist_id)
+Methods: GET, POST, DELETE, PUT
 
 # Textsection resource
-/resumes/:resume_id/texts/:text_id
-Methods: GET POST DELETE, (PUT is being implemented)
-
-# Basicinfos
-/resumes/:resume_id/basicinfos
-Methods: GET, PUT
+/resumes/:resume_id/textareas/(:textarea_id)
+Methods: GET POST DELETE, PUT

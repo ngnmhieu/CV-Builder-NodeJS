@@ -5,6 +5,7 @@ module.exports = function(app) {
     var bulletlists = require('../controllers/bulletlist.server.controller');
     var worklists   = require('../controllers/worklist.server.controller');
     var textareas   = require('../controllers/textarea.server.controller');
+    var basicinfo   = require('../controllers/basicinfo.server.controller');
 
     /**
      * Resume
@@ -19,6 +20,13 @@ module.exports = function(app) {
     app.get("/resumes/:resume_id/sections", resumes.sections);
 
     app.param('resume_id', resumes.byId);
+
+    /**
+     * Basicinfo
+     */
+    app.route("/resumes/:resume_id/basicinfo")
+        .get(basicinfo.read)
+        .put(basicinfo.update);
 
     /**
      * Bulletlist

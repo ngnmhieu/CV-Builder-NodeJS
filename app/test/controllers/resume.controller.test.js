@@ -36,6 +36,7 @@ describe('Resume REST API', function () {
                     var resume = result.body;
                     resume.name.should.equal("Unnamed CV");
                     resume.sections.should.be.empty();
+                    should.exists(resume.basicinfo);
                     done(err);
                 });
             });
