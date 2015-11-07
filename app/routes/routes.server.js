@@ -1,9 +1,10 @@
 
 module.exports = function(app) {
 
-    var resumes     = require('../controllers/resumes.server.controller');
-    var bulletlists = require('../controllers/bulletlists.server.controller');
-    var worklists   = require('../controllers/worklists.server.controller');
+    var resumes     = require('../controllers/resume.server.controller');
+    var bulletlists = require('../controllers/bulletlist.server.controller');
+    var worklists   = require('../controllers/worklist.server.controller');
+    var textareas   = require('../controllers/textarea.server.controller');
 
     /**
      * Resume
@@ -17,6 +18,7 @@ module.exports = function(app) {
 
     app.get("/resumes/:resume_id/sections", resumes.sections);
 
+    app.param('resume_id', resumes.byId);
 
     /**
      * Bulletlist
@@ -29,7 +31,6 @@ module.exports = function(app) {
         .put(bulletlists.update)
         .delete(bulletlists.remove);
 
-    app.param('resume_id', resumes.byId);
     app.param('bulletlist_id', bulletlists.byId);
 
     /**
@@ -43,6 +44,18 @@ module.exports = function(app) {
         .put(worklists.update)
         .delete(worklists.remove);
 
-    app.param('resume_id', resumes.byId);
     app.param('worklist_id', worklists.byId);
+
+    /**
+     * Textarea
+     */
+    app.route("/resumes/:resume_id/textareas/")
+        .post(textareas.create);
+
+    app.route("/resumes/:resume_id/textareas/:textarea_id")
+        .get(textareas.read)
+        .put(textareas.update)
+        .delete(textareas.remove);
+
+    app.param('textarea_id', textareas.byId);
 }

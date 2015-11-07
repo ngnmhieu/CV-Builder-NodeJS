@@ -2,7 +2,7 @@ var db = require('../../config/mongodb').client;
 
 var ObjectId = require('mongodb').ObjectId;
 
-var resumes     = db.collection('resumes');
+var resumes   = db.collection('resumes');
 var worklists = db.collection('worklists');
 
 exports.collection = worklists;
@@ -111,8 +111,7 @@ var validate = function (params) {
         if (item.desc === undefined) return false;
     }
 
-    if (isNaN(parseInt(params.order))) return false;
-    // _TODO: order must be unique ? order property in sections
+    if (parseInt(params.order) < 0) return false;
     
     return true;
 };

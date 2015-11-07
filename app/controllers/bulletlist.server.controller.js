@@ -8,10 +8,6 @@ var bulletlists = require('../models/bulletlists.server.model'),
 exports.create = function (req, res) {
 
     var resume = req.resumeObj;
-    if (resume === null) {
-        res.sendStatus(404);
-        return;
-    }
 
     bulletlists.createEmpty(resume, function (err, result) {
 

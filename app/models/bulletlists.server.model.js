@@ -86,8 +86,7 @@ var validate = function (params) {
 
     if (params.ordered_items === undefined) return false;
 
-    if (!params.order) return false;
-    // _TODO: order must be unique ? order property in sections
+    if (parseInt(params.order) < 0) return false;
     
     return true;
 };

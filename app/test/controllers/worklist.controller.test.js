@@ -9,8 +9,8 @@ describe('Worklist REST API', function () {
     before(function (done) {
         app = require('../../../app');
         app.init(function () {
-            db          = require('../../../config/mongodb').client;
-            resumes     = require('../../models/resumes.server.model');
+            db        = require('../../../config/mongodb').client;
+            resumes   = require('../../models/resumes.server.model');
             worklists = require('../../models/worklists.server.model');
             done();
         });
@@ -45,7 +45,13 @@ describe('Worklist REST API', function () {
                 request(app.express).get(getWorkListURI(resume._id, listResult.insertedId))
                 .expect('Content-Type', /json/)
                 .expect(200)
-                .end(done);
+                .end(function (err, res) {
+                    should.exists(res.body._id);
+                    should.exists(res.body.items);
+                    should.exists(res.body.order);
+                    res.body._id.should.equal(listResult.insertedId.toString());
+                    done(err);
+                });
             });
         });
 

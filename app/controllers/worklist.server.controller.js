@@ -8,10 +8,6 @@ var worklists = require('../models/worklists.server.model'),
 exports.create = function (req, res) {
 
     var resume = req.resumeObj;
-    if (resume === null) {
-        res.sendStatus(404);
-        return;
-    }
 
     worklists.createEmpty(resume, function (err, result) {
 
