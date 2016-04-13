@@ -1,4 +1,5 @@
 config/env/*
+!config/env/environment.sample.js
 node_modules/**
 public/lib/**
 *.swo

@@ -6,6 +6,5 @@ $ node bootstrap
 
 ## Run the tests
 ```
-$ cd app/
 $ mocha
 ```

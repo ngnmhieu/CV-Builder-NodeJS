@@ -117,6 +117,10 @@ mediaType: application/json
           description: Collection of bullet lists in a resume
           post:
           /{bulletlist_id}:
+            uriParameters:
+              bulletlist_id:
+                description: Unique identifier of the bullet list
+                type: string
             get:
               description: A bullet list
               responses:
@@ -179,6 +183,10 @@ mediaType: application/json
           description: Collection of worklists in a resume
           post:
           /{worklist_id}:
+            uriParameters:
+              worklist_id:
+                description: Unique identifier of the worklist
+                type: string
             get:
               description: A worklist
               responses:
@@ -229,6 +237,10 @@ mediaType: application/json
           description: Collection of text paragraphs in a resume
           post:
           /{textarea_id}:
+            uriParameters:
+              textarea_id:
+                description: Unique identifier of the textarea
+                type: string
             get:
               description: A text paragraph
               responses:
