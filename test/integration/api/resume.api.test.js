@@ -1,5 +1,5 @@
-var app_root = '/Users/hieusun/Work/programming/nodejs/cvbuilder/',
-    helpers = require('../helpers'),
+var helpers = require('../../helpers'),
+    app_root = helpers.app_root,
     should = require('should'),
     request = require('supertest');
 
@@ -27,24 +27,7 @@ describe('Resume REST API', function () {
     
     describe('Happy paths', function () {
 
-        it('[GET] should get a resume for /resumes/:resume_id', function (done) {
-
-            resumes.createEmpty(function (err, result) {
-                request(app.express).get('/resumes/' + result.insertedId)
-                .expect('Content-Type', /json/)
-                .expect(200)
-                .end(function (err, result) {
-                    var resume = result.body;
-                    resume.name.should.equal("Unnamed CV");
-                    // resume.sections.should.be.empty();
-                    // should.exists(resume.basicinfo);
-                    // TODO: updated_at ...
-                    done(err);
-                });
-            });
-        });
-
-        it('[POST] should create an empty resume for /resumes', function (done) {
+        it('[POST   /resumes] should create an empty resume', function (done) {
             request(app.express).post('/resumes')
             .expect('Location', /\/resumes\/([0-9a-f]{24})/)
             .expect(201)
@@ -56,7 +39,22 @@ describe('Resume REST API', function () {
             });
         });
 
-        it('[DELETE] should delete a resume for /resumes/:resume_id', function (done) {
+        it('[GET    /resumes/:resume_id] should get a resume', function (done) {
+
+            resumes.createEmpty(function (err, result) {
+                request(app.express).get('/resumes/' + result.insertedId)
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end(function (err, result) {
+                    var resume = result.body;
+                    resume.name.should.equal("Unnamed CV");
+                    // TODO: updated_at ...
+                    done(err);
+                });
+            });
+        });
+
+        it('[DELETE /resumes/:resume_id] should delete a resume for /resumes/:resume_id', function (done) {
             resumes.createEmpty(function (err, result) {
                 request(app.express).delete('/resumes/' + result.insertedId)
                 .expect(200)
@@ -64,7 +62,7 @@ describe('Resume REST API', function () {
             });
         });
 
-        it('[GET] should return the sections of the resume for /resumes/:resume_id/sections', function (done) {
+        it('[GET    /resumes/:resume_id/sections] should return the sections of the resume for /resumes/:resume_id/sections', function (done) {
 
             db.collection('resumes').insertOne({
                 name       : "Unnamed CV",
@@ -107,7 +105,7 @@ describe('Resume REST API', function () {
             .end(done);
         });
 
-        it('should handle invalid :resume_id correctly', function (done) {
+        it('[GET] should handle invalid :resume_id correctly', function (done) {
             request(app.express)
             .get('/resumes/invalid_id')
             .expect(404)

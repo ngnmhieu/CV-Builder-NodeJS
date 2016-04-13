@@ -1,5 +1,5 @@
-var app_root = '/Users/hieusun/Work/programming/nodejs/cvbuilder/',
-    helpers = require('../helpers'),
+var helpers = require('../../helpers'),
+    app_root = helpers.app_root,
     should = require('should'),
     request = require('supertest');
 
@@ -41,7 +41,20 @@ describe('Worklist REST API', function() {
     };
 
     describe('Happy paths', function() {
-        it('[GET] should return a work list /resumes/:resume_id/worklists/:worklist_id', function(done) {
+
+        it('[POST   /resumes/:resume_id/worklists] should create an empty work list', function(done) {
+            request(app.express).post(getWorkListURI(resume._id))
+                .expect('Location', /\/resumes\/[0-9a-f]{24}\/worklists\/[0-9a-f]{24}/)
+                .expect(201)
+                .end(function(err, result) {
+                    if (err)
+                        done(err);
+                    else
+                        request(app.express).get(result.headers.location).expect(200).end(done);
+                });
+        });
+
+        it('[GET    /resumes/:resume_id/worklists/:worklist_id] should return a work list', function(done) {
             worklists.createEmpty(resume, function(err, listResult) {
                 request(app.express).get(getWorkListURI(resume._id, listResult.insertedId))
                     .expect('Content-Type', /json/)
@@ -56,19 +69,8 @@ describe('Worklist REST API', function() {
             });
         });
 
-        it('[POST] should create an empty work list /resumes/:resume_id/worklists/:worklist_id', function(done) {
-            request(app.express).post(getWorkListURI(resume._id))
-                .expect('Location', /\/resumes\/[0-9a-f]{24}\/worklists\/[0-9a-f]{24}/)
-                .expect(201)
-                .end(function(err, result) {
-                    if (err)
-                        done(err);
-                    else
-                        request(app.express).get(result.headers.location).expect(200).end(done);
-                });
-        });
 
-        it('[DELETE] should delete a work list /resumes/:resume_id/worklists/:worklist_id', function(done) {
+        it('[DELETE /resumes/:resume_id/worklists/:worklist_id] should delete a work list', function(done) {
             worklists.createEmpty(resume, function(err, listResult) {
                 request(app.express).delete(getWorkListURI(resume._id, listResult.insertedId))
                     .expect(200)
@@ -76,7 +78,7 @@ describe('Worklist REST API', function() {
             });
         });
 
-        it('[PUT] should update an existing work list', function(done) {
+        it('[PUT    /resumes/:resume_id/worklists/:worklist_id] should update an existing work list', function(done) {
             worklists.createEmpty(resume, function(err, listResult) {
                 request(app.express).put(getWorkListURI(resume._id, listResult.insertedId))
                     .set('Content-Type', 'application/json')

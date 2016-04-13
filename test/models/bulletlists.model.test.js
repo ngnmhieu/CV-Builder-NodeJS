@@ -1,5 +1,5 @@
-var app_root = '/Users/hieusun/Work/programming/nodejs/cvbuilder/',
-    helpers = require('../helpers'),
+var helpers = require('../helpers'),
+    app_root = helpers.app_root,
     mongo = require(app_root + 'config/mongodb'),
     should = require('should');
 

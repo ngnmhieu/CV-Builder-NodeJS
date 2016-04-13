@@ -1,5 +1,5 @@
-var app_root = '/Users/hieusun/Work/programming/nodejs/cvbuilder/',
-    helpers = require('../helpers'),
+var helpers = require('../../helpers'),
+    app_root = helpers.app_root,
     should = require('should'),
     request = require('supertest');
 
@@ -42,7 +42,20 @@ describe('Textarea REST API', function () {
     };
 
     describe('Happy paths', function () {
-        it('[GET] should return a textarea /resumes/:resume_id/textareas/:textarea_id', function (done) {
+
+        it('[POST   /resumes/:resume_id/textareas/] should create an empty textarea', function (done) {
+            request(app.express).post(getTextareaURI(resume._id))
+            .expect('Location', /\/resumes\/[0-9a-f]{24}\/textareas\/[0-9a-f]{24}/)
+            .expect(201)
+            .end(function (err, result) {
+                if (err) 
+                    done(err);
+                else 
+                    request(app.express).get(result.headers.location).expect(200).end(done);
+            });
+        });
+
+        it('[GET    /resumes/:resume_id/textareas/:textarea_id] should return a textarea', function (done) {
             textareas.createEmpty(resume, function (err, result) {
                 request(app.express).get(getTextareaURI(resume._id, result.insertedId))
                 .expect('Content-Type', /json/)
@@ -58,19 +71,7 @@ describe('Textarea REST API', function () {
             });
         });
 
-        it('[POST] should create an empty textarea /resumes/:resume_id/textareas/:textarea_id', function (done) {
-            request(app.express).post(getTextareaURI(resume._id))
-            .expect('Location', /\/resumes\/[0-9a-f]{24}\/textareas\/[0-9a-f]{24}/)
-            .expect(201)
-            .end(function (err, result) {
-                if (err) 
-                    done(err);
-                else 
-                    request(app.express).get(result.headers.location).expect(200).end(done);
-            });
-        });
-        //
-        it('[DELETE] should delete a textarea /resumes/:resume_id/textareas/:textarea_id', function (done) {
+        it('[DELETE /resumes/:resume_id/textareas/:textarea_id] should delete a textarea', function (done) {
             textareas.createEmpty(resume, function (err, result) {
                 request(app.express).delete(getTextareaURI(resume._id, result.insertedId))
                 .expect(200)
@@ -78,7 +79,7 @@ describe('Textarea REST API', function () {
             });
         });
 
-        it('[PUT] should update an existing textarea', function (done) {
+        it('[PUT    /resumes/:resume_id/textareas/:textarea_id] should update an existing textarea', function (done) {
             textareas.createEmpty(resume, function (err, textResult) {
                 request(app.express).put(getTextareaURI(resume._id, textResult.insertedId))
                 .set('Content-Type', 'application/json')
@@ -121,7 +122,7 @@ describe('Textarea REST API', function () {
             });
         });
 
-        it('Should return 404 for a invalid :textarea_id', function (done) {
+        it('[GET] Should return 404 for a invalid :textarea_id', function (done) {
             request(app.express).get(getTextareaURI(resume._id, '0123456789xy0123456789zt'))
             .expect(404)
             .end(done);

@@ -1,11 +1,11 @@
-var app_root = '/Users/hieusun/Work/programming/nodejs/cvbuilder/',
-    helpers = require('../helpers'),
+var helpers = require('../../helpers'),
+    app_root = helpers.app_root,
     should = require('should'),
     request = require('supertest');
 
 var app, db, resumes;
 
-describe('Basicinfo REST API', function () {
+describe('Resume Basicinfo REST API', function () {
 
     before(function (done) {
         app = require(app_root + 'app');
@@ -30,7 +30,7 @@ describe('Basicinfo REST API', function () {
     };
 
     describe('Happy paths', function () {
-        it('[GET] should return basicinfo for /resumes/:resume_id/basicinfo', function (done) {
+        it('[GET /resumes/:resume_id/basicinfo] should return basic informations', function (done) {
             resumes.createEmpty(function (err, result) {
                 request(app.express)
                 .get(getBasicinfoURI(result.insertedId))
@@ -42,7 +42,7 @@ describe('Basicinfo REST API', function () {
             });
         });
 
-        it('[PUT] should update basicinfo for /resumes/:resume_id/basicinfo', function (done) {
+        it('[PUT /resumes/:resume_id/basicinfo] should update basic informations', function (done) {
             resumes.collection.insertOne({
                 name       : "Unnamed CV",
                 created_at : new Date(),
@@ -93,7 +93,7 @@ describe('Basicinfo REST API', function () {
 
     describe('Sad paths', function () {
 
-        it('[PUT] should return HTTP 400 with missing parameters /resumes/:resume_id/basicinfo', function (done) {
+        it('[PUT /resumes/:resume_id/basicinfo] should return HTTP 400 with missing parameters', function (done) {
             resumes.createEmpty(function (err, result) {
                 request(app.express).put(getBasicinfoURI(result.insertedId))
                 .set('Content-Type', 'application/json')
@@ -105,7 +105,7 @@ describe('Basicinfo REST API', function () {
             });
         });
 
-        it('[PUT] should not update bullet list with malformed request entity', function(done) {
+        it('[PUT /resumes/:resume_id/basicinfo] should not update bullet list with malformed request entity', function(done) {
             resumes.createEmpty(function (err, result) {
                 request(app.express).put(getBasicinfoURI(result.insertedId))
                 .set('Content-Type', 'application/json')

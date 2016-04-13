@@ -1,5 +1,5 @@
-var app_root = '/Users/hieusun/Work/programming/nodejs/cvbuilder/',
-    helpers = require('../helpers'),
+var helpers = require('../../helpers'),
+    app_root = helpers.app_root,
     should = require('should'),
     request = require('supertest');
 
@@ -41,7 +41,7 @@ describe('Bulletlist REST API', function () {
     };
 
     describe('Happy paths', function () {
-        it('[GET] should return a bullet list /resumes/:resume_id/bulletlists/:bulletlist_id', function (done) {
+        it('[GET    /resumes/:resume_id/bulletlists] should return a bullet list', function (done) {
             bulletlists.createEmpty(resume, function (err, listResult) {
                 request(app.express).get(getBulletListURI(resume._id, listResult.insertedId))
                 .expect('Content-Type', /json/)
@@ -50,7 +50,7 @@ describe('Bulletlist REST API', function () {
             });
         });
 
-        it('[POST] should create an empty bullet list /resumes/:resume_id/bulletlists/:bulletlist_id', function (done) {
+        it('[POST   /resumes/:resume_id/bulletlists/:bulletlist_id] should create an empty bullet list', function (done) {
             request(app.express).post(getBulletListURI(resume._id))
             .expect('Location', /\/resumes\/[0-9a-f]{24}\/bulletlists\/[0-9a-f]{24}/)
             .expect(201)
@@ -62,7 +62,7 @@ describe('Bulletlist REST API', function () {
             });
         });
 
-        it('[DELETE] should delete a bullet list /resumes/:resume_id/bulletlists/:bulletlist_id', function (done) {
+        it('[DELETE /resumes/:resume_id/bulletlists/:bulletlist_id] should delete a bullet list', function (done) {
             bulletlists.createEmpty(resume, function (err, listResult) {
                 request(app.express).delete(getBulletListURI(resume._id, listResult.insertedId))
                 .expect(200)
@@ -70,7 +70,7 @@ describe('Bulletlist REST API', function () {
             });
         });
 
-        it('[PUT] should update an existing bullet list', function (done) {
+        it('[PUT    /resumes/:resume_id/bulletlists/:bulletlist_id] should update an existing bullet list', function (done) {
             bulletlists.createEmpty(resume, function (err, listResult) {
                 request(app.express).put(getBulletListURI(resume._id, listResult.insertedId))
                 .set('Content-Type', 'application/json')
