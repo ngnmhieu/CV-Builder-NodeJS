@@ -4,4 +4,4 @@ public/lib/**
 *.swo
 *.swp
 *.DS_Store
-
+.idea

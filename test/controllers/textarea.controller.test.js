@@ -1,4 +1,5 @@
-var helpers = require('../helpers'),
+var app_root = '/Users/hieusun/Work/programming/nodejs/cvbuilder/',
+    helpers = require('../helpers'),
     should = require('should'),
     request = require('supertest');
 
@@ -7,11 +8,11 @@ describe('Textarea REST API', function () {
     var app, db, resumes, textareas;
     
     before(function (done) {
-        app = require('../../../app.js');
+        app = require(app_root + 'app');
         app.init(function () {
-            db        = require('../../../config/mongodb').client;
-            resumes   = require('../../models/resumes.server.model');
-            textareas = require('../../models/textareas.server.model');
+            db        = require(app_root + 'config/mongodb').client;
+            resumes   = require(app_root + 'app/models/resumes.server.model');
+            textareas = require(app_root + 'app/models/textareas.server.model');
             done();
         });
     });

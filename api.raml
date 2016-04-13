@@ -1,0 +1,269 @@
+#%RAML 0.8
+title: CVBuilder
+version: v1
+baseUri: http://localhost:3000/
+protocols: [HTTP]
+mediaType: application/json
+
+/users:
+  description: TODO
+  /{user_id}:
+    description: TODO
+    uriParameters:
+      user_id:
+        description: Unique user identifier
+        type: string
+
+    /resumes:
+      description: Collection of resumes created by user
+      post:
+        description: |
+          Create an empty resume. 
+          Body doesn't have to be sent because an empty resume will be created.
+        responses:
+          201:
+            description: Resume has been successfully created.
+      /{resume_id}:
+        uriParameters:
+          resume_id:
+            description: Unique resume identifier
+            type: string
+        get:
+          description: Get the resumes collection
+          responses:
+            200:          
+              body:
+                application/json:
+                  example: |
+                    {
+                      "_id": "570d7d03e0b321d6407f3bfc",
+                      "name": "Unnamed CV",
+                      "created_at": "2016-04-12T22:56:03.031Z",
+                      "updated_at": "2016-04-12T22:56:03.031Z"
+                    }
+            404:
+              description: Resume not found
+        delete:
+          description: Delete a resume
+          responses:
+            200:
+              description: resume successfully deleted
+            404:
+              description: resume not found
+
+        /sections:
+          description: Collection of sections belonging to a resume
+          get:
+            description: Get the sections collection 
+            responses:
+              200:
+                body:
+                  application/json:
+                    example: |
+                      [
+                        {
+                          "_id": "8b429de75719a3a1282597ae",
+                          "type": "basicinfo"
+                        },
+                        {
+                          "_id": "563a6ca7df43f6571928259a",
+                          "type": "bulletlist"
+                        },
+                        {
+                          "_id": "f43f563a6ca259a7d6571928",
+                          "type": "worklist"
+                        }
+                      ]
+
+        /basicinfo:
+          description: The Basic Information section in a resume 
+          get:
+            description: Get the basic information section
+            responses:
+              200:
+                body:
+                  application/json:
+                    example: |
+                      {
+                        "name": "Hieu M. Nguyen",
+                        "email": "hieu.m.nguyen@cvbuilder.com",
+                        "website": "nguyen.hieu.co",
+                        "phone": "0167 xxxx xxxx",
+                        "address1": "Bundesstrasse",
+                        "address2": "13267 Hamburg",
+                        "address3": "Deutschland"
+                      }
+          put:
+            description: Update the basic informations
+            body:
+              application/json:
+                example: |
+                  {
+                    name: 'A new name',
+                    email: 'xyz@example.com',
+                    website: 'nguyen.hieu.co',
+                    phone: '987654321',
+                    address1: 'Altona',
+                    address2: 'Hanoi',
+                    address3: 'Vietnam'
+                  }
+            responses:
+              200:
+                description: Section successfully updated
+              400:
+                description: Bad Request due to Validation Errors or Malformed Input
+
+        /bulletlists:
+          description: Collection of bullet lists in a resume
+          post:
+          /{bulletlist_id}:
+            get:
+              description: A bullet list
+              responses:
+                200:
+                  body:
+                    application/json:
+                      example: |
+                        {
+                          "_id": "570d91c102d419654822de18",
+                          "name": "New bullet list",
+                          "items": [
+                            {
+                              "content": "Agile Methodology",
+                              "order": 0
+                            },
+                            {
+                              "content": "Project Management",
+                              "order": 1
+                            }
+                          ],
+                          "order": 0,
+                          "ordered_items": false
+                        }
+                404:
+                  description: Bullet list not found
+            put:
+              description: Update a bullet list
+              body:
+                application/json:
+                  example: |
+                    {
+                      "name": "Technical Skills",
+                      "items": [
+                        {
+                          "content": "Agile Methodology",
+                          "order": 0
+                        },
+                        {
+                          "content": "Project Management",
+                          "order": 1
+                        }
+                      ],
+                      "order": 1
+                    }
+              responses:
+                200:
+                  description: List successfully updated
+                404:
+                  description: Bullet list not found
+               
+            delete:
+              description: Delete a bullet list
+              responses:
+                200:
+                  description: List successfully deleted
+                404:
+                  description: List not found
+
+        /worklists:
+          description: Collection of worklists in a resume
+          post:
+          /{worklist_id}:
+            get:
+              description: A worklist
+              responses:
+                200:
+                  body:
+                    application/json:
+                      example: |
+                        {
+                          "_id": "570d93c802d419654822de19",
+                          "name": "New worklist",
+                          "items": [
+                          ],
+                          "order": 0
+                        }
+                404:
+                  description: Worklist not found
+            put:
+              description: Update a worklist
+              body:
+                application/json:
+                  example: |
+                    {
+                      "name": "Work Experiences",
+                      "items": [
+                        {
+                          # TODO
+                          "order": 0
+                        }
+                      ],
+                      "order": 1
+                    }
+              responses:
+                200:
+                  description: List successfully updated
+                404:
+                  description: Bullet list not found
+
+            delete:
+              description: Delete a worklist
+              responses:
+                200:
+                  description: List successfully deleted
+                404:
+                  description: List not found
+
+
+        /textareas:
+          description: Collection of text paragraphs in a resume
+          post:
+          /{textarea_id}:
+            get:
+              description: A text paragraph
+              responses:
+                200:
+                  body:
+                    application/json:
+                      example: |
+                        {
+                          "_id": "570d93f302d419654822de1a",
+                          "name": "Objective",
+                          "content": "Ipsum incidunt consequatur vel natus vero? Accusamus ipsum iure quia natus nesciunt.",
+                          "order": 1
+                        }
+                404:
+                  description: Text paragraph not found
+            put:
+              description: Update a text paragraph
+              body:
+                application/json:
+                  example: |
+                    {
+                      "name": "Objective",
+                      "content": "Ipsum incidunt consequatur vel natus vero? Accusamus ipsum iure quia natus nesciunt.",
+                      "order": 1
+                    }
+              responses:
+                200:
+                  description: Paragraph successfully updated
+                404:
+                  description: Paragraph not found
+
+            delete:
+              description: Delete a text paragraph
+              responses:
+                200:
+                  description: Paragraph successfully deleted
+                404:
+                  description: Paragraph not found

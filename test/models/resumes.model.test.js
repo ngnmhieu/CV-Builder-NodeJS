@@ -1,5 +1,6 @@
-var helpers = require('../helpers'),
-    mongo = require('../../../config/mongodb'),
+var app_root = '/Users/hieusun/Work/programming/nodejs/cvbuilder/',
+    helpers = require('../helpers'),
+    mongo = require(app_root + 'config/mongodb'),
     should = require('should');
 
 var db, resumes;
@@ -7,7 +8,7 @@ var db, resumes;
 before(function (done) {
     mongo.init(function (err) {
         db      = mongo.client;
-        resumes = require('../../models/resumes.server.model');
+        resumes = require(app_root + 'app/models/resumes.server.model');
         done();
     });
 });

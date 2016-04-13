@@ -1,4 +1,5 @@
-var helpers = require('../helpers'),
+var app_root = '/Users/hieusun/Work/programming/nodejs/cvbuilder/',
+    helpers = require('../helpers'),
     should = require('should'),
     request = require('supertest');
 
@@ -7,11 +8,11 @@ describe('Bulletlist REST API', function () {
     var app, db, resumes, bulletlists;
 
     before(function (done) {
-        app = require('../../../app');
+        app = require(app_root + 'app');
         app.init(function () {
-            db          = require('../../../config/mongodb').client;
-            resumes     = require('../../models/resumes.server.model');
-            bulletlists = require('../../models/bulletlists.server.model');
+            db          = require(app_root + 'config/mongodb').client;
+            resumes     = require(app_root + 'app/models/resumes.server.model');
+            bulletlists = require(app_root + 'app/models/bulletlists.server.model');
             done();
         });
     });

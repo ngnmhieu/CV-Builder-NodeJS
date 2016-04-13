@@ -95,4 +95,4 @@ exports.update = function (req, res) {
 
         res.sendStatus(200);
     });
-}
+};

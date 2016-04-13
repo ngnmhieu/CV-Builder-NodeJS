@@ -1,4 +1,5 @@
-var helpers = require('../helpers'),
+var app_root = '/Users/hieusun/Work/programming/nodejs/cvbuilder/',
+    helpers = require('../helpers'),
     should = require('should'),
     request = require('supertest');
 
@@ -7,10 +8,10 @@ var app, db, resumes;
 describe('Basicinfo REST API', function () {
 
     before(function (done) {
-        app = require('../../../app');
+        app = require(app_root + 'app');
         app.init(function () {
-            db = require('../../../config/mongodb').client;
-            resumes = require('../../models/resumes.server.model');
+            db = require(app_root +'config/mongodb').client;
+            resumes = require(app_root + 'app/models/resumes.server.model');
             done();
         });
     });
@@ -92,20 +93,17 @@ describe('Basicinfo REST API', function () {
 
     describe('Sad paths', function () {
 
-        it('[PUT] should return HTTP 422 with missing parameters /resumes/:resume_id/basicinfo', function (done) {
+        it('[PUT] should return HTTP 400 with missing parameters /resumes/:resume_id/basicinfo', function (done) {
             resumes.createEmpty(function (err, result) {
                 request(app.express).put(getBasicinfoURI(result.insertedId))
                 .set('Content-Type', 'application/json')
                 .send({
                     name: 'A new name',
                 })
-                .expect(422)
+                .expect(400)
                 .end(done);
             });
         });
-
-        // it('[PUT] should return HTTP 422 with invalid parameters /resumes/:resume_id/basicinfo', function (done) {
-        // });
 
         it('[PUT] should not update bullet list with malformed request entity', function(done) {
             resumes.createEmpty(function (err, result) {

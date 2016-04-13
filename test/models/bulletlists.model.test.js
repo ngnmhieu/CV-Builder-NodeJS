@@ -1,14 +1,15 @@
-var helpers = require('../helpers'),
-    mongo = require('../../../config/mongodb'),
+var app_root = '/Users/hieusun/Work/programming/nodejs/cvbuilder/',
+    helpers = require('../helpers'),
+    mongo = require(app_root + 'config/mongodb'),
     should = require('should');
 
 var db, bulletlists, resumes;
 
 before(function (done) {
     mongo.init(function (err, client) {
-        db = require('../../../config/mongodb').client;
-        bulletlists = require('../../models/bulletlists.server.model');
-        resumes = require('../../models/resumes.server.model');
+        db = require(app_root + 'config/mongodb').client;
+        bulletlists = require(app_root + 'app/models/bulletlists.server.model');
+        resumes = require(app_root + 'app/models/resumes.server.model');
         done();
     });
 });
