@@ -1,11 +1,12 @@
 var helpers = require('../../helpers'),
+    api_helper = require('./api.test.helper'),
     app_root = helpers.app_root,
     should = require('should'),
     request = require('supertest');
 
 describe('Worklist REST API', function() {
 
-    var app, db, resumes, worklists;
+    var app, db, resumes, worklists, userId;
 
     before(function(done) {
         app = require(app_root + 'app');
@@ -13,11 +14,15 @@ describe('Worklist REST API', function() {
             db = require(app_root + 'config/mongodb').client;
             resumes = require(app_root + 'app/models/resumes.server.model');
             worklists = require(app_root + 'app/models/worklists.server.model');
-            done();
+            api_helper.createUser(db, function(err, resultUser) {
+                userId = resultUser.insertedId;
+                done();
+            });
         });
     });
 
     after(function(done) {
+        db.collection('users').drop();
         app.httpServer.close();
         done();
     });
@@ -37,40 +42,41 @@ describe('Worklist REST API', function() {
     });
 
     var getWorkListURI = function(resumeId, workListId) {
-        return '/resumes/' + resumeId + '/worklists' + (workListId ? '/' + workListId : '');
+        return '/users/' + userId + '/resumes/' + resumeId + '/worklists' + (workListId ? '/' + workListId : '');
     };
 
     describe('Happy paths', function() {
 
-        it('[POST   /resumes/:resume_id/worklists] should create an empty work list', function(done) {
+        it('[POST /users/:user_id/resumes/:resume_id/worklists] should create an empty work list', function(done) {
             request(app.express).post(getWorkListURI(resume._id))
-                .expect('Location', /\/resumes\/[0-9a-f]{24}\/worklists\/[0-9a-f]{24}/)
+                .expect('Location', /\/users\/[0-9a-f]{24}\/resumes\/[0-9a-f]{24}\/worklists\/[0-9a-f]{24}/)
                 .expect(201)
                 .end(function(err, result) {
                     if (err)
-                        done(err);
+                        throw err;
                     else
                         request(app.express).get(result.headers.location).expect(200).end(done);
                 });
         });
 
-        it('[GET    /resumes/:resume_id/worklists/:worklist_id] should return a work list', function(done) {
+        it('[GET /users/:user_id/resumes/:resume_id/worklists/:worklist_id] should return a work list', function(done) {
             worklists.createEmpty(resume, function(err, listResult) {
                 request(app.express).get(getWorkListURI(resume._id, listResult.insertedId))
                     .expect('Content-Type', /json/)
                     .expect(200)
                     .end(function(err, res) {
+                        if (err) throw err;
                         should.exists(res.body._id);
                         should.exists(res.body.items);
                         should.exists(res.body.order);
                         res.body._id.should.equal(listResult.insertedId.toString());
-                        done(err);
+                        done();
                     });
             });
         });
 
 
-        it('[DELETE /resumes/:resume_id/worklists/:worklist_id] should delete a work list', function(done) {
+        it('[DELETE /users/:user_id/resumes/:resume_id/worklists/:worklist_id] should delete a work list', function(done) {
             worklists.createEmpty(resume, function(err, listResult) {
                 request(app.express).delete(getWorkListURI(resume._id, listResult.insertedId))
                     .expect(200)
@@ -78,7 +84,7 @@ describe('Worklist REST API', function() {
             });
         });
 
-        it('[PUT    /resumes/:resume_id/worklists/:worklist_id] should update an existing work list', function(done) {
+        it('[PUT /users/:user_id/resumes/:resume_id/worklists/:worklist_id] should update an existing work list', function(done) {
             worklists.createEmpty(resume, function(err, listResult) {
                 request(app.express).put(getWorkListURI(resume._id, listResult.insertedId))
                     .set('Content-Type', 'application/json')

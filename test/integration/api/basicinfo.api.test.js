@@ -1,68 +1,53 @@
 var helpers = require('../../helpers'),
+    api_helper = require('./api.test.helper'),
     app_root = helpers.app_root,
     should = require('should'),
     request = require('supertest');
 
-var app, db, resumes;
+var app, db, resumes, userId, resumeId;
 
 describe('Resume Basicinfo REST API', function () {
+
+    var getBasicinfoURI = function () {
+        return '/users/' + userId + '/resumes/' + resumeId + '/basicinfo';
+    };
 
     before(function (done) {
         app = require(app_root + 'app');
         app.init(function () {
-            db = require(app_root +'config/mongodb').client;
+            db = require(app_root + 'config/mongodb').client;
             resumes = require(app_root + 'app/models/resumes.server.model');
-            done();
+            api_helper.createUser(db, function (err, resultUser) {
+                resumes.createEmpty(function (err, resultResume) {
+                    userId = resultUser.insertedId;
+                    resumeId = resultResume.insertedId;
+                    done();
+                });
+            });
         });
     });
 
     after(function (done) {
-        app.httpServer.close(); 
+        db.collection('users').drop();
+        db.collection('resumes').drop();
+        app.httpServer.close();
         done();
     });
 
-    afterEach(function () {
-        db.collection('resumes').drop();
-    });
-
-    var getBasicinfoURI = function (resume_id) {
-        return '/resumes/' + resume_id + '/basicinfo';
-    };
-
     describe('Happy paths', function () {
-        it('[GET /resumes/:resume_id/basicinfo] should return basic informations', function (done) {
-            resumes.createEmpty(function (err, result) {
-                request(app.express)
-                .get(getBasicinfoURI(result.insertedId))
+        it('[GET /users/:user_id/resumes/:resume_id/basicinfo] should return basic informations', function (done) {
+            request(app.express)
+                .get(getBasicinfoURI())
                 .expect(200)
                 .end(function (err, result) {
-                   should.exists(result.body);
-                   done(err);
+                    should.exists(result.body);
+                    done(err);
                 });
-            });
         });
 
-        it('[PUT /resumes/:resume_id/basicinfo] should update basic informations', function (done) {
-            resumes.collection.insertOne({
-                name       : "Unnamed CV",
-                created_at : new Date(),
-                updated_at : new Date(),
-                sections   : [],
-                basicinfo  : {
-                    name: 'A Person',
-                    email: 'abc@example.com',
-                    website: 'hieu.co',
-                    phone: '123456789',
-                    address1: 'Hbf',
-                    address2: 'Hamburg',
-                    address3: 'Germany',
-                }
-            }, function (err, result) {
-
-                var resumeId = result.insertedId;
-
-                request(app.express)
-                .put(getBasicinfoURI(resumeId))
+        it('[PUT /users/:user_id/resumes/:resume_id/basicinfo] should update basic informations', function (done) {
+            request(app.express)
+                .put(getBasicinfoURI())
                 .set('Content-Type', 'application/json')
                 .send({
                     name: 'A new name',
@@ -75,44 +60,44 @@ describe('Resume Basicinfo REST API', function () {
                 })
                 .expect(200)
                 .end(function (err, result) {
-                    resumes.collection.findOne({_id: resumeId}, function (err, result) {
-                        result.basicinfo.name.should.equal('A new name');
-                        result.basicinfo.email.should.equal('xyz@example.com');
-                        result.basicinfo.website.should.equal('nguyen.hieu.co');
-                        result.basicinfo.phone.should.equal('987654321');
-                        result.basicinfo.address1.should.equal('Altona');
-                        result.basicinfo.address2.should.equal('Hanoi');
-                        result.basicinfo.address3.should.equal('Vietnam');
+                    resumes.collection.find({
+                        _id: resumeId
+                    }, {
+                        basicinfo: 1
+                    }).limit(1).next(function (errors, found) {
+                        found.basicinfo.name.should.equal('A new name');
+                        found.basicinfo.email.should.equal('xyz@example.com');
+                        found.basicinfo.website.should.equal('nguyen.hieu.co');
+                        found.basicinfo.phone.should.equal('987654321');
+                        found.basicinfo.address1.should.equal('Altona');
+                        found.basicinfo.address2.should.equal('Hanoi');
+                        found.basicinfo.address3.should.equal('Vietnam');
                         done(err);
                     });
                 });
-
-            });
         });
     });
 
     describe('Sad paths', function () {
 
-        it('[PUT /resumes/:resume_id/basicinfo] should return HTTP 400 with missing parameters', function (done) {
+        it('[PUT /users/:user_id/resumes/:resume_id/basicinfo] should return HTTP 400 with missing parameters', function (done) {
             resumes.createEmpty(function (err, result) {
                 request(app.express).put(getBasicinfoURI(result.insertedId))
-                .set('Content-Type', 'application/json')
-                .send({
-                    name: 'A new name',
-                })
-                .expect(400)
-                .end(done);
+                    .set('Content-Type', 'application/json')
+                    .send({
+                        name: 'A new name'
+                    })
+                    .expect(400)
+                    .end(done);
             });
         });
 
-        it('[PUT /resumes/:resume_id/basicinfo] should not update bullet list with malformed request entity', function(done) {
-            resumes.createEmpty(function (err, result) {
-                request(app.express).put(getBasicinfoURI(result.insertedId))
+        it('[PUT /users/:user_id/resumes/:resume_id/basicinfo] should not update bullet list with malformed request entity', function (done) {
+            request(app.express).put(getBasicinfoURI())
                 .set('Content-Type', 'application/json')
                 .send('invalid data')
                 .expect(400)
                 .end(done);
-            });
         });
 
     });

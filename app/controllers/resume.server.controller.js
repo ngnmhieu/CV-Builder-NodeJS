@@ -2,14 +2,14 @@ var resumes = require('../models/resumes.server.model');
 var ObjectId = require('mongodb').ObjectId;
 
 /**
- * GET /resumes/
+ * GET /users/:user_id/resumes/
  * [TODO] return the resumes collection of an user
  * @param req
  * @param res
  */
 
 /**
- * GET /resumes/:id
+ * GET /users/:user_id/resumes/:id
  * returns a resume
  * @param req
  * @param res
@@ -25,7 +25,7 @@ exports.read = function(req, res) {
 };
 
 /**
- * POST /resumes/
+ * POST /users/:user_id/resumes/
  * creates an empty resume
  * @param req
  * @param res
@@ -35,14 +35,14 @@ exports.create = function(req, res) {
     resumes.createEmpty(function(err, result) {
         if (err) throw err;
 
-        res.location('/resumes/' + result.insertedId);
+        res.location('/users/' + req.userObj._id + '/resumes/' + result.insertedId);
 
         res.sendStatus(201);
     });
 };
 
 /**
- * GET /resumes/:id/sections
+ * GET /users/:user_id/resumes/:id/sections
  * returns the section collection contained in this resume
  * @param req
  * @param res
@@ -59,7 +59,7 @@ exports.sections = function(req, res) {
 };
 
 /**
- * DELETE /resumes/:id
+ * DELETE /users/:user_id/resumes/:id
  * deletes a resume
  * @param req
  * @param res

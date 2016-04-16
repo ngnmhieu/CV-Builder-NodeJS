@@ -1,20 +1,80 @@
 #%RAML 0.8
 title: CVBuilder
 version: v1
-baseUri: http://localhost:3000/
-protocols: [HTTP]
+baseUri: http://localhost:3000/api/
+protocols: [HTTP, HTTPS]
 mediaType: application/json
 
+traits:
+  - authorized:
+      headers:
+        Authorization:
+          description: Authentication information (JWT Token)
+          example: "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ"
+      responses:
+        401:
+          description: |
+            User cannot be authenticated due to invalid authentication information. 
+    
 /users:
-  description: TODO
+  post:
+    description: Register a user
+    body:
+      application/json:
+        example: |
+          {
+            "email"    : "unique_email@gmail.com",
+            "password" : "123456789"
+          }
+    responses:
+      201:
+        description: User successfully registered.
+        headers:
+          Location:
+            description: Location of the newly created user
+            example: "Location: /users/27a4563a45ab4a7aacd15af9"
+      400:
+        description: 400 Bad Request due to validation errors, or duplicated email
+        body:
+          application/json:
+            example: |
+              [
+                {
+                  "attribute": "email",
+                  "message": "The given email address is invalid"
+                },
+                {
+                  "attribute": "email",
+                  "message": "The given email address has already been used"
+                },
+                {
+                  "attribute": "password",
+                  "message": "Password must have at least 8 characters" 
+                }
+              ]
+
   /{user_id}:
-    description: TODO
+    is: [ authorized ]
     uriParameters:
       user_id:
         description: Unique user identifier
         type: string
+    get:
+      description: Return user's information.
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "_id": "27a4563a45ab4a7aacd15af9",
+                  "email": "user@example.com"
+                }
+        404:
+          description: User cannot be found.
 
     /resumes:
+      is: [ authorized ]
       description: Collection of resumes created by user
       post:
         description: |
@@ -24,6 +84,7 @@ mediaType: application/json
           201:
             description: Resume has been successfully created.
       /{resume_id}:
+        is: [ authorized ]
         uriParameters:
           resume_id:
             description: Unique resume identifier
@@ -42,16 +103,17 @@ mediaType: application/json
                       "updated_at": "2016-04-12T22:56:03.031Z"
                     }
             404:
-              description: Resume not found
+              description: Resume cannot be found.
         delete:
           description: Delete a resume
           responses:
             200:
-              description: resume successfully deleted
+              description: Resume successfully deleted
             404:
-              description: resume not found
+              description: Resume cannot be found
 
         /sections:
+          is: [ authorized ]
           description: Collection of sections belonging to a resume
           get:
             description: Get the sections collection 
@@ -76,6 +138,7 @@ mediaType: application/json
                       ]
 
         /basicinfo:
+          is: [ authorized ]
           description: The Basic Information section in a resume 
           get:
             description: Get the basic information section
@@ -114,9 +177,16 @@ mediaType: application/json
                 description: Bad Request due to Validation Errors or Malformed Input
 
         /bulletlists:
+          is: [ authorized ]
           description: Collection of bullet lists in a resume
-          post:
+          post:  
+            body:
+              application/json:
+                example:
+                # TODO
+
           /{bulletlist_id}:
+            is: [ authorized ]
             uriParameters:
               bulletlist_id:
                 description: Unique identifier of the bullet list
@@ -145,7 +215,7 @@ mediaType: application/json
                           "ordered_items": false
                         }
                 404:
-                  description: Bullet list not found
+                  description: Bullet list cannot be found
             put:
               description: Update a bullet list
               body:
@@ -169,7 +239,7 @@ mediaType: application/json
                 200:
                   description: List successfully updated
                 404:
-                  description: Bullet list not found
+                  description: Bullet list cannot be found
                
             delete:
               description: Delete a bullet list
@@ -177,12 +247,19 @@ mediaType: application/json
                 200:
                   description: List successfully deleted
                 404:
-                  description: List not found
+                  description: List cannot be found
 
         /worklists:
+          is: [ authorized ]
           description: Collection of worklists in a resume
-          post:
+          post: 
+            body:
+              application/json:
+                example:
+                # TODO
+
           /{worklist_id}:
+            is: [ authorized ]
             uriParameters:
               worklist_id:
                 description: Unique identifier of the worklist
@@ -202,7 +279,7 @@ mediaType: application/json
                           "order": 0
                         }
                 404:
-                  description: Worklist not found
+                  description: Worklist cannot be found
             put:
               description: Update a worklist
               body:
@@ -222,7 +299,7 @@ mediaType: application/json
                 200:
                   description: List successfully updated
                 404:
-                  description: Bullet list not found
+                  description: Bullet list cannot be found
 
             delete:
               description: Delete a worklist
@@ -230,13 +307,20 @@ mediaType: application/json
                 200:
                   description: List successfully deleted
                 404:
-                  description: List not found
+                  description: List cannot be found
 
 
         /textareas:
+          is: [ authorized ]
           description: Collection of text paragraphs in a resume
           post:
+            body:
+              application/json:
+                example:
+                # TODO
+
           /{textarea_id}:
+            is: [ authorized ]
             uriParameters:
               textarea_id:
                 description: Unique identifier of the textarea
@@ -255,7 +339,7 @@ mediaType: application/json
                           "order": 1
                         }
                 404:
-                  description: Text paragraph not found
+                  description: Text paragraph cannot be found
             put:
               description: Update a text paragraph
               body:
@@ -270,7 +354,7 @@ mediaType: application/json
                 200:
                   description: Paragraph successfully updated
                 404:
-                  description: Paragraph not found
+                  description: Paragraph cannot be found
 
             delete:
               description: Delete a text paragraph
@@ -278,4 +362,29 @@ mediaType: application/json
                 200:
                   description: Paragraph successfully deleted
                 404:
-                  description: Paragraph not found
+                  description: Paragraph cannot be found
+
+
+/authentication:
+  /request-auth-token:
+    post:
+      description: Authenticates user and returns the authentication token if the user provides the correct credentials (email and password)
+      body:
+        application/json:
+          example: |
+            {
+              "email": "user@example.com",
+              "password": "123456789"
+            }
+      responses:
+        200:
+          description: User is successfully authenticated and authentication token is returned.
+          body:
+            application/json:
+              example: |
+                {
+                  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ"
+                }
+        401:
+          description: |
+            User cannot be authenticated due to wrong credentials. 

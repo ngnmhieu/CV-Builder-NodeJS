@@ -1,6 +1,5 @@
-var app_root = '/Users/hieusun/Work/programming/nodejs/cvbuilder/',
-    worklists = require(app_root + 'app/models/worklists.server.model'),
-    resumes = require(app_root + 'app/models/resumes.server.model'),
+var worklists = require('../models/worklists.server.model'),
+    resumes = require('../models/resumes.server.model'),
     ObjectId = require('mongodb').ObjectId;
 
 /**
@@ -14,7 +13,7 @@ exports.create = function(req, res) {
 
         if (err) throw err;
 
-        res.location('/resumes/' + resume._id + '/worklists/' + result.insertedId);
+        res.location('/users/' + req.userObj._id + '/resumes/' + resume._id + '/worklists/' + result.insertedId);
 
         res.sendStatus(201);
     });

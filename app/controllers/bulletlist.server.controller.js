@@ -13,7 +13,7 @@ exports.create = function (req, res) {
 
         if (err) throw err;
 
-        res.location('/resumes/' + resume._id + '/bulletlists/' + result.insertedId);
+        res.location('/users/' + req.userObj._id + '/resumes/' + resume._id + '/bulletlists/' + result.insertedId);
 
         res.sendStatus(201);
     });
