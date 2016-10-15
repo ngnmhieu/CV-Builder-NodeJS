@@ -1,0 +1,28 @@
+.btn, input.form-control, textarea.form-control {
+    border-radius: 0 !important;
+}
+
+#registerForm {
+    margin-top: 50px;
+}
+
+#registerForm label,
+#registerForm button {
+    margin-top: 7px
+}
+
+#registerNotice {
+    display: none;
+    margin-top: 10px;
+}
+
+#loginForm label {
+    margin-top: 10px
+}
+#loginForm button {
+    margin: 10px 0 5px 0;
+}
+#loginNotice {
+    display: none;
+    margin: 0;
+}

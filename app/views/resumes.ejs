@@ -1,0 +1,40 @@
+<%- include common/header %>
+
+    <div id="ResumesListing">
+
+        <table class="table table-striped">
+            <thead>
+                <th style="width: 300px">Name</th>
+                <th style="text-align: center">Created</th>
+                <th style="width: 140px; text-align: center">Action</th>
+            </thead>
+            <% resumes.forEach(function (r) {  %>
+                <tr id="resume_">
+                    <td>
+                        <a href="#"><%= r.name %></a>
+                    </td>
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center;">
+                        <a href="#">
+                            <span class="glyphicon glyphicon-file"></span>
+                            <span>Clone</span>
+                        </a>
+                        <a href="#">
+                            <span style="color: red" class="glyphicon glyphicon-trash"></span>
+                            <span>Delete</span>
+                        </a>
+                    </td>
+                </tr>
+                <% }); %>
+        </table>
+
+        <a>
+            <button class="btn btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span> New Resume</button>
+        </a>
+
+        <div class="clearfix"></div>
+
+    </div>
+
+
+    <%- include common/footer %>

@@ -17,6 +17,8 @@ exports.create = function (params, callback) {
         var hash = bcrypt.hashSync(params.password, salt);
 
         users.insertOne({
+            firstName: params.firstName,
+            lastName: params.lastName,
             email: params.email,
             password: hash
         }, callback);
@@ -25,10 +27,44 @@ exports.create = function (params, callback) {
 };
 
 /**
+ * @param {ObjectID} id User's ID
+ */
+exports.findById = function (id, callback) {
+    users.findOne({
+        _id: id
+    }, {password: 0}, callback);
+};
+
+/**
+ * @param {Object} userParam
+ * @param {String} userParam.email user's email
+ * @param {String} userParam.password user's password
+ * @param {Function} User object will be passed to callback if authentication succeeds, null otherwise
+ */
+exports.authenticate = function (userParam, callback) {
+
+    if (userParam == null || userParam.email == null || userParam.password == null
+        || userParam.email.length == 0 || userParam.password.length == 0) {
+        callback(null);
+        return;
+    }
+
+    users.findOne({email: userParam.email}, function (err, user) {
+        if (err || user == null) {
+            callback(null);
+        } else {
+            bcrypt.compare(userParam.password, user.password, function(err, res) {
+                callback(res ? user : null);
+            });
+        }
+
+    });
+};
+
+/**
  * @param {Object} user
  * @param {String} user.email user's email
  * @param {String} user.password user's password: at least 8 characters
- * @return {Array} list of errors
  */
 var validateUserInfo = function (user, callback) {
 
@@ -43,6 +79,20 @@ var validateUserInfo = function (user, callback) {
         errors.push({
             attribute: 'email',
             message: 'Malformed Email'
+        });
+    }
+
+    if (!user.firstName || user.firstName.length == 0) {
+        errors.push({
+            attribute: 'firstName',
+            message: 'First name is required'
+        });
+    }
+
+    if (!user.lastName || user.lastName.length == 0) {
+        errors.push({
+            attribute: 'lastName',
+            message: 'Last name is required'
         });
     }
 

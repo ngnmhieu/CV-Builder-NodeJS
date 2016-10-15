@@ -1,12 +1,13 @@
 var helpers = require('../../helpers'),
     api_helper = require('./api.test.helper'),
     app_root = helpers.app_root,
+    ObjectId = require('mongodb').ObjectId,
     should = require('should'),
-    request = require('supertest');
+    session = require('supertest-session');
 
 describe('Textarea REST API', function() {
 
-    var app, db, resumes, textareas, userId;
+    var app, request, db, resumes, textareas, userId;
 
     before(function(done) {
         app = require(app_root + 'app');
@@ -14,11 +15,17 @@ describe('Textarea REST API', function() {
             db = require(app_root + 'config/mongodb').client;
             resumes = require(app_root + 'app/models/resumes.server.model');
             textareas = require(app_root + 'app/models/textareas.server.model');
+            request = session(app.express);
             api_helper.createUser(db, function(err, resultUser) {
                 userId = resultUser.insertedId;
                 done();
             });
         });
+    });
+
+    // login first 
+    before(function(done) {
+        api_helper.login(request, done);
     });
 
     after(function(done) {
@@ -30,7 +37,7 @@ describe('Textarea REST API', function() {
     var resume;
 
     beforeEach(function(done) {
-        resumes.createEmpty(function(err, res) {
+        resumes.createEmpty({_id: ObjectId(userId)}, function(err, res) {
             resume = res.ops[0];
             done();
         });
@@ -49,20 +56,20 @@ describe('Textarea REST API', function() {
     describe('Happy paths', function() {
 
         it('[POST /users/:user_id/resumes/:resume_id/textareas/] should create an empty textarea', function(done) {
-            request(app.express).post(getTextareaURI(resume._id))
+            request.post(getTextareaURI(resume._id))
                 .expect('Location', /\/users\/[0-9a-f]{24}\/resumes\/[0-9a-f]{24}\/textareas\/[0-9a-f]{24}/)
                 .expect(201)
                 .end(function(err, result) {
                     if (err)
                         done(err);
                     else
-                        request(app.express).get(result.headers.location).expect(200).end(done);
+                        request.get(result.headers.location).expect(200).end(done);
                 });
         });
 
         it('[GET /users/:user_id/resumes/:resume_id/textareas/:textarea_id] should return a textarea', function(done) {
             textareas.createEmpty(resume, function(err, result) {
-                request(app.express).get(getTextareaURI(resume._id, result.insertedId))
+                request.get(getTextareaURI(resume._id, result.insertedId))
                     .expect('Content-Type', /json/)
                     .expect(200)
                     .end(function(err, res) {
@@ -78,7 +85,7 @@ describe('Textarea REST API', function() {
 
         it('[DELETE /users/:user_id/resumes/:resume_id/textareas/:textarea_id] should delete a textarea', function(done) {
             textareas.createEmpty(resume, function(err, result) {
-                request(app.express).delete(getTextareaURI(resume._id, result.insertedId))
+                request.delete(getTextareaURI(resume._id, result.insertedId))
                     .expect(200)
                     .end(done);
             });
@@ -86,7 +93,7 @@ describe('Textarea REST API', function() {
 
         it('[PUT /users/:user_id/resumes/:resume_id/textareas/:textarea_id] should update an existing textarea', function(done) {
             textareas.createEmpty(resume, function(err, textResult) {
-                request(app.express).put(getTextareaURI(resume._id, textResult.insertedId))
+                request.put(getTextareaURI(resume._id, textResult.insertedId))
                     .set('Content-Type', 'application/json')
                     .send({
                         name: 'A new Textarea',
@@ -113,16 +120,16 @@ describe('Textarea REST API', function() {
     describe('Sad paths', function() {
 
         it('[GET] should return 404 for a textarea which doesnt exists', function(done) {
-            request(app.express).get(getTextareaURI(resume._id, '0123456789ab0123456789ef'))
+            request.get(getTextareaURI(resume._id, '0123456789ab0123456789ef'))
                 .expect(404)
                 .end(done);
         });
 
         it('[GET] should return 404 for a textarea, which doesnt belong to a given resume', function(done) {
-            resumes.createEmpty(function(err, res) {
+            resumes.createEmpty({_id: ObjectId(userId)}, function(err, res) {
                 var anotherResume = res.ops[0];
                 textareas.createEmpty(anotherResume, function(err, textResult) {
-                    request(app.express).get(getTextareaURI(resume._id, textResult.insertedId))
+                    request.get(getTextareaURI(resume._id, textResult.insertedId))
                         .expect(404)
                         .end(done);
                 });
@@ -130,14 +137,14 @@ describe('Textarea REST API', function() {
         });
 
         it('[GET] Should return 404 for a invalid :textarea_id', function(done) {
-            request(app.express).get(getTextareaURI(resume._id, '0123456789xy0123456789zt'))
+            request.get(getTextareaURI(resume._id, '0123456789xy0123456789zt'))
                 .expect(404)
                 .end(done);
         });
 
-        it('[PUT] should not update textarea with malformed request entity', function(done) {
+        it('[PUT] should not update textarea with malformed supertest entity', function(done) {
             textareas.createEmpty(resume, function(err, textResult) {
-                request(app.express).put(getTextareaURI(resume._id, textResult.insertedId))
+                request.put(getTextareaURI(resume._id, textResult.insertedId))
                     .set('Content-Type', 'application/json')
                     .send('invalid data')
                     .expect(400)
@@ -147,7 +154,7 @@ describe('Textarea REST API', function() {
 
         it('[PUT] should not update textarea with semantics invalid data ', function(done) {
             textareas.createEmpty(resume, function(err, textResult) {
-                request(app.express).put(getTextareaURI(resume._id, textResult.insertedId))
+                request.put(getTextareaURI(resume._id, textResult.insertedId))
                     .set('Content-Type', 'application/json')
                     .send({})
                     .expect(422)

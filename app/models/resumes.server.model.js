@@ -3,7 +3,11 @@ var resumes = mongodb.collection('resumes');
 
 exports.collection = resumes;
 
-exports.createEmpty = function (callback) {
+/**
+ * Create an empty resume
+ * @param {Object} User that owns the new resume
+ */
+exports.createEmpty = function (user, callback) {
 
     var resume = {
         name       : "Unnamed CV",
@@ -18,7 +22,8 @@ exports.createEmpty = function (callback) {
             address1: '',
             address2: '',
             address3: '',
-        }
+        },
+        user_id: user._id
     };   
 
     resumes.insertOne(resume, callback);
@@ -76,4 +81,15 @@ exports.updateBasicInfo = function (resume, params, callback) {
     var basicinfo = newBasicInfo(params);
 
     resumes.updateOne({ _id: resume._id }, { basicinfo: basicinfo }, callback);
+};
+
+/**
+ * Find all resumes belonging to the given user
+ * @param {Object} user
+ * @return {Array} resumes found
+ */
+exports.findByUser = function (user, callback) {
+    resumes.find({user: user}, function (err, result) {
+        callback(result || []);
+    });
 };

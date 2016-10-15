@@ -2,9 +2,10 @@ var helpers = require('../../helpers'),
     api_helper = require('./api.test.helper'),
     app_root = helpers.app_root,
     should = require('should'),
-    request = require('supertest');
+    ObjectId = require('mongodb').ObjectId,
+    session = require('supertest-session');
 
-var app, db, userId, resumes;
+var app, request, db, userId, resumes;
 
 describe('Resume REST API', function() {
 
@@ -17,11 +18,17 @@ describe('Resume REST API', function() {
         app.init(function() {
             db = require(app_root + 'config/mongodb').client;
             resumes = require(app_root + 'app/models/resumes.server.model');
+            request = session(app.express);
             api_helper.createUser(db, function(err, result) {
                 userId = result.insertedId;
                 done();
             });
         });
+    });
+
+    // login first 
+    before(function(done) {
+        api_helper.login(request, done);
     });
 
     after(function(done) {
@@ -37,21 +44,22 @@ describe('Resume REST API', function() {
     describe('Happy paths', function() {
 
         it('[POST /users/:user_id/resumes] should create an empty resume', function(done) {
-            request(app.express).post(getResumePath())
+            request.post(getResumePath())
                 .expect(201)
                 .expect('Location', /\/users\/([0-9a-f]{24})\/resumes\/([0-9a-f]{24})/)
                 .end(function(err, result) {
+                console.log('after another request ' + request.cookies);
                     if (err)
                         done(err);
                     else
-                        request(app.express).get(result.headers.location).expect(200).end(done);
+                        request.get(result.headers.location).expect(200).end(done);
                 });
         });
 
         it('[GET /users/:user_id/resumes/:resume_id] should get a resume', function(done) {
 
-            resumes.createEmpty(function(err, result) {
-                request(app.express).get(getResumePath(result.insertedId))
+            resumes.createEmpty({_id: ObjectId(userId)}, function(err, result) {
+                request.get(getResumePath(result.insertedId))
                     .expect('Content-Type', /json/)
                     .expect(200)
                     .end(function(err, result) {
@@ -63,8 +71,8 @@ describe('Resume REST API', function() {
         });
 
         it('[DELETE /users/:user_id/resumes/:resume_id] should delete a resume', function(done) {
-            resumes.createEmpty(function(err, result) {
-                request(app.express).delete(getResumePath(result.insertedId))
+            resumes.createEmpty({_id: ObjectId(userId)}, function(err, result) {
+                request.delete(getResumePath(result.insertedId))
                     .expect(200)
                     .end(done);
             });
@@ -78,7 +86,7 @@ describe('Resume REST API', function() {
                 updated_at: new Date(),
                 sections: ['section1', 'section2']
             }, function(err, result) {
-                request(app.express)
+                request
                     .get(getResumePath(result.insertedId) + '/sections')
                     .expect(200)
                     .end(function(err, result) {
@@ -93,28 +101,28 @@ describe('Resume REST API', function() {
     describe('Sad paths', function() {
 
         it('[GET] should send 404 NOT FOUND for a non-existent resume /resumes/:resume_id', function(done) {
-            request(app.express)
+            request
                 .get(getResumePath('123456789abc123456789abc'))
                 .expect(404)
                 .end(done);
         });
 
         it('[GET] should send 404 NOT FOUND for a non-existent resume /resumes/:resume_id/sections', function(done) {
-            request(app.express)
+            request
                 .get(getResumePath('123456789abc123456789abc') + '/sections')
                 .expect(404)
                 .end(done);
         });
 
         it('[DELETE] should send 404 NOT FOUND for a non-existent resume', function(done) {
-            request(app.express)
+            request
                 .delete(getResumePath('123456789abc123456789abc'))
                 .expect(404)
                 .end(done);
         });
 
         it('[GET] should handle invalid :resume_id correctly', function(done) {
-            request(app.express)
+            request
                 .get(getResumePath('invalid'))
                 .expect(404)
                 .end(done);

@@ -1,45 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><%= title %></title>
-</head>
-<body>
-    <h1><%= title %></h1>
-    <% if(user) { %>
-        <a href="/signout">Sign out</a>
-    <% } else { %>
-        <a href="/signup">Sign Up</a>
-        <a href="/signin">Sign In</a>
-    <% }%>
+<%- include common/header %>
 
-    <ul>
-        <li><a href="/#!/articles">List Articles</a></li>
-        <li><a href="/#!/articles/create">Create Article</a></li>
-    </ul>
+    <div class="row">
+        <div class="col-xs-8"></div>
+        <form id="registerForm" method="post" class="col-xs-4">
+            <h3>Start creating CVs for free!</h3>
+            <div class="row">
+                <div class="col-xs-6" style="padding-right: 5px">
+                    <label for="firstName">First Name: </label>
+                    <input type="text" class="form-control" name="firstName">
+                </div>
+                <div class="col-xs-6" style="padding-left: 5px">
+                    <label for="lastName">Last Name: </label>
+                    <input type="text" class="form-control" name="lastName">
+                </div>
+            </div>
+            <label for="email">Email: </label>
+            <input type="text" class="form-control" name="email">
+            <label for="password">Password: </label>
+            <input type="password" class="form-control" name="password">
+            <label for="passwordConfirm">Password Confirmation: </label>
+            <input type="password" class="form-control" name="passwordConfirm">
+            <button type="submit" class="btn btn-primary pull-right">Register</button>
 
-    <section ng-view></section>
+            <div class="clearfix"></div>
 
-    <script type="text/javascript" charset="utf-8">
-        window.user = <%- user || 'null' %>
-    </script>
+            <div class="alert alert-warning" id="registerNotice" role="alert">
+                <span class="content">
+                Can't register, please check your information again.
+            </span>
+            </div>
+        </form>
+    </div>
 
-    <script src="/lib/angular/angular.js"></script>
-    <script src="/lib/angular-route/angular-route.js"></script>
-    <script src="/lib/angular-resource/angular-resource.js"></script>
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Login to CV Builder</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm" method="post">
+                        <div class="alert alert-warning" id="loginNotice" role="alert">
+                            <span class="content">Can't log you in, please check your login information.</span>
+                        </div>
+                        <label for="email">Email: </label>
+                        <input type="text" class="form-control" name="email">
+                        <label for="password">Password: </label>
+                        <input type="password" class="form-control" name="password">
+                        <button type="submit" class="btn btn-primary pull-right">Login</button>
+                        <div class="clearfix"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <script src="/auth/users.client.module.js"></script>
-    <script src="/auth/services/authentication.client.service.js"></script>
-
-    <script src="/example/example.client.module.js"></script>
-    <script src="/example/example.client.routes.js"></script>
-    <script src="/example/controllers/example.client.controller.js"></script>
-
-    <script src="/articles/articles.client.module.js"></script>
-    <script src="/articles/articles.client.routes.js"></script>
-    <script src="/articles/controllers/articles.client.controller.js"></script>
-    <script src="/articles/services/articles.client.service.js"></script>
-
-    <script src="/application.js"></script>
-</body>
-</html>
+    <%- include common/footer %>

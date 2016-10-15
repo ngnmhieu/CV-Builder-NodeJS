@@ -1,5 +1,6 @@
 var helpers = require('../helpers'),
     app_root = helpers.app_root,
+    ObjectId = require('mongodb').ObjectId,
     mongo = require(app_root + 'config/mongodb'),
     should = require('should');
 
@@ -21,7 +22,7 @@ describe('Resume Model', function (done) {
 
     it('should create an empty resume', function (done) {
 
-        resumes.createEmpty(function (err, result) {
+        resumes.createEmpty({_id: ObjectId()}, function (err, result) {
             should.not.exists(err);
             result.insertedCount.should.be.exactly(1);
             done();
@@ -30,7 +31,7 @@ describe('Resume Model', function (done) {
 
     it('has default name and no section', function (done) {
 
-        resumes.createEmpty(function (err, result) {
+        resumes.createEmpty({_id: ObjectId()}, function (err, result) {
 
             should.not.exists(err);
 
@@ -46,7 +47,7 @@ describe('Resume Model', function (done) {
 
     it('has default basicinfo', function (done) {
         
-        resumes.createEmpty(function (err, result) {
+        resumes.createEmpty({_id: ObjectId()}, function (err, result) {
 
             db.collection('resumes').findOne({ _id: result.insertedId }, function (err, result) {
                 should.exists(result.basicinfo);
@@ -65,7 +66,7 @@ describe('Resume Model', function (done) {
 
     it('can update basicinfo', function (done) {
 
-        resumes.createEmpty(function (err, result) {
+        resumes.createEmpty({_id: ObjectId()}, function (err, result) {
 
             var resumeId = result.insertedId;
 

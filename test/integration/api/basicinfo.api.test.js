@@ -1,10 +1,11 @@
 var helpers = require('../../helpers'),
     api_helper = require('./api.test.helper'),
     app_root = helpers.app_root,
+    ObjectId = require('mongodb').ObjectId,
     should = require('should'),
-    request = require('supertest');
+    session = require('supertest-session');
 
-var app, db, resumes, userId, resumeId;
+var app, request, db, resumes, userId, resumeId;
 
 describe('Resume Basicinfo REST API', function () {
 
@@ -17,14 +18,20 @@ describe('Resume Basicinfo REST API', function () {
         app.init(function () {
             db = require(app_root + 'config/mongodb').client;
             resumes = require(app_root + 'app/models/resumes.server.model');
+            request = session(app.express);
             api_helper.createUser(db, function (err, resultUser) {
-                resumes.createEmpty(function (err, resultResume) {
-                    userId = resultUser.insertedId;
+                userId = resultUser.insertedId;
+                resumes.createEmpty({_id: ObjectId(userId)}, function (err, resultResume) {
                     resumeId = resultResume.insertedId;
                     done();
                 });
             });
         });
+    });
+    
+    // login first 
+    before(function(done) {
+        api_helper.login(request, done);
     });
 
     after(function (done) {
@@ -36,7 +43,7 @@ describe('Resume Basicinfo REST API', function () {
 
     describe('Happy paths', function () {
         it('[GET /users/:user_id/resumes/:resume_id/basicinfo] should return basic informations', function (done) {
-            request(app.express)
+            request
                 .get(getBasicinfoURI())
                 .expect(200)
                 .end(function (err, result) {
@@ -46,7 +53,7 @@ describe('Resume Basicinfo REST API', function () {
         });
 
         it('[PUT /users/:user_id/resumes/:resume_id/basicinfo] should update basic informations', function (done) {
-            request(app.express)
+            request
                 .put(getBasicinfoURI())
                 .set('Content-Type', 'application/json')
                 .send({
@@ -81,8 +88,8 @@ describe('Resume Basicinfo REST API', function () {
     describe('Sad paths', function () {
 
         it('[PUT /users/:user_id/resumes/:resume_id/basicinfo] should return HTTP 400 with missing parameters', function (done) {
-            resumes.createEmpty(function (err, result) {
-                request(app.express).put(getBasicinfoURI(result.insertedId))
+            resumes.createEmpty({_id: ObjectId(userId)}, function (err, result) {
+                request.put(getBasicinfoURI(result.insertedId))
                     .set('Content-Type', 'application/json')
                     .send({
                         name: 'A new name'
@@ -92,8 +99,8 @@ describe('Resume Basicinfo REST API', function () {
             });
         });
 
-        it('[PUT /users/:user_id/resumes/:resume_id/basicinfo] should not update bullet list with malformed request entity', function (done) {
-            request(app.express).put(getBasicinfoURI())
+        it('[PUT /users/:user_id/resumes/:resume_id/basicinfo] should not update bullet list with malformed supertest entity', function (done) {
+            request.put(getBasicinfoURI())
                 .set('Content-Type', 'application/json')
                 .send('invalid data')
                 .expect(400)

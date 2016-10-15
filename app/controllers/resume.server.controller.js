@@ -19,8 +19,8 @@ exports.read = function(req, res) {
     res.json({
         _id: resume._id,
         name: resume.name,
-        created_at: resume.created_at,
-        updated_at: resume.created_at,
+        createdAt: resume.created_at,
+        updatedAt: resume.created_at,
     });
 };
 
@@ -32,7 +32,7 @@ exports.read = function(req, res) {
  */
 exports.create = function(req, res) {
 
-    resumes.createEmpty(function(err, result) {
+    resumes.createEmpty(req.userObj, function(err, result) {
         if (err) throw err;
 
         res.location('/users/' + req.userObj._id + '/resumes/' + result.insertedId);

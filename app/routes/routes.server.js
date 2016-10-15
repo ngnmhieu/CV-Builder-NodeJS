@@ -6,6 +6,13 @@ module.exports = function(app) {
     var worklists = require('../controllers/worklist.server.controller');
     var textareas = require('../controllers/textarea.server.controller');
     var basicinfo = require('../controllers/basicinfo.server.controller');
+    var page = require('../controllers/page.server.controller');
+
+    app.use(user.authenticate);
+
+    app.get('/', page.index);
+
+    app.get('/resumes', page.resumes);
 
     /**
      * User
@@ -13,10 +20,11 @@ module.exports = function(app) {
     app.route("/users")
         .post(user.register);
 
-    app.route("/users/:user_id")
-        .get(user.read);
-
     app.param('user_id', user.byId);
+
+    app.route("/session")
+        .post(user.login)
+        .delete(user.logout);
 
     /**
      * Resume

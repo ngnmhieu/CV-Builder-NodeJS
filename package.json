@@ -13,7 +13,8 @@
     "mongodb": "^2.0.47",
     "morgan": "^1.6.1",
     "passport": "^0.3.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "supertest-session": "^2.0.1"
   },
   "devDependencies": {
     "should": "^7.1.1",

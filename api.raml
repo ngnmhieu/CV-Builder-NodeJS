@@ -13,8 +13,7 @@ traits:
           example: "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ"
       responses:
         401:
-          description: |
-            User cannot be authenticated due to invalid authentication information. 
+          description: User cannot be authenticated due to invalid authentication information. 
     
 /users:
   post:
@@ -28,7 +27,7 @@ traits:
           }
     responses:
       201:
-        description: User successfully registered.
+        description: User successfully registered
         headers:
           Location:
             description: Location of the newly created user

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="stylesheets/bootstrap.yetti.min.css"> -->
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <title><%= title %></title>
+</head>
+<body>
+    <nav class="navbar navbar-default" role="navigation">
+
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="icon-menu"></i> Menu
+                </button>
+                <a class="navbar-brand" href="/">CV Builder</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <% if (!user) { %>
+                        <li>
+                        <a href="#" data-toggle="modal" data-target="#loginModal" title="Login"> <span class="glyphicon glyphicon-user"></span> Login </a>
+                        </li>
+                    <% } %>
+
+                    <% if (user) { %>
+                        <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= user.firstName + ' ' + user.lastName %> <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#" title="My CVs"><span class="glyphicon glyphicon-duplicate"></span>  My CVs</a>
+                            </li>
+                            <li>
+
+                                <a href="#" title="Account"><span class="glyphicon glyphicon-dashboard"></span>  Account</a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="Homepage.logout()" id="logoutButton" title="Logout"><span class="glyphicon glyphicon-user"></span>  Logout</a>
+                            </li>
+                        </ul>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+
+    <div class="container">
+
