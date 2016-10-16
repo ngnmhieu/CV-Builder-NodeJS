@@ -5,6 +5,8 @@ var config         = require('./config'),
     compress       = require('compression'),
     bodyParser     = require('body-parser'),
     session        = require('express-session'),
+    MongoStore     = require('connect-mongo')(session),
+    mongo          = require('./mongodb')
     methodOverride = require('method-override');
 
 module.exports = function() {
@@ -29,6 +31,7 @@ module.exports = function() {
 
     app.use(session({
         secret: sessionSecret,
+        store: new MongoStore({db: mongo.client}),
         resave: false,
         saveUninitialized: true,
         cookie: { secure: https }

@@ -8,15 +8,21 @@ module.exports = function(app) {
     var basicinfo = require('../controllers/basicinfo.server.controller');
     var page = require('../controllers/page.server.controller');
 
-    app.use(user.authenticate);
+    app.use(user.setLoggedInUser);
 
     app.get('/', page.index);
 
-    app.get('/resumes', page.resumes);
+    app.route('/resumes')
+        .all(user.authenticate)
+        .get(page.resumes);
 
-    /**
+    app.route('/resumes/:resume_id')
+        .all(user.authenticate)
+        .get(page.editResume);
+
+    /******************
      * User
-     */
+     ******************/
     app.route("/users")
         .post(user.register);
 
@@ -26,9 +32,9 @@ module.exports = function(app) {
         .post(user.login)
         .delete(user.logout);
 
-    /**
+    /******************
      * Resume
-     */
+     ******************/
     app.route("/users/:user_id/resumes")
         .post(resumes.create);
 

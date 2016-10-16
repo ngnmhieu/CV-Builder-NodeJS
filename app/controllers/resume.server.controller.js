@@ -33,11 +33,10 @@ exports.read = function(req, res) {
 exports.create = function(req, res) {
 
     resumes.createEmpty(req.userObj, function(err, result) {
+
         if (err) throw err;
 
-        res.location('/users/' + req.userObj._id + '/resumes/' + result.insertedId);
-
-        res.sendStatus(201);
+        res.redirect('/resumes/' + result.insertedId);
     });
 };
 

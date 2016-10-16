@@ -48,7 +48,6 @@ describe('Resume REST API', function() {
                 .expect(201)
                 .expect('Location', /\/users\/([0-9a-f]{24})\/resumes\/([0-9a-f]{24})/)
                 .end(function(err, result) {
-                console.log('after another request ' + request.cookies);
                     if (err)
                         done(err);
                     else

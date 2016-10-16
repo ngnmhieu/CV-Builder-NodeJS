@@ -1,4 +1,4 @@
-<%- include common/header %>
+<%- include ../common/header %>
 
     <div id="ResumesListing">
 
@@ -6,16 +6,16 @@
             <thead>
                 <th style="width: 300px">Name</th>
                 <th style="text-align: center">Created</th>
-                <th style="width: 140px; text-align: center">Action</th>
+                <th style="width: 150px; text-align: center">Action</th>
             </thead>
             <% resumes.forEach(function (r) {  %>
-                <tr id="resume_">
+                <tr id="resume_<%= r._id %>">
                     <td>
-                        <a href="#"><%= r.name %></a>
+                        <a href="/resumes/<%= r._id %>"><%= r.name %></a>
                     </td>
                     <td style="text-align: center"></td>
                     <td style="text-align: center;">
-                        <a href="#">
+                        <a href="#" style="margin-right: 10px">
                             <span class="glyphicon glyphicon-file"></span>
                             <span>Clone</span>
                         </a>
@@ -28,13 +28,13 @@
                 <% }); %>
         </table>
 
-        <a>
-            <button class="btn btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span> New Resume</button>
-        </a>
+        <form action='/users/<%= user._id %>/resumes' method="post">
+            <button type=submit class="btn btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span> New Resume</button>
+        </form>
 
         <div class="clearfix"></div>
 
     </div>
 
 
-    <%- include common/footer %>
+<%- include ../common/footer %>

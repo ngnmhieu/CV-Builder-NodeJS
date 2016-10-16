@@ -89,7 +89,9 @@ exports.updateBasicInfo = function (resume, params, callback) {
  * @return {Array} resumes found
  */
 exports.findByUser = function (user, callback) {
-    resumes.find({user: user}, function (err, result) {
+    console.log('user_id: '+ user._id);
+
+    resumes.find({user_id: user._id}).toArray(function (err, result) {
         callback(result || []);
     });
 };

@@ -81,11 +81,9 @@ exports.byId = function (req, res, next, userId) {
 };
 
 /**
- * Set the user object if user's ID is set in the URL
- * If user is not logged in yet, then 401 Unauthorized is returned
- * If use is logged in, but is not the user specified in the URL, 403 Forbidden Access is returned
+ * Set the user object saved in session
  */
-exports.authenticate = function (req, res, next) {
+exports.setLoggedInUser = function (req, res, next) {
 
     var userId = req.session.userId;
 
@@ -96,13 +94,27 @@ exports.authenticate = function (req, res, next) {
 
         if (err) throw err;
 
-        if (result == null) {
-            res.sendStatus(404);
-            return;
+        if (result != null) {
+            req.userObj = result;
         }
-
-        req.userObj = result;
 
         next();
     });
+};
+
+/**
+ * Checks whether user has logged in
+ */
+exports.authenticate = function (req, res, next) {
+
+    if (req.userObj == null) {
+
+        if(req.is('json')) {
+            return res.sendStatus(401);
+        } else {
+            return res.redirect('/');
+        }
+    }
+
+    next();
 };
