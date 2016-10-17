@@ -1,6 +1,15 @@
 var users = require('../models/users.server.model'),
     ObjectId = require('mongodb').ObjectId;
 
+exports.show = function (req, res) {
+
+    if (req.userObj == null) {
+       return res.sendStatus(404);
+    }
+
+    res.json(req.userObj);
+};
+
 exports.login = function (req, res) {
 
     users.authenticate(req.body, function (user) {

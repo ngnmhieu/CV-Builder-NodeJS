@@ -16,12 +16,8 @@ var ObjectId = require('mongodb').ObjectId;
  */
 exports.read = function(req, res) {
     var resume = req.resumeObj;
-    res.json({
-        _id: resume._id,
-        name: resume.name,
-        createdAt: resume.created_at,
-        updatedAt: resume.created_at,
-    });
+    delete resume.user_id;
+    res.json(resume);
 };
 
 /**
@@ -36,7 +32,11 @@ exports.create = function(req, res) {
 
         if (err) throw err;
 
-        res.redirect('/resumes/' + result.insertedId);
+        if (req.is('json')) {
+            res.location('/users/' + req.userObj._id + '/resumes/' + result.insertedId).sendStatus(201);
+        } else {
+            res.redirect('/resumes/' + result.insertedId);
+        }
     });
 };
 
@@ -80,9 +80,7 @@ exports.byId = function(req, res, next, id) {
         return;
     }
 
-    resumes.collection.findOne({
-        _id: ObjectId(id)
-    }, function(err, result) {
+    resumes.findById(ObjectId(id), function(err, result) {
 
         if (err) throw err;
 
@@ -95,4 +93,5 @@ exports.byId = function(req, res, next, id) {
 
         next();
     });
+
 };

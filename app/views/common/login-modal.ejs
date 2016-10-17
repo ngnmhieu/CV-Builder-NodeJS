@@ -1,0 +1,26 @@
+<!-- Login Modal -->
+<div class="modal" id="LoginModal" tabindex="-1" role="dialog" style="width: 500px">
+    <div class="modal-content">
+        <div class="modal-title right">
+            <span class="text">Login</span>
+            <i class="material-icons md-36">account_circle</i> 
+        </div>
+        <div class="clearfix"></div>
+
+        <form id="LoginForm" method="post">
+            <div class="alert alert-warning" id="LoginNotice" role="alert">
+                <span class="content">Can't log you in, please check your login information.</span>
+            </div>
+            <div class="input-field">
+                <label for="email">Email: </label>
+                <input type="text" name="email">
+            </div>
+            <div class="input-field">
+                <label for="password">Password: </label>
+                <input type="password" name="password">
+            </div>
+            <button type="submit" class="btn right">Go</button>
+            <div class="clearfix"></div>
+        </form>
+    </div>
+</div>

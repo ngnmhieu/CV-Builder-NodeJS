@@ -1,0 +1,44 @@
+<script id="bulletlist-template" type="text/x-handlebars-template">
+    <div class="card bulletlist-card">
+        <div class="card-content">
+            <span class="card-title">{{sec.name}}</span>
+
+            <div class="edit-mode" style="">
+                <ul class="bulletlist" id="bulletlist_{{sec._id}}">
+
+                    {{#each sec.items}}
+                        <li class="bulletlist-item">
+                        <input name="" type="text" value="{{this}}">
+
+                        <a class="item-delete show-on-hover" href="#">
+                            <i class="material-icons">clear</i>
+                        </a>
+                        </li>
+                    {{/each}}
+                    <!-- TODO use partial -->
+                </ul>
+
+                <form class="add-item-form" action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{sec._id}}/items" data-item-template-id="bulletlist-item-template" data-item-container-id="bulletlist_{{sec._id}}">
+                    <a href="#" class="form-submit">+ Add item</a>
+                </form>
+
+                <div class="save-buttons">
+                    <button class="btn right">Save</button>
+                    <button class="btn-flat right">Cancel</button>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</script>
+
+<script id="bulletlist-item-template" type="text/x-handlebars-template">
+    <li class="bulletlist-item">
+    <input name="" type="text" value="{{this}}">
+
+    <a class="item-delete show-on-hover" href="#">
+        <i class="material-icons">clear</i>
+    </a>
+    </li>
+</script>

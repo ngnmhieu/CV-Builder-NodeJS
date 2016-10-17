@@ -45,6 +45,7 @@ describe('Resume REST API', function() {
 
         it('[POST /users/:user_id/resumes] should create an empty resume', function(done) {
             request.post(getResumePath())
+                .set('Content-Type', 'application/json')
                 .expect(201)
                 .expect('Location', /\/users\/([0-9a-f]{24})\/resumes\/([0-9a-f]{24})/)
                 .end(function(err, result) {
@@ -79,20 +80,31 @@ describe('Resume REST API', function() {
 
         it('[GET /users/:user_id/resumes/:resume_id/sections] should return the sections of the resume', function(done) {
 
-            db.collection('resumes').insertOne({
-                name: "Unnamed CV",
-                created_at: new Date(),
-                updated_at: new Date(),
-                sections: ['section1', 'section2']
-            }, function(err, result) {
-                request
-                    .get(getResumePath(result.insertedId) + '/sections')
-                    .expect(200)
-                    .end(function(err, result) {
-                        result.body.should.containDeep(['section1', 'section2']);
-                        done(err);
+            db.collection('bulletlists').insert({
+                name: 'bulletlist1'
+            }, function(err, result1) {
+                db.collection('bulletlists').insert({
+                    name: 'bulletlist2'
+                }, function(err, result2) {
+                    db.collection('resumes').insertOne({
+                        name: "Unnamed CV",
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                        sections: [{ _id: result1.insertedId, type: "bulletlist" }, { _id: result2.insertedId, type: "bulletlist" }]
+                    }, function(err, result) {
+
+                        request.get(getResumePath(result.insertedId) + '/sections')
+                            .expect(200)
+                            .end(function(err, result) {
+                                should(result.body.length).equal(2)
+                                done(err);
+                            });
+
                     });
+
+                });
             });
+
         });
 
     });

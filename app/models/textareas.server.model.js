@@ -12,7 +12,7 @@ exports.collection = textareas;
 exports.createEmpty = function (resume, callback) {
 
     var textarea = {
-        name    : 'New Textarea',
+        name    : 'A new Textarea',
         content : '',
         order   : 1
     };
@@ -74,16 +74,19 @@ var validate = function (params) {
  *               a default value is used instead.
  * @return textarea object
  */
-exports.getNewTextarea = function (params) {
+var getNewTextarea = function (params) {
     
     params = typeof params !== 'undefined' && params !== null ? params : {};
 
     return {
+        _id     : params._id,
         name    : params.name ? params.name.toString() : "New Textarea",
         content : params.content ? params.content.toString() : "",
         order   : parseInt(params.order) > 0 ? parseInt(params.order) : 0
     };
 };
+
+exports.getNewTextarea = getNewTextarea;
 
 /**
  * Update an existing textarea
@@ -96,6 +99,17 @@ exports.updateById = function (textarea, params, callback) {
     }
 
     var newTextarea = exports.getNewTextarea(params);
+    delete newTextarea._id;
 
     textareas.updateOne({_id: textarea._id}, newTextarea, callback);
 };
+
+/**
+ * Return the textarea with the id
+ */
+exports.findById = function(id, callback) {
+    textareas.findOne({_id: id}, function(err, result) {
+        callback(err, getNewTextarea(result));
+    });
+};
+

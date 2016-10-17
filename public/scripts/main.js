@@ -1,83 +1,85 @@
-(function ($) {
-    $.fn.serializeFormJSON = function () {
-
-        var o = {};
-        var a = this.serializeArray();
-        $.each(a, function () {
-            if (o[this.name]) {
-                if (!o[this.name].push) {
-                    o[this.name] = [o[this.name]];
-                }
-                o[this.name].push(this.value || '');
-            } else {
-                o[this.name] = this.value || '';
-            }
-        });
-        return o;
-    };
-})(jQuery);
-
-var Homepage = (function ($) {
+var Homepage = (function($) {
 
     var that = {};
+    var registerForm, registerNotice, loginForm, loginNotice;
 
-    that.login = function (email, password) {
-
-        var loginNotice = $("#loginNotice");
+    var login = function(email, password) {
 
         $.post({
             url: '/session',
-            data: { email: email, password: password }
-        }).done(function (data) {
+            data: {
+                email: email,
+                password: password
+            }
+        }).done(function(data) {
             window.location.href = "/";
-        }).fail(function () {
+        }).fail(function() {
             loginNotice.show();
         });
     };
 
-    that.init = function () {
+    var register = function(email, password) {
+        $.post({
+            url: '/users',
+            data: registerForm.serialize()
+        }).done(function(data) {
+            login(email, password);
+        }).fail(function(data) {
+            registerNotice.show();
+        });
+    };
 
-        var registerForm = $("#registerForm");
-        var registerNotice = $("#registerNotice");
+    var initEvents = function() {
 
-        var loginForm = $("#loginForm");
-        var loginNotice = $("#loginNotice");
-
-        registerForm.on('submit', function (e) {
+        /**
+         * Registration
+         */
+        registerForm.on('submit', function(e) {
 
             e.preventDefault();
 
-            $.post({
-                url: '/users',
-                data: registerForm.serialize()
-            }).done(function(data) {
+            var email = registerForm.find('input[name="email"]').val();
+            var password = registerForm.find('input[name="password"]').val();
 
-                var email = registerForm.find('input[name="email"]').val();
-                var password = registerForm.find('input[name="password"]').val();
-
-                that.login(email, password);
-
-            }).fail(function(data) {
-                registerNotice.show();
-            });
-
+            register(email, password);
         });
 
+        /**
+         * Login
+         */
         loginForm.on('submit', function(e) {
+
             e.preventDefault();
 
             var email = loginForm.find('input[name="email"]').val();
             var password = loginForm.find('input[name="password"]').val();
 
-            that.login(email, password);
+            login(email, password);
         });
     };
 
-    that.logout = function () {
+    var initUI = function() {
+        $('.modal-trigger').leanModal();
+    };
+
+    that.init = function() {
+
+        registerForm = $("#RegisterForm");
+        registerNotice = $("#RegisterNotice");
+
+        loginForm = $("#LoginForm");
+        loginNotice = $("#LoginNotice");
+
+        initEvents();
+
+        initUI();
+    };
+
+    that.logout = function() {
         $.ajax({
             url: '/session',
             method: 'delete'
-        }).done(function () {
+        }).done(function() {
             window.location.href = "/";
         });
     };
@@ -86,6 +88,6 @@ var Homepage = (function ($) {
 
 })(jQuery);
 
-jQuery(function(){
+jQuery(function() {
     Homepage.init();
 });

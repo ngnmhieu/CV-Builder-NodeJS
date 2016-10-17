@@ -1,28 +1,165 @@
-.btn, input.form-control, textarea.form-control {
-    border-radius: 0 !important;
+/**
+ * For bootstrap (if not used please remove)
+ */
+/* .btn, input.form-control, textarea.form-control { */
+/*     border-radius: 0 !important; */
+/* } */
+
+/****************
+ * Common
+ ****************/
+.clearfix {
+    clear: both;
 }
 
-#registerForm {
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+.material-icons {
+    display: inline-block !important;
+    vertical-align: middle;
+}
+
+.show-on-hover {
+    display: none;
+}
+
+/**
+ * Remove auto-filled input field background in Chrome
+ */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+}
+
+.modal .modal-title {
+}
+
+.modal .modal-title .text {
+    font-size: 20px;
+    vertical-align: middle;
+    line-height: 30px;
+}
+
+/**
+ * Homepage
+ */
+#RegisterForm {
     margin-top: 50px;
 }
 
-#registerForm label,
-#registerForm button {
-    margin-top: 7px
-}
-
-#registerNotice {
+#RegisterNotice {
     display: none;
     margin-top: 10px;
 }
 
-#loginForm label {
-    margin-top: 10px
+#LoginModal {
+    margin-top: 100px;
 }
-#loginForm button {
-    margin: 10px 0 5px 0;
-}
-#loginNotice {
+
+#LoginNotice {
     display: none;
     margin: 0;
 }
+
+/**
+ * Resumes Listing
+ */
+#ResumesListing {
+    padding-top: 20px
+}
+
+#ResumesListing .collection-item {
+    padding: 16px 90px;
+    height: 100px;
+    box-sizing: border-box;
+}
+#ResumesListing .collection-item:hover {
+    background: #ddd;
+}
+
+#ResumesListing .lang-circle {
+    position: absolute;
+    left: 15px;
+    display: block;
+    font-size: 20px;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    margin: 0;
+    color: #fff;
+    border: 1px solid #bbb;
+    text-align: center;
+}
+
+#ResumesListing .resume-title {
+    font-size: 16px;
+    margin-top: 3px;
+    font-weight: bold;
+    color: rgba(0,0,0,.87);
+}
+
+#ResumesListing .action-panel {
+    position: absolute;
+    right: 20px;
+    top: 30px;
+}
+
+#ResumesListing .action-panel .action {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+/**
+ * Resume edit
+ */
+#ResumeEditor .card-title {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#EditorHeader {
+    margin-top: 20px;
+}
+
+.save-buttons .btn {
+    margin-left: 5px; 
+}
+
+.item-delete {
+    color: #009688;
+}
+
+.worklist .worklist-item {
+    position: relative;
+    padding-top: 40px;
+    border-top: 3px solid #333;
+}
+
+.worklist .worklist-item:first-child {
+    border-top: none;
+    padding-top: 10px;
+}
+
+.worklist .worklist-item .item-delete {
+    position: absolute;
+    right: 0;
+    top: 10px;
+    font-size: 30px;
+}
+.worklist .worklist-item:first-child .item-delete {
+    top: -20px;
+}
+
+.bulletlist .bulletlist-item {
+    position: relative;
+    padding-right: 40px;
+}
+
+.bulletlist .bulletlist-item .item-delete {
+    position: absolute;
+    top: 15px;
+    right: 0;
+}
+

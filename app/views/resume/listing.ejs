@@ -2,39 +2,36 @@
 
     <div id="ResumesListing">
 
-        <table class="table table-striped">
-            <thead>
-                <th style="width: 300px">Name</th>
-                <th style="text-align: center">Created</th>
-                <th style="width: 150px; text-align: center">Action</th>
-            </thead>
-            <% resumes.forEach(function (r) {  %>
-                <tr id="resume_<%= r._id %>">
-                    <td>
-                        <a href="/resumes/<%= r._id %>"><%= r.name %></a>
-                    </td>
-                    <td style="text-align: center"></td>
-                    <td style="text-align: center;">
-                        <a href="#" style="margin-right: 10px">
-                            <span class="glyphicon glyphicon-file"></span>
-                            <span>Clone</span>
-                        </a>
-                        <a href="#">
-                            <span style="color: red" class="glyphicon glyphicon-trash"></span>
-                            <span>Delete</span>
-                        </a>
-                    </td>
-                </tr>
-                <% }); %>
-        </table>
-
-        <form action='/users/<%= user._id %>/resumes' method="post">
-            <button type=submit class="btn btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span> New Resume</button>
+        <form action='/users/<%= user._id %>/resumes' class="right" method="post" id="NewResumeBtn">
+            <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
+                <a class="btn-floating btn-large " onclick="document.getElementById('NewResumeBtn').submit();">
+                    <i class="material-icons">add</i>
+                </a>
+            </div>
         </form>
 
-        <div class="clearfix"></div>
+        <h5 style="margin-bottom: 25px">Your Resumes</h5>
 
+        <ul class="collection">
+            <% resumes.forEach(function (r) {  %>
+                <li class="collection-item avatar">
+                    <a href="/resumes/<%= r._id %>" class="lang-circle grey"><%= r.lang.toUpperCase() %></a>
+                    <ul class="action-panel show-on-hover">
+                      <li class="action"><a href="/resumes/<%= r._id %>" class="btn-floating orange"><i class="material-icons">edit</i></a></li>
+                      <li class="action"><a class="btn-floating light-blue accent-3"><i class="material-icons">share</i></a></li>
+                      <li class="action"><a class="btn-floating green"><i class="material-icons">file_download</i></a></li>
+                      <li class="action"><a class="btn-floating red"><i class="material-icons">delete</i></a></li>
+                    </ul>
+                    <a href="/resumes/<%= r._id %>" class="resume-title">
+                        <%= r.name %>
+                    </a>
+                    <div>Default</div>
+                    <div>Last modified 3 minutes ago</div>
+                </li>
+                <% }); %>
+        </ul>
     </div>
 
+    <script src="/scripts/resume_listing.js"></script>
 
-<%- include ../common/footer %>
+    <%- include ../common/footer %>

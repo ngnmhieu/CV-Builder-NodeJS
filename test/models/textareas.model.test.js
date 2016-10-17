@@ -42,7 +42,7 @@ describe('Textarea Model', function (done) {
                 db.collection('textareas').findOne({_id: result.insertedId }, function (err, resultTextarea) {
 
                     // new list should have default name and no item
-                    resultTextarea.name.should.equal('New Textarea');
+                    resultTextarea.name.should.equal('A new Textarea');
                     resultTextarea.content.should.equal('');
 
                     // list should be added to resume sections
@@ -99,14 +99,13 @@ describe('Textarea Model', function (done) {
         }, function (err, textRes) {
 
             textareas.updateById(textRes.ops[0], {
-                name: 'A New Textarea',
-                content: 'New content',
+                name: 'A new Textarea',
+                content: '',
                 order: 2
             }, function (err, updateResult) {
 
                 db.collection('textareas').findOne({_id: textRes.insertedId}, function (err, list) {
-                    list.name.should.equal('A New Textarea');
-                    list.content.should.equal('New content');
+                    list.name.should.equal('A new Textarea');
                     list.order.should.equal(2);
                     done();
                 });
@@ -134,7 +133,7 @@ describe('Textarea Model', function (done) {
         }, function (err, listRes) {
 
             textareas.updateById(listRes.ops[0], {
-                name  : 'A New Textarea',
+                name  : 'A new Textarea',
                 order : 1
             }, function (err, updateResult) {
                 should.exists(err);

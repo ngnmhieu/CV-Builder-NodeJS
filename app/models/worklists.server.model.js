@@ -13,7 +13,7 @@ exports.collection = worklists;
  *               a default value is used instead.
  * @return worklist object
  */
-exports.getNewList = function (params) {
+var getNewList = function (params) {
 
     params = typeof params !== 'undefined' && params !== null ? params : {};
 
@@ -33,11 +33,14 @@ exports.getNewList = function (params) {
     }
 
     return {
+        _id   : params._id,
         name  : params.name ? params.name.toString()  : "New worklist",
         items : items,
         order : params.order ? parseInt(params.order) : 0
     };
 };
+
+exports.getNewList = getNewList;
 
 /**
  * @param resume resume object
@@ -127,6 +130,17 @@ exports.updateById = function (list, params, callback) {
     }
 
     var newList = exports.getNewList(params);
+    delete newList._id;
 
     worklists.updateOne({_id: list._id}, newList, callback);
 };
+
+/**
+ * Return the worklist with the id
+ */
+exports.findById = function(id, callback) {
+    worklists.findOne({_id: id}, function(err, result) {
+        callback(err, getNewList(result));
+    });
+};
+

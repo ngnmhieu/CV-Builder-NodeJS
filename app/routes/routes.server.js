@@ -12,19 +12,14 @@ module.exports = function(app) {
 
     app.get('/', page.index);
 
-    app.route('/resumes')
-        .all(user.authenticate)
-        .get(page.resumes);
-
-    app.route('/resumes/:resume_id')
-        .all(user.authenticate)
-        .get(page.editResume);
-
     /******************
      * User
      ******************/
     app.route("/users")
         .post(user.register);
+
+    app.route("/users/:user_id")
+        .get(user.show);
 
     app.param('user_id', user.byId);
 
@@ -45,6 +40,17 @@ module.exports = function(app) {
     app.get("/users/:user_id/resumes/:resume_id/sections", resumes.sections);
 
     app.param('resume_id', resumes.byId);
+
+    /***************
+     * Web pages
+     ***************/
+    app.route('/resumes')
+        .all(user.authenticate)
+        .get(page.resumes);
+
+    app.route('/resumes/:resume_id')
+        .all(user.authenticate)
+        .get(page.editResume);
 
     /**
      * Basicinfo

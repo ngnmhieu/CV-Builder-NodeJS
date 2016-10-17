@@ -1,54 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <!-- <link rel="stylesheet" href="/stylesheets/bootstrap.yetti.min.css"> -->
+
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="/components/materialize/dist/css/materialize.min.css" media="screen,projection" />
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- App stylesheet -->
     <link rel="stylesheet" href="/stylesheets/style.css">
+    
+    <script src="/components/jquery/dist/jquery.min.js"></script>
+    <script src="/components/lodash/dist/lodash.min.js"></script>
+    <script src="/components/handlebars/handlebars.min.js"></script>
+
     <title><%= title %></title>
 </head>
+
 <body>
-    <nav class="navbar navbar-default" role="navigation">
+    <nav class="teal">
+        <div class="nav-wrapper container">
+            <a href="#" class="brand-logo">CV Builder</a>
 
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <i class="icon-menu"></i> Menu
-                </button>
-                <a class="navbar-brand" href="/">CV Builder</a>
-            </div>
-
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <% if (!user) { %>
-                        <li>
-                        <a href="#" data-toggle="modal" data-target="#loginModal" title="Login"> <span class="glyphicon glyphicon-user"></span> Login </a>
-                        </li>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <% if (!user) { %>
+                    <li>
+                        <a class="modal-trigger" href="#LoginModal" title="Login">Login <i class="material-icons">account_circle</i></a>
+                    </li>
                     <% } %>
 
-                    <% if (user) { %>
-                        <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= user.firstName + ' ' + user.lastName %> <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
+                        <% if (user) { %>
                             <li>
-                                <a href="#" title="My CVs"><span class="glyphicon glyphicon-duplicate"></span>  My CVs</a>
+                                <a class='dropdown-button' href='#' data-beloworigin='true' data-activates='UserDropdown'>
+                                    <%= user.firstName + ' ' + user.lastName %> <i class="material-icons">account_circle</i> 
+                                </a>
+                                <ul id="UserDropdown" class='dropdown-content'>
+                                    <li>
+                                        <a href="/resumes" title="My CVs">My CVs</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" title="Account">Account</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onclick="Homepage.logout()" id="logoutButton" title="Logout">Logout</a>
+                                    </li>
+                                </ul>
                             </li>
-                            <li>
-
-                                <a href="#" title="Account"><span class="glyphicon glyphicon-dashboard"></span>  Account</a>
-                            </li>
-                            <li>
-                                <a href="#" onclick="Homepage.logout()" id="logoutButton" title="Logout"><span class="glyphicon glyphicon-user"></span>  Logout</a>
-                            </li>
-                        </ul>
-                        </li>
-                    <% } %>
-                </ul>
-            </div>
-
+                            <% } %>
+            </ul>
         </div>
     </nav>
 
-    <div class="container">
+    <div class="clearfix"></div>
 
+    <%- include login-modal %>
+
+    <div class="container">

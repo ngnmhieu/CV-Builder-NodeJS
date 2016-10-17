@@ -13,17 +13,21 @@ exports.collection = bulletlists;
  *               a default value is used instead.
  * @return bulletlist object
  */
-exports.getNewList = function (params) {
+var getNewList = function (params) {
 
     params = typeof params !== 'undefined' && params !== null ? params : {};
 
     return {
+        _id           : params._id,
+        type          : "bulletlist",
         name          : params.name ? params.name.toString() : "New bullet list",
         items         : Array.isArray(params.items) ? params.items : [],
         order         : params.order ? parseInt(params.order) : 0,
-        ordered_items : params.ordered_items ? Boolean(params.ordered_items) : false,
+        orderedItems  : params.orderedItems ? Boolean(params.orderedItems) : false,
     };
 };
+
+exports.getNewList = getNewList;
 
 /**
  * @param resume resume object
@@ -84,7 +88,7 @@ var validate = function (params) {
             return false;
     }
 
-    if (params.ordered_items === undefined) return false;
+    if (params.orderedItems === undefined) return false;
 
     if (parseInt(params.order) < 0) return false;
     
@@ -102,6 +106,16 @@ exports.updateById = function (list, params, callback) {
     }
 
     var newList = exports.getNewList(params);
+    delete newList._id;
 
     bulletlists.updateOne({_id: list._id}, newList, callback);
+};
+
+/**
+ * Return the bullet list with the id
+ */
+exports.findById = function(id, callback) {
+    bulletlists.findOne({_id: id}, function(err, result) {
+        callback(err, getNewList(result));
+    });
 };
