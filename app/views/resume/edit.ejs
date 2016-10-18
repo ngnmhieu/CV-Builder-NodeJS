@@ -94,15 +94,19 @@
         <div class="card worklist-card">
 
             <div class="card-content">
-                <span class="card-title">Education</span>
+                <div class="row">
+                    <div class="col s6">
+                        <input type="text" name="name" value="Education"  class="card-title">
+                    </div>
+                </div>
 
                 <div class="worklist">
 
                     <% for (var i = 0; i < 3; i++ ) { %>
 
-                        <div class="worklist-item">
+                        <div class="worklist-item item">
 
-                            <a class="item-delete show-on-hover" href="#">
+                            <a class="delete-item-btn show-on-hover" href="#">
                                 <i class="material-icons">clear</i>
                             </a>
 
@@ -162,7 +166,11 @@
 
         <div class="card">
             <div class="card-content">
-                <span class="card-title">Objective</span>
+                <div class="row">
+                    <div class="col s6">
+                        <input type="text" name="name" value="Objective" class="card-title">
+                    </div>
+                </div>
 
                 <div class="input-field">
                     <textarea id="description" class="materialize-textarea"></textarea>
@@ -186,7 +194,9 @@
         <div class="modal-content">
             <h3>Add a new section</h3>
 
-            <form action="/" id="BulletlistAddForm" method="post">
+            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/bulletlists"
+                id="BulletlistAddForm" method="post" class="add-item-form"
+                data-item-template-id="bulletlist-template" data-item-container-id="ResumeEditor">
                 <button type="submit" class="btn">Bullet List</button>
             </form>
             <br>

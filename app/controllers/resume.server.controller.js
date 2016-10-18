@@ -2,13 +2,6 @@ var resumes = require('../models/resumes.server.model');
 var ObjectId = require('mongodb').ObjectId;
 
 /**
- * GET /users/:user_id/resumes/
- * [TODO] return the resumes collection of an user
- * @param req
- * @param res
- */
-
-/**
  * GET /users/:user_id/resumes/:id
  * returns a resume
  * @param req

@@ -9,13 +9,13 @@ exports.create = function (req, res) {
 
     var resume = req.resumeObj;
 
-    bulletlists.createEmpty(resume, function (err, result) {
+    bulletlists.createEmpty(resume, function (err, list) {
 
         if (err) throw err;
 
-        res.location('/users/' + req.userObj._id + '/resumes/' + resume._id + '/bulletlists/' + result.insertedId);
+        res.status(201).location('/users/' + req.userObj._id + '/resumes/' + resume._id + '/bulletlists/' + list._id);
 
-        res.sendStatus(201);
+        res.json(list);
     });
 };
 
@@ -24,8 +24,7 @@ exports.create = function (req, res) {
  */
 exports.remove = function (req, res) {
 
-    bulletlists.deleteById(req.resume, req.bulletList, function (err) {
-        if (err) throw err;
+    bulletlists.deleteById(req.resumeObj, req.bulletList, function (err) {
         res.sendStatus(200);
     });
 };
@@ -83,7 +82,7 @@ exports.byId = function (req, res, next, id) {
  */
 exports.update = function (req, res) {
 
-    bulletlists.updateById(req.bulletList, req.body, function (err, result) {
+    bulletlists.updateById(req.bulletList, req.body, function (err, list) {
         if (err) {
             switch(err) {
                 case 'validation_error': 
@@ -93,6 +92,8 @@ exports.update = function (req, res) {
             }
         }
 
-        res.sendStatus(200);
+        res.status(200);
+
+        res.json(list);
     });
 };

@@ -2,18 +2,22 @@ var Common = (function($) {
 
     /**
      * Show .show-on-hover elements when mouse is hovered 
-     * on descendants of this element that can be reached by the given selector.
+     * on descendants of this element that can be reached by the given parentSelector.
+     * @param parentSelector selector of the container element
+     * @param (optional) selector of the element that will be toggled
      */
-    $.fn.enableShowOnHover = function (selector) {
+    $.fn.enableShowOnHover = function (parentSelector, selector) {
 
         var parent = $(this);
 
-        parent.on('mouseenter', selector, function() {
-            $(this).find('.show-on-hover').show();
+        selector = selector || '.show-on-hover';
+
+        parent.on('mouseenter', parentSelector, function() {
+            $(this).find(selector).show();
         });
 
-        parent.on('mouseleave', selector, function() {
-            $(this).find('.show-on-hover').hide();
+        parent.on('mouseleave', parentSelector, function() {
+            $(this).find(selector).hide();
         });
     };
 

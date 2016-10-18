@@ -127,8 +127,13 @@ input:-webkit-autofill {
     margin-left: 5px; 
 }
 
-.item-delete {
-    color: #009688;
+.delete-section-form {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+.delete-section-form i {
+    font-size: 30px;
 }
 
 .worklist .worklist-item {
@@ -142,13 +147,13 @@ input:-webkit-autofill {
     padding-top: 10px;
 }
 
-.worklist .worklist-item .item-delete {
+.worklist .worklist-item .delete-item-btn {
     position: absolute;
     right: 0;
     top: 10px;
     font-size: 30px;
 }
-.worklist .worklist-item:first-child .item-delete {
+.worklist .worklist-item:first-child .delete-item-btn {
     top: -20px;
 }
 
@@ -157,9 +162,10 @@ input:-webkit-autofill {
     padding-right: 40px;
 }
 
-.bulletlist .bulletlist-item .item-delete {
+.bulletlist .bulletlist-item .delete-item-btn {
     position: absolute;
     top: 15px;
     right: 0;
 }
+
 
