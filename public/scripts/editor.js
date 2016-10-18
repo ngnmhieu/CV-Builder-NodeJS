@@ -37,9 +37,11 @@ var Editor = (function($) {
 
         var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-        Handlebars.registerHelper('monthSelect', function(options, selectedDate) {
+        Handlebars.registerHelper('monthSelect', function(selectedDate, options, disabled) {
             var date = isNaN(Date.parse(selectedDate)) ? new Date() : new Date(selectedDate);
-            var html = '<select ' + options + '>' ;
+            console.log(disabled);
+            var disabled = disabled ? 'disabled' : '';
+            var html = '<select ' + options + ' ' + disabled +'>' ;
             var selectedMonth = date.getMonth();
             for (var i in MONTHS)  {
                 var selected = selectedMonth == i ? 'selected' : '';
@@ -50,15 +52,18 @@ var Editor = (function($) {
             return new Handlebars.SafeString(html);
         });
 
-        Handlebars.registerHelper('yearSelect', function(options, selectedDate) {
+        Handlebars.registerHelper('yearSelect', function(selectedDate, options, disabled) {
             var date = isNaN(Date.parse(selectedDate)) ? new Date() : new Date(selectedDate);
-            var html = '<select ' + options + '>' ;
+            var disabled = disabled ? 'disabled' : '';
+            var html = '<select ' + options + ' ' + disabled +'>' ;
             var selectedYear = date.getFullYear();
-            for (var i = selectedYear - 50; i < selectedYear + 50; i++)  {
+
+            for (var i = selectedYear - 50; i < selectedYear + 20; i++)  {
                 var selected = selectedYear == i ? 'selected' : '';
                 html += '<option value="'+ i +'" ' + selected + '>' + i + '</option>';
             }
             html += '</select>';
+
             return new Handlebars.SafeString(html);
         });
 
@@ -265,19 +270,19 @@ var Editor = (function($) {
                 }
             });
 
-            console.log({
-                name: name,
-                items: items,
-                order: 0,
-                orderedItems: false
-            });
-
             return {
                 name: name,
                 items: items,
                 order: 0,
                 orderedItems: false
             };
+        });
+
+        // toggle until now checkbox event
+        $(document).on('change', 'input[name=tillNow]', function(e) {
+            var disableDate = $(this).is(':checked');
+            $(this).closest('.worklist-item').find('.end-date-input select').prop('disabled', disableDate);
+            refreshUI();
         });
 
     };
@@ -299,10 +304,8 @@ var Editor = (function($) {
 
                 resume = resumeData;
 
-                    console.log(resume);
                 var renderSection = function(sec) {
                     var template = $('#' + sec.type + '-template').html();
-                    console.log(sec);
                     var html = render(template, {
                         param: sec,
                         user: user,

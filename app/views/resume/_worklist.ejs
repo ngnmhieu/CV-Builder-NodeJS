@@ -52,33 +52,31 @@
 
             <div class="col s6">
                 <div class="row">
-                    <div class="row col s6">
 
+                    <div class="row col s6 start-date-input">
                         <div class="input-field col s6">
-                            {{monthSelect 'name="monthStart"' startDate }}
+                            {{monthSelect startDate 'name="monthStart"' false }}
                             <label>From</label>
                         </div>
                         <div class="input-field col s6">
-                            {{yearSelect 'name="yearStart"' startDate }}
+                            {{yearSelect startDate 'name="yearStart"' false }}
                         </div>
-
                     </div>
 
-                    <div class="col s6 row">
-
+                    <div class="col s6 row end-date-input">
                         <div class="input-field col s6">
-                            {{monthSelect 'name="monthEnd"' endDate }}
+                            {{monthSelect endDate 'name="monthEnd"' tillNow }}
                             <label>To</label>
                         </div>
                         <div class="input-field col s6">
-                            {{yearSelect 'name="yearEnd"' endDate }}
+                            {{yearSelect endDate 'name="yearEnd"' tillNow }}
                         </div>
                         <p class="col s12">
-                            <input type="checkbox" class="filled-in" id="tillNow" name="tillNow" {{tern tillNow 'checked' ''}} />
-                            <label for="tillNow">Until now</label>
+                            <input type="checkbox" class="filled-in" id="tillNow_{{@index}}" name="tillNow" {{tern tillNow 'checked' ''}} />
+                            <label for="tillNow_{{@index}}">Until now</label>
                         </p>
-
                     </div>
+
                 </div>
             </div>
 
