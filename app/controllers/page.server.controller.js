@@ -1,16 +1,5 @@
-var resumes = require('../models/resumes.server.model');
-
-/**
- * Extends and object with additional or overriden properties
- */
-var extendObject = function (obj, options) {
-    for (var prop in options) {
-        if (options.hasOwnProperty(prop))
-            obj[prop] = options[prop];
-    }
-
-    return obj;
-};
+var resumes = require('../models/resumes.server.model'),
+    _       = require('lodash');
 
 /**
  * Returns common variables for template
@@ -43,7 +32,7 @@ exports.resumes = function(req, res) {
 
         var templateVars = getTemplateVars(req);
 
-        res.render('resume/listing', extendObject(getTemplateVars(req), {
+        res.render('resume/listing', _.extend(getTemplateVars(req), {
             resumes: result
         }));
     });
@@ -59,7 +48,7 @@ exports.editResume = function(req, res) {
         return res.redirect('/resumes');
     }
     
-    res.render('resume/edit', extendObject(getTemplateVars(req), {
+    res.render('resume/edit', _.extend(getTemplateVars(req), {
         resume: req.resumeObj
     }));
 };

@@ -1,4 +1,6 @@
-var db = require('../../config/mongodb').client;
+var db = require('../../config/mongodb').client,
+    ObjectId = require('mongodb').ObjectId;
+    _ = require('lodash');
 
 var resumes   = db.collection('resumes'),
     textareas = db.collection('textareas');
@@ -14,7 +16,7 @@ exports.createEmpty = function (resume, callback) {
     var textarea = {
         name    : 'A new Textarea',
         content : '',
-        order   : 1
+        order   : -1
     };
 
     textareas.insertOne(textarea, function (err, result) {
@@ -28,7 +30,7 @@ exports.createEmpty = function (resume, callback) {
 
             if (upErr) throw upErr;
 
-            callback(err, result);
+            callback(err, _.extend(textarea, {_id: result.insertedId}));
         });
         
     });
@@ -41,9 +43,7 @@ exports.createEmpty = function (resume, callback) {
  */
 exports.deleteById = function (resume, textarea, callback) {
 
-    resumes.updateOne(
-        {_id: resume._id},
-        { '$pull': { 'sections': {_id: textarea._id} } },
+    resumes.updateOne( {_id: resume._id}, { '$pull': { 'sections': {_id: textarea._id } } },
         function (err, result) {
             if (err) throw err;                
             textareas.deleteOne({_id: textarea._id}, callback);
@@ -63,7 +63,7 @@ var validate = function (params) {
     if (params.content === undefined || params.content === null)
         return false;
 
-    if (parseInt(params.order) < 0) return false;
+    if (isNaN(parseInt(params.order))) return false;
 
     return true;
 };
@@ -80,6 +80,7 @@ var getNewTextarea = function (params) {
 
     return {
         _id     : params._id,
+        type    : "textarea",
         name    : params.name ? params.name.toString() : "New Textarea",
         content : params.content ? params.content.toString() : "",
         order   : parseInt(params.order) > 0 ? parseInt(params.order) : 0
@@ -109,7 +110,10 @@ exports.updateById = function (textarea, params, callback) {
  */
 exports.findById = function(id, callback) {
     textareas.findOne({_id: id}, function(err, result) {
-        callback(err, getNewTextarea(result));
+        if (result == null)
+            callback(err, null);
+        else 
+            callback(err, getNewTextarea(result));
     });
 };
 

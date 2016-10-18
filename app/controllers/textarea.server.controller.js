@@ -1,4 +1,5 @@
 var textareas = require('../models/textareas.server.model'),
+    resumes = require('../models/resumes.server.model'),
     ObjectId = require('mongodb').ObjectId;
 
 exports.read = function(req, res) {
@@ -9,10 +10,10 @@ exports.create = function(req, res) {
 
     var resume = req.resumeObj;
 
-    textareas.createEmpty(resume, function(err, result) {
+    textareas.createEmpty(resume, function(err, textarea) {
         if (err) throw err;
-        res.location('/users/' + req.userObj._id + '/resumes/' + resume._id + '/textareas/' + result.insertedId);
-        res.sendStatus(201);
+        res.status(201).location('/users/' + req.userObj._id + '/resumes/' + resume._id + '/textareas/' + textarea._id);
+        res.json(textarea);
     });
 };
 
@@ -27,11 +28,7 @@ exports.byId = function(req, res, next, id) {
 
     var resume = req.resumeObj;
 
-    var belongsToResume = resume.sections.some(function(section) {
-        return section._id.equals(textareaId);
-    });
-
-    if (!belongsToResume) {
+    if (!resumes.isSectionOf(resume, textareaId)) {
         res.sendStatus(404);
         return;
     }
@@ -78,7 +75,7 @@ exports.update = function(req, res) {
  */
 exports.remove = function(req, res) {
 
-    textareas.deleteById(req.resume, req.textarea, function(err) {
+    textareas.deleteById(req.resumeObj, req.textarea, function(err) {
         if (err) throw err;
         res.sendStatus(200);
     });

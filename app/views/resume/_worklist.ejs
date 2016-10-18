@@ -1,0 +1,80 @@
+<script id="worklist-template" type="text/x-handlebars-template">
+    <div class="card worklist-card">
+
+        <div class="card-content">
+
+            <form action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}" class="delete-section-form show-on-hover">
+                <a class="form-submit" href="#">
+                    <i class="material-icons teal-text">clear</i>
+                </a>
+            </form>
+
+            <div class="row">
+                <div class="col s6">
+                    <input type="text" name="name" value="Education" class="card-title">
+                </div>
+            </div>
+
+            <div class="worklist">
+
+                <% for (var i = 0; i < 2; i++ ) { %>
+
+                    <div class="worklist-item item">
+
+                        <a class="delete-item-btn show-on-hover" href="#">
+                            <i class="material-icons">clear</i>
+                        </a>
+
+                        <div class="row">
+
+                            <div class="col s6">
+                                <div class="input-field">
+                                    <label for="occupation">Occupation</label>
+                                    <input name="occupation" type="text" value="Werkstudent Softwareentwickler">
+                                </div>
+                                <div class="input-field">
+                                    <label for="institution">Institution</label>
+                                    <input name="institution" type="text" value="rexx systems GmbH">
+                                </div>
+                            </div>
+
+                            <div class="col s6">
+                                <div class="row">
+                                    <div class="col s6">
+                                        <div class="input-field">
+                                            <label for="startDate">From</label>
+                                            <input type="date" class="datepicker" name="startDate" data-value="21.08.2014">
+                                        </div>
+                                    </div>
+                                    <div class="col s6">
+                                        <div class="input-field">
+                                            <label for="startDate">To</label>
+                                            <input type="date" class="datepicker" name="endDate" data-value="30.12.2015">
+                                        </div>
+                                        <p>
+                                            <input type="checkbox" class="filled-in" id="tillnow" />
+                                            <label for="tillnow">Until today</label>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-field col s12">
+                                <textarea id="description" class="materialize-textarea"></textarea>
+                                <label for="description">Description</label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <% } %>
+            </div>
+
+            <div class="save-buttons">
+                <button class="btn right">Save</button>
+                <button class="btn-flat right">Cancel</button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</script>

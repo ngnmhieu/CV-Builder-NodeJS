@@ -66,6 +66,9 @@ exports.remove = function(req, res) {
     });
 };
 
+/**
+ * Set the resume object
+ */
 exports.byId = function(req, res, next, id) {
 
     if (!ObjectId.isValid(id)) {
@@ -73,13 +76,12 @@ exports.byId = function(req, res, next, id) {
         return;
     }
 
-    resumes.findById(ObjectId(id), function(err, result) {
+    resumes.findByUserAndId(req.userObj, ObjectId(id), function(err, result) {
 
         if (err) throw err;
 
         if (result == null) {
-            res.sendStatus(404);
-            return;
+            return res.sendStatus(404);
         }
 
         req.resumeObj = result;

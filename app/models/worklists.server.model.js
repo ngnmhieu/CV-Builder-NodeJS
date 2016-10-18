@@ -34,6 +34,7 @@ var getNewList = function (params) {
 
     return {
         _id   : params._id,
+        type  : "worklist",
         name  : params.name ? params.name.toString()  : "New worklist",
         items : items,
         order : params.order ? parseInt(params.order) : 0
