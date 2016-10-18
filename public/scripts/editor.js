@@ -19,26 +19,77 @@ var Editor = (function($) {
 
         // register partials for handlebars
         Handlebars.registerPartial('bulletlistItem', $('#bulletlist-item-template').html());
+        Handlebars.registerPartial('worklistItem', $('#worklist-item-template').html());
+
+        // date helper
+        Handlebars.registerHelper('date', function(dateStr) {
+            var date = isNaN(Date.parse(dateStr)) ? new Date() : new Date(dateStr);
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var dateNum = date.getDate();
+
+            return year + '-' + (month < 10 ? '0' + month : month) + '-' + (dateNum < 10 ? '0' + dateNum : dateNum);
+        });
+
+        Handlebars.registerHelper('tern', function(cond, pos, neg) {
+            return cond ? pos : neg;
+        });
+
+        var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        Handlebars.registerHelper('monthSelect', function(options, selectedDate) {
+            var date = isNaN(Date.parse(selectedDate)) ? new Date() : new Date(selectedDate);
+            var html = '<select ' + options + '>' ;
+            var selectedMonth = date.getMonth();
+            for (var i in MONTHS)  {
+                var selected = selectedMonth == i ? 'selected' : '';
+                var month = parseInt(i) + 1;
+                html += '<option value="'+ month +'" ' + selected + '>' + MONTHS[i] + '</option>';
+            }
+            html += '</select>';
+            return new Handlebars.SafeString(html);
+        });
+
+        Handlebars.registerHelper('yearSelect', function(options, selectedDate) {
+            var date = isNaN(Date.parse(selectedDate)) ? new Date() : new Date(selectedDate);
+            var html = '<select ' + options + '>' ;
+            var selectedYear = date.getFullYear();
+            for (var i = selectedYear - 50; i < selectedYear + 50; i++)  {
+                var selected = selectedYear == i ? 'selected' : '';
+                html += '<option value="'+ i +'" ' + selected + '>' + i + '</option>';
+            }
+            html += '</select>';
+            return new Handlebars.SafeString(html);
+        });
+
     };
 
     // reinitializes some UI elements upon DOM change
     var refreshUI = function() {
 
-        // enable datepicker
-        $('.datepicker').pickadate({
+        var datepickerOpts = {
             selectMonths: true, // Creates a dropdown to control month
             selectYears: 100, // Creates a dropdown of 15 years to control year
-            max: true,
-            formatSubmit: 'dd.mm.yyyy'
-        });
+            formatSubmit: 'yyyy-mm-dd',
+            format: 'yyyy-mm-dd'
+        };
+
+        // enable datepicker
+        $('.worklist .datepicker').pickadate(datepickerOpts);
+
+        $('.basicinfo .datepicker').pickadate(_.extend(datepickerOpts, {max: true}));
+
+        $('select').material_select();
 
         Materialize.updateTextFields();
     };
 
     var initEvents = function() {
 
+        /** generic code for section **/
+
         // add section
-        $('.add-item-form').on('submit', function(e) {
+        $('.add-sec-form').on('submit', function(e) {
 
             e.preventDefault();
 
@@ -115,6 +166,35 @@ var Editor = (function($) {
 
         };
         
+        // add item to list (temporarily)
+        $(document).on('click', '.add-item-btn', function(e) {
+
+            e.preventDefault();
+
+            var container = $('#' + $(this).data('item-container-id'));
+            var template = $('#' + $(this).data('item-template-id')).html();
+
+            container.append(render(template, {}));
+
+            refreshUI();
+        });
+
+        // delete item from list
+        $(document).on('click', '.delete-item-btn', function(e) {
+            e.preventDefault();
+            $(this).closest('.item').remove();
+        });
+
+
+        // Elements with .form-submit can be used to submit the enclosing form
+        $(document).on('click', 'form .form-submit', function(e) {
+            e.preventDefault();
+            $(this).closest('form').submit();
+        });
+
+        /** END generic code for section **/
+
+        
         // save bulletlist
         saveSection('.bulletlist-edit-form', function(form) {
             var name = form.find('input[name=name]').val();
@@ -144,6 +224,7 @@ var Editor = (function($) {
 
         // save basicinfo
         saveSection('.basicinfo-edit-form', function(form) {
+
             return {
                 name     : form.find('input[name=name]').val() || "",
                 email    : form.find('input[name=email]').val() || "",
@@ -153,131 +234,51 @@ var Editor = (function($) {
                 address1 : form.find('input[name=address1]').val() || "",
                 address2 : form.find('input[name=address2]').val() || "",
                 address3 : form.find('input[name=address3]').val() || "",
-                // dob      : $(this).find('input[name=dob]').val() || "",
+                dob      : form.find('input[name=dob]').val() || "",
             };
         });
 
-        // add item to list
-        $(document).on('click', '.bulletlist-card .add-item-btn', function(e) {
+        var formatDate = function(month, year) {
+            month = parseInt(month) < 10 ? '0' + month : month;
+            return year + '-' + month + '-01';
+        };
 
-            e.preventDefault();
+        // save worklist
+        saveSection('.worklist-edit-form', function(form) {
 
-            var container = $('#' + $(this).data('item-container-id'));
-            var template = $('#' + $(this).data('item-template-id')).html();
+            var name = form.find('input[name=name]').val();
+            var items = $.map(form.find('.item'), function(el) {
+                var item = $(el);
+                var monthStart = item.find('select[name=monthStart]').val();
+                var yearStart  = item.find('select[name=yearStart]').val();
+                var monthEnd = item.find('select[name=monthEnd]').val();
+                var yearEnd  = item.find('select[name=yearEnd]').val();
 
-            container.append(render(template, {
-                content: ''
-            }));
-            refreshUI();
+                return {
+                    title       : item.find('input[name=title]').val(),
+                    institution : item.find('input[name=institution]').val(),
+                    startDate   : formatDate(monthStart, yearStart),
+                    endDate     : formatDate(monthEnd, yearEnd),
+                    tillNow     : item.find('input[name=tillNow]').is(':checked'),
+                    desc        : item.find('textarea[name=desc]').val(),
+                    order       : -1
+                }
+            });
+
+            console.log({
+                name: name,
+                items: items,
+                order: 0,
+                orderedItems: false
+            });
+
+            return {
+                name: name,
+                items: items,
+                order: 0,
+                orderedItems: false
+            };
         });
-
-        // delete item from list
-        $(document).on('click', '.bulletlist-card .delete-item-btn', function(e) {
-            e.preventDefault();
-            $(this).closest('.item').remove();
-        });
-
-
-        // Elements with .form-submit can be used to submit the enclosing form
-        $(document).on('click', 'form .form-submit', function(e) {
-            e.preventDefault();
-            $(this).closest('form').submit();
-        });
-
-        // save bulletlist
-        // $(document).on('submit', '.bulletlist-edit-form', function(e) {
-        //
-        //     e.preventDefault();
-        //
-        //     var name = $(this).find('input[name=name]').val();
-        //     var items = $.map($(this).find('input[name=list-item]'), function(input) {
-        //         return {
-        //             content: input.value,
-        //             order: -1
-        //         }
-        //     });
-        //
-        //     var data = {
-        //         name: name,
-        //         items: items,
-        //         order: 0,
-        //         orderedItems: false
-        //     };
-        //
-        //     $.ajax({
-        //         type: 'PUT',
-        //         url: $(this).attr('action'),
-        //         data: JSON.stringify(data),
-        //         contentType: 'application/json; charset=utf-8',
-        //         dataType: 'json',
-        //     }).done(function(res) {
-        //         // TODO
-        //     }).fail(function(res) {
-        //         console.log('fail');
-        //         // TODO
-        //     });
-        // });
-
-        // save textarea
-        // $(document).on('submit', '.textarea-edit-form', function(e) {
-        //
-        //     e.preventDefault();
-        //
-        //     var data = {
-        //         name: $(this).find('input[name=name]').val() || "",
-        //         content: $(this).find('textarea[name=content]').val() || "",
-        //         order: -1
-        //     };
-        //
-        //     $.ajax({
-        //         type: 'PUT',
-        //         url: $(this).attr('action'),
-        //         data: JSON.stringify(data),
-        //         contentType: 'application/json; charset=utf-8',
-        //         dataType: 'json',
-        //     }).done(function(res) {
-        //         console.log('ok');
-        //         // TODO
-        //     }).fail(function(res, status) {
-        //         console.log('fail textarea');
-        //         console.log(res);
-        //         console.log(status);
-        //         // TODO
-        //     });
-        // });
-
-        // save basicinfo
-        // $(document).on('submit', '.basicinfo-edit-form', function(e) {
-        //
-        //     e.preventDefault();
-        //
-        //     var data = {
-        //         name     : $(this).find('input[name=name]').val() || "",
-        //         email    : $(this).find('input[name=email]').val() || "",
-        //         website  : $(this).find('input[name=website]').val() || "",
-        //         phone    : $(this).find('input[name=phone]').val() || "",
-        //         fax      : $(this).find('input[name=fax]').val() || "",
-        //         // dob      : $(this).find('input[name=dob]').val() || "",
-        //         address1 : $(this).find('input[name=address1]').val() || "",
-        //         address2 : $(this).find('input[name=address2]').val() || "",
-        //         address3 : $(this).find('input[name=address3]').val() || "",
-        //     };
-        //
-        //     $.ajax({
-        //         type: 'PUT',
-        //         url: $(this).attr('action'),
-        //         data: JSON.stringify(data),
-        //         contentType: 'application/json; charset=utf-8',
-        //         dataType: 'json',
-        //     }).done(function(res) {
-        //         // TODO
-        //     }).fail(function(res, status) {
-        //         console.log('fail textarea');
-        //         console.log(res);
-        //         console.log(status);
-        //     });
-        // });
-
 
     };
 
@@ -298,13 +299,16 @@ var Editor = (function($) {
 
                 resume = resumeData;
 
+                    console.log(resume);
                 var renderSection = function(sec) {
                     var template = $('#' + sec.type + '-template').html();
+                    console.log(sec);
                     var html = render(template, {
                         param: sec,
                         user: user,
                         resume: resume
                     });
+
                     resumeEditor.append(html);
                 }; 
 

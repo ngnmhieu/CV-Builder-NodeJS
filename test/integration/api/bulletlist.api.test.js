@@ -139,7 +139,7 @@ describe('Bulletlist REST API', function() {
                 request.put(getBulletListURI(resume._id, listResult.insertedId))
                     .set('Content-Type', 'application/json')
                     .send({})
-                    .expect(422)
+                    .expect(400)
                     .end(done);
             });
         });

@@ -86,7 +86,7 @@ exports.update = function (req, res) {
         if (err) {
             switch(err) {
                 case 'validation_error': 
-                    res.sendStatus(422); return;
+                    res.sendStatus(400); return;
                 default:
                     throw err;
             }

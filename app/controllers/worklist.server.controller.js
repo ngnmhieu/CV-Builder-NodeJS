@@ -9,13 +9,14 @@ exports.create = function(req, res) {
 
     var resume = req.resumeObj;
 
-    worklists.createEmpty(resume, function(err, result) {
+    worklists.createEmpty(resume, function(list) {
 
-        if (err) throw err;
+        if (list == null)
+            return res.sendStatus(500);
 
-        res.location('/users/' + req.userObj._id + '/resumes/' + resume._id + '/worklists/' + result.insertedId);
-
-        res.sendStatus(201);
+        res.location('/users/' + req.userObj._id + '/resumes/' + resume._id + '/worklists/' + list._id)
+            .status(201)
+            .json(list);
     });
 };
 
@@ -24,7 +25,7 @@ exports.create = function(req, res) {
  */
 exports.remove = function(req, res) {
 
-    worklists.deleteById(req.resume, req.workList, function(err) {
+    worklists.deleteById(req.resumeObj, req.workList, function(err) {
         if (err) throw err;
         res.sendStatus(200);
     });
@@ -89,7 +90,7 @@ exports.update = function(req, res) {
         if (err) {
             switch (err) {
                 case 'validation_error':
-                    res.sendStatus(422);
+                    res.sendStatus(400);
                     return;
                 default:
                     throw err;

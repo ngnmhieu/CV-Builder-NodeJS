@@ -34,18 +34,18 @@
             <h3>Add a new section</h3>
 
             <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/bulletlists"
-                id="BulletlistAddForm" method="post" class="add-item-form"
+                id="BulletlistAddForm" method="post" class="add-sec-form"
                 data-item-template-id="bulletlist-template" data-item-container-id="ResumeEditor">
                 <button type="submit" class="btn">Bullet List</button>
             </form>
             <br>
             <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/worklists" id="WorklistAddForm" method="post"
-                method="post" class="add-item-form" data-item-template-id="worklist-template" data-item-container-id="ResumeEditor">
+                method="post" class="add-sec-form" data-item-template-id="worklist-template" data-item-container-id="ResumeEditor">
                 <button type="submit" class="btn">Occupation List</button>
             </form>
             <br>
             <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/textareas" id="TextareaAddForm" method="post"
-                method="post" class="add-item-form" data-item-template-id="textarea-template" data-item-container-id="ResumeEditor">
+                method="post" class="add-sec-form" data-item-template-id="textarea-template" data-item-container-id="ResumeEditor">
                 <button type="submit" class="btn">Text Section</button>
             </form>
         </div>

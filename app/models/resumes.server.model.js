@@ -71,17 +71,20 @@ var validateBasicInfo = function(params) {
     return true;
 };
 
-var getNewBasicInfo = function(params) {
+var getNewBasicInfo = function(options) {
+
+    var attr = options || {};
+
     return {
-        name     : params.name     ? String(params.name) : '',
-        email    : params.email    ? String(params.email) : '',
-        website  : params.website  ? String(params.website) : '',
-        phone    : params.phone    ? String(params.phone) : '',
-        fax      : params.fax      ? String(params.fax) : '',
-        dob      : params.dob      ? params.dob : new Date(),
-        address1 : params.address1 ? String(params.address1) : '',
-        address2 : params.address2 ? String(params.address2) : '',
-        address3 : params.address3 ? String(params.address3) : '',
+        name     : attr.name     ? String(attr.name) : '',
+        email    : attr.email    ? String(attr.email) : '',
+        website  : attr.website  ? String(attr.website) : '',
+        phone    : attr.phone    ? String(attr.phone) : '',
+        fax      : attr.fax      ? String(attr.fax) : '',
+        dob      : (attr.dob instanceof Date) ? attr.dob : new Date(attr.dob),
+        address1 : attr.address1 ? String(attr.address1) : '',
+        address2 : attr.address2 ? String(attr.address2) : '',
+        address3 : attr.address3 ? String(attr.address3) : '',
     };
 };
 

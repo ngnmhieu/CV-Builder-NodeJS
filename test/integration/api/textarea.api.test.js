@@ -157,7 +157,7 @@ describe('Textarea REST API', function() {
                 request.put(getTextareaURI(resume._id, textResult.insertedId))
                     .set('Content-Type', 'application/json')
                     .send({})
-                    .expect(422)
+                    .expect(400)
                     .end(done);
             });
         });

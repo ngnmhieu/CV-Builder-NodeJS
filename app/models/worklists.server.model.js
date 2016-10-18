@@ -23,11 +23,11 @@ var getNewList = function (params) {
             var item = params.items[i]
             items.push({
                 title       : String(item.title),
-                institution : String(item.title),
+                institution : String(item.institution),
                 startDate   : (item.startDate instanceof Date) ? item.startDate : new Date(item.startDate),
                 endDate     : (item.endDate instanceof Date)   ? item.endDate   : new Date(item.endDate),
                 tillNow     : Boolean(item.tillNow),
-                desc        : String(item.title)
+                desc        : String(item.desc)
             });
         }
     }
@@ -35,9 +35,9 @@ var getNewList = function (params) {
     return {
         _id   : params._id,
         type  : "worklist",
-        name  : params.name ? params.name.toString()  : "New worklist",
+        name  : params.name ? String(params.name)  : "New worklist",
         items : items,
-        order : params.order ? parseInt(params.order) : 0
+        order : params.order ? parseInt(params.order) : -1
     };
 };
 
@@ -59,10 +59,10 @@ exports.createEmpty = function (resume, callback) {
         };
 
         resumes.updateOne({_id: resume._id}, {'$push': {sections: section}}, function (upErr, upResult) {
-
-            if (upErr) throw upErr;
-
-            callback(err, result);
+            if (err || upErr)
+                callback(null);
+            else
+                callback(_.extend(list, {_id: result.insertedId}));
         });
         
     });

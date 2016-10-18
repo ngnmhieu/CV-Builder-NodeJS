@@ -1,5 +1,5 @@
 <script id="basicinfo-template" type="text/x-handlebars-template">
-    <div class="card" id="BasicInfo">
+    <div class="card basicinfo" id="BasicInfo">
         <div class="card-content">
             <span class="card-title">Personal Information</span>
 
@@ -36,7 +36,7 @@
                     <div class="col s6">
                         <div class="input-field">
                             <label for="dob">Birthday</label>
-                            <input type="date" class="datepicker" name="dob" data-value="24.07.1995">
+                            <input type="date" class="datepicker" name="dob" data-value="{{date param.dob}}">
                         </div>
 
                         <div class="input-field">

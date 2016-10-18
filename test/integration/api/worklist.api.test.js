@@ -160,7 +160,7 @@ describe('Worklist REST API', function() {
                 request.put(getWorkListURI(resume._id, listResult.insertedId))
                     .set('Content-Type', 'application/json')
                     .send({})
-                    .expect(422)
+                    .expect(400)
                     .end(done);
             });
         });
