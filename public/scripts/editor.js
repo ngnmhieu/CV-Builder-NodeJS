@@ -141,14 +141,20 @@ var Editor = (function($) {
 
             var card = $(this).closest('.card');
 
+            // hide card first
+            card.hide();
+
             $.ajax({
                 type: 'DELETE',
                 url: $(this).attr('action')
             }).done(function(res) {
                 card.remove();
             }).fail(function(res) {
-                console.log('fail to delete section');
                 // TODO
+                console.log('fail to delete section');
+                
+                // show card if it cannot be saved
+                card.show();
             });
         });
 
@@ -166,9 +172,14 @@ var Editor = (function($) {
 
                 e.preventDefault();
 
-                var data = dataExtractor($(this));
-
                 var form = $(this);
+                var card = form.closest('.card');
+                var displayArea = card.find('.display-mode');
+                var editArea = card.find('.edit-mode');
+
+                editArea.find('.temporarily-removed').remove();
+
+                var data = dataExtractor(form);
 
                 return $.ajax({
                     type: 'PUT',
@@ -178,16 +189,15 @@ var Editor = (function($) {
                     dataType: 'json',
                 }).done(done || function(data) {
 
-                    var card = form.closest('.card');
-                    var displayArea = card.find('.display-mode');
-                    var editArea = card.find('.edit-mode');
-                    
                     var template = $('#' + form.data('display-template-id')).html();
                     displayArea.html(render(template, {
                         param: data,
                         user: user,
                         resume: resume
                     }));
+
+                    // remove class .temporary from temporary entries
+                    editArea.find('.temporary').removeClass('temporary');
 
                     editArea.hide();
                     displayArea.show();
@@ -210,8 +220,14 @@ var Editor = (function($) {
 
             var container = $('#' + $(this).data('item-container-id'));
             var template = $('#' + $(this).data('item-template-id')).html();
-            // TODO: index of the newly added item
-            container.append(render(template, { }));
+            var itemCount = parseInt(container.data('item-count'));
+
+            container.append(render(template, { 
+                itemIndex: itemCount,
+                temporary: true // temporary items will be deleted when `Cancel` is clicked
+            }));
+
+            container.data('item-count', itemCount + 1)
 
             refreshUI();
         });
@@ -219,7 +235,7 @@ var Editor = (function($) {
         // delete item from list
         $(document).on('click', '.delete-item-btn', function(e) {
             e.preventDefault();
-            $(this).closest('.item').remove();
+            $(this).closest('.item').addClass('temporarily-removed').hide();
         });
 
 
@@ -236,7 +252,7 @@ var Editor = (function($) {
         saveSection('.bulletlist-edit-form', function(form) {
             var name = form.find('input[name=name]').val();
             var numbered = form.find('input[name=numbered]').is(':checked');
-            var items = $.map(form.find('input[name=list-item]'), function(input) {
+            var items = $.map(form.find('input.item-content'), function(input) {
                 return {
                     content: input.value,
                     order: -1
@@ -296,7 +312,7 @@ var Editor = (function($) {
                     institution : item.find('input[name=institution]').val(),
                     startDate   : toISODate(monthStart, yearStart),
                     endDate     : toISODate(monthEnd, yearEnd),
-                    tillNow     : item.find('input[name=tillNow]').is(':checked'),
+                    tillNow     : item.find('input.tillNow').is(':checked'),
                     desc        : item.find('textarea[name=desc]').val(),
                     order       : -1
                 }
@@ -311,7 +327,7 @@ var Editor = (function($) {
         });
 
         // toggle until now checkbox event
-        $(document).on('change', 'input[name=tillNow]', function(e) {
+        $(document).on('change', 'input.tillNow', function(e) {
             var disableDate = $(this).is(':checked');
             $(this).closest('.worklist-item').find('.end-date-input select').prop('disabled', disableDate);
             refreshUI();
@@ -319,6 +335,7 @@ var Editor = (function($) {
 
         // toggle numbered list / bulletlist
         $(document).on('change', 'input[name=numbered]', function(e) {
+
             var numbered = $(this).is(':checked');
             var list = $(this).closest('.bulletlist-card').find('.bulletlist');
             if (numbered)
@@ -327,10 +344,39 @@ var Editor = (function($) {
                 list.removeClass('numbered');
         });
 
+        // edit section
         $(document).on('click', '.edit', function() {
             var card = $(this).closest('.card')
-            card.find('.edit-mode').show();
-            card.find('.display-mode').hide();
+            var editArea = card.find('.edit-mode');
+            var displayArea = card.find('.display-mode');
+
+            var formData = editArea.values();
+
+            // restore form data if cancel is clicked
+            editArea.find('.cancel').off('click').on('click', function(e) {
+
+                e.preventDefault();
+
+                editArea.hide();
+
+                // restore form data
+                editArea.values(formData);
+
+                // remove all temporary entries
+                editArea.find('.temporary').remove();
+
+                // restore all temporarily removed entries
+                editArea.find('.temporarily-removed')
+                    .removeClass('temporarily-removed').show();
+
+                refreshUI();
+
+                displayArea.show();
+            });
+
+            editArea.show();
+
+            displayArea.hide();
         });
     };
 

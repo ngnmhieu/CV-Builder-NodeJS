@@ -16,15 +16,15 @@
                     <label for="numbered_{{param._id}}" >Numbered</label>
                     </p>
 
-                    <ul class="bulletlist {{tern param.numbered 'numbered' ''}}">
-                        {{#each param.items}} {{> bulletlistItem }} {{/each}}
+                    <ul class="bulletlist {{tern param.numbered 'numbered' ''}}" data-item-count="{{param.items.length}}">
+                        {{#each param.items}} {{> bulletlistItem itemIndex=@index temporary=false }} {{/each}}
                     </ul>
 
                     <a href="#" class="add-item-btn" data-item-template-id="bulletlist-item-template" data-item-container-id="bulletlist_{{param._id}} .bulletlist">+ Add entry</a>
 
                     <div class="save-buttons">
                         <button type="submit" class="btn right">Save</button>
-                        <button class="btn-flat right">Cancel</button>
+                        <button class="btn-flat right cancel">Cancel</button>
                         <div class="clearfix"></div>
                     </div>
                 </form>
@@ -39,8 +39,8 @@
 </script>
 
 <script id="bulletlist-item-template" type="text/x-handlebars-template">
-    <li class="bulletlist-item item">
-        <input name="list-item" type="text" value="{{content}}">
+    <li class="bulletlist-item item {{tern temporary 'temporary' ''}}">
+    <input name="list-item-{{itemIndex}}" class="item-content" type="text" value="{{content}}">
 
         <a class="delete-item-btn show-on-hover" href="#">
             <i class="material-icons teal-text">clear</i>
@@ -57,6 +57,12 @@
     </form>
 
     <span class="card-title">{{param.name}}</span>
+    numbered: {{tern param.numbered 'yes' 'no'}}
+    <ul>
+    {{#each param.items}}
+        <li>{{content}}</li>
+    {{/each}}
+    </ul>
 
     <button class="btn edit">Edit</button>
 </script>

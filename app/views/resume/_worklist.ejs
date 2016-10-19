@@ -10,15 +10,15 @@
                         </div>
                     </div>
 
-                    <div class="worklist">
-                        {{#each param.items}} {{> worklistItem }} {{/each}}
+                    <div class="worklist" data-item-count="{{param.items.length}}">
+                        {{#each param.items}} {{> worklistItem itemIndex=@index temporary=false }} {{/each}}
                     </div>
 
                     <a href="#" class="add-item-btn" data-item-template-id="worklist-item-template" data-item-container-id="worklist_{{param._id}} .worklist">+ Add entry</a>
 
                     <div class="save-buttons">
                         <button type="submit" class="btn right">Save</button>
-                        <button class="btn-flat right">Cancel</button>
+                        <button class="btn-flat right cancel">Cancel</button>
                         <div class="clearfix"></div>
                     </div>
                 </form>
@@ -33,7 +33,7 @@
 
 <script id="worklist-item-template" type="text/x-handlebars-template">
 
-    <div class="worklist-item item">
+    <div class="worklist-item item {{tern temporary 'temporary' ''}}">
         
         <a class="delete-item-btn show-on-hover" href="#">
             <i class="material-icons teal-text">clear</i>
@@ -74,8 +74,8 @@
                             {{yearSelect endDate 'name="yearEnd"' tillNow }}
                         </div>
                         <p class="col s12 material-checkbox">
-                            <input type="checkbox" id="tillNow_{{@index}}" name="tillNow" {{tern tillNow 'checked' ''}} />
-                            <label for="tillNow_{{@index}}">Until now</label>
+                            <input type="checkbox" id="tillNow_{{itemIndex}}" class="tillNow" name="tillNow_{{itemIndex}}" {{tern tillNow 'checked' ''}} />
+                            <label for="tillNow_{{itemIndex}}">Until now</label>
                         </p>
                     </div>
 
@@ -99,5 +99,10 @@
         </a>
     </form>
     <span class="card-title">{{param.name}}</span>
+    <ul>
+    {{#each param.items}}
+        <li><b>{{title}}</b> at {{institution}} (from {{dateFormat startDate}} to {{dateFormat endDate}})</li>
+    {{/each}}
+    </ul>
     <button class="btn edit">Edit</button>
 </script>

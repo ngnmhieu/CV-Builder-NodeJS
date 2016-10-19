@@ -181,6 +181,7 @@ input:-webkit-autofill {
 .bulletlist li {
     list-style-type: disc;
 }
+
 .bulletlist.numbered li {
     list-style-type: decimal;
 }
@@ -191,5 +192,3 @@ input:-webkit-autofill {
     top: 15px;
     right: 0;
 }
-
-
