@@ -102,7 +102,12 @@ exports.updateById = function (textarea, params, callback) {
     var newTextarea = exports.getNewTextarea(params);
     delete newTextarea._id;
 
-    textareas.updateOne({_id: textarea._id}, newTextarea, callback);
+    textareas.updateOne({_id: textarea._id}, newTextarea, function(err, result) {
+        if (err)
+            callback(err, null);
+        else 
+            callback(null, _.extend(newTextarea, {_id: textarea._id}));
+    });
 };
 
 /**

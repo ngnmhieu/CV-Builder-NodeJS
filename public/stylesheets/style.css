@@ -21,6 +21,10 @@
     vertical-align: middle;
 }
 
+.material-checkbox label {
+    padding-left: 30px;
+}
+
 .show-on-hover {
     display: none;
 }
@@ -123,6 +127,10 @@ input:-webkit-autofill {
     margin-top: 20px;
 }
 
+.edit-mode {
+    display: none;
+}
+
 .save-buttons .btn {
     margin-left: 5px; 
 }
@@ -157,10 +165,26 @@ input:-webkit-autofill {
     top: -20px;
 }
 
+.bulletlist  {
+    padding-left: 18px;
+}
+
 .bulletlist .bulletlist-item {
     position: relative;
     padding-right: 40px;
 }
+
+.bulletlist .bulletlist-item input {
+    margin-bottom: 10px;
+}
+
+.bulletlist li {
+    list-style-type: disc;
+}
+.bulletlist.numbered li {
+    list-style-type: decimal;
+}
+
 
 .bulletlist .bulletlist-item .delete-item-btn {
     position: absolute;

@@ -37,7 +37,7 @@ var getNewList = function (params) {
         name          : params.name ? params.name.toString() : "New bullet list",
         items         : items,
         order         : isNaN(params.order) ? -1 : params.order,
-        orderedItems  : params.orderedItems ? Boolean(params.orderedItems) : false,
+        numbered  : params.numbered ? Boolean(params.numbered) : false,
     };
 };
 
@@ -108,7 +108,7 @@ var validate = function (params) {
             return false;
     }
 
-    if (params.orderedItems === undefined) return false;
+    if (params.numbered === undefined) return false;
 
     if (isNaN(parseInt(params.order))) return false;
     

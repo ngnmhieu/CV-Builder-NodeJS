@@ -86,7 +86,7 @@ exports.byId = function(req, res, next, id) {
  */
 exports.update = function(req, res) {
 
-    worklists.updateById(req.workList, req.body, function(err, result) {
+    worklists.updateById(req.workList, req.body, function(err, list) {
         if (err) {
             switch (err) {
                 case 'validation_error':
@@ -97,6 +97,6 @@ exports.update = function(req, res) {
             }
         }
 
-        res.sendStatus(200);
+        res.status(200).json(list);
     });
 }

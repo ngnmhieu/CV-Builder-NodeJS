@@ -40,7 +40,6 @@ var getNewResume = function(options) {
 exports.createEmpty = function(user, callback) {
 
     var resume = getNewResume({user_id: user._id});
-    console.log(resume);
     delete resume._id;
 
     resumes.insertOne(resume, callback);
@@ -97,13 +96,18 @@ var getNewBasicInfo = function(options) {
 exports.updateBasicInfo = function(resume, params, callback) {
 
     if (!validateBasicInfo(params)) {
-        callback('validation_error');
+        callback('validation_error', null);
         return;
     }
 
     var basicinfo = getNewBasicInfo(params);
 
-    resumes.updateOne({ _id: resume._id }, { '$set': {basicinfo: basicinfo } }, callback);
+    resumes.updateOne({ _id: resume._id }, { '$set': { basicinfo: basicinfo } }, function(err, result) {
+        if (err)
+            callback(err, null);
+        else
+            callback(null, basicinfo);
+    });
 };
 
 /**

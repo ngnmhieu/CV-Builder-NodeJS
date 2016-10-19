@@ -55,7 +55,7 @@ exports.byId = function(req, res, next, id) {
  */
 exports.update = function(req, res) {
 
-    textareas.updateById(req.textarea, req.body, function(err, result) {
+    textareas.updateById(req.textarea, req.body, function(err, textarea) {
         if (err) {
             switch (err) {
                 case 'validation_error':
@@ -66,7 +66,7 @@ exports.update = function(req, res) {
             }
         }
 
-        res.sendStatus(200);
+        res.status(200).json(textarea);
     });
 }
 

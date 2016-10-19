@@ -1,38 +1,40 @@
 <script id="worklist-template" type="text/x-handlebars-template">
     <div class="card worklist-card" id="worklist_{{param._id}}">
         <div class="card-content">
-            <form action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}" class="delete-section-form show-on-hover">
-                <a class="form-submit" href="#">
-                    <i class="material-icons teal-text">clear</i>
-                </a>
-            </form>
+            <div class="edit-mode">
 
-            <form class="worklist-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}" method="post">
-                <div class="row">
-                    <div class="col s6">
-                        <input type="text" name="name" value="{{param.name}}" class="card-title">
+                <form class="worklist-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}" method="post" data-display-template-id="worklist-display-template">
+                    <div class="row">
+                        <div class="col s6">
+                            <input type="text" name="name" value="{{param.name}}" class="card-title">
+                        </div>
                     </div>
-                </div>
 
-                <div class="worklist">
-                    {{#each param.items}} {{> worklistItem }} {{/each}}
-                </div>
+                    <div class="worklist">
+                        {{#each param.items}} {{> worklistItem }} {{/each}}
+                    </div>
 
-                <a href="#" class="add-item-btn" data-item-template-id="worklist-item-template" data-item-container-id="worklist_{{param._id}} .worklist">+ Add entry</a>
+                    <a href="#" class="add-item-btn" data-item-template-id="worklist-item-template" data-item-container-id="worklist_{{param._id}} .worklist">+ Add entry</a>
 
-                <div class="save-buttons">
-                    <button type="submit" class="btn right">Save</button>
-                    <button class="btn-flat right">Cancel</button>
-                    <div class="clearfix"></div>
-                </div>
-            </form>
+                    <div class="save-buttons">
+                        <button type="submit" class="btn right">Save</button>
+                        <button class="btn-flat right">Cancel</button>
+                        <div class="clearfix"></div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="display-mode">
+                {{> worklistDisplay param=param user=user resume=resume }}
+            </div>
         </div>
     </div>
 </script>
 
 <script id="worklist-item-template" type="text/x-handlebars-template">
-    <div class="worklist-item item">
 
+    <div class="worklist-item item">
+        
         <a class="delete-item-btn show-on-hover" href="#">
             <i class="material-icons teal-text">clear</i>
         </a>
@@ -71,8 +73,8 @@
                         <div class="input-field col s6">
                             {{yearSelect endDate 'name="yearEnd"' tillNow }}
                         </div>
-                        <p class="col s12">
-                            <input type="checkbox" class="filled-in" id="tillNow_{{@index}}" name="tillNow" {{tern tillNow 'checked' ''}} />
+                        <p class="col s12 material-checkbox">
+                            <input type="checkbox" id="tillNow_{{@index}}" name="tillNow" {{tern tillNow 'checked' ''}} />
                             <label for="tillNow_{{@index}}">Until now</label>
                         </p>
                     </div>
@@ -87,4 +89,15 @@
 
         </div>
     </div>
+</script>
+
+
+<script id="worklist-display-template" type="text/x-handlebars-template">
+    <form action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}" class="delete-section-form show-on-hover">
+        <a class="form-submit" href="#">
+            <i class="material-icons teal-text">clear</i>
+        </a>
+    </form>
+    <span class="card-title">{{param.name}}</span>
+    <button class="btn edit">Edit</button>
 </script>

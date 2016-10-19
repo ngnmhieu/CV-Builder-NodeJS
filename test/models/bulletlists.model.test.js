@@ -61,7 +61,7 @@ describe('Bulletlist Model', function (done) {
             name          : 'Empty Bullet List',
             items         : [],
             order         : 1,
-            orderedItems : false
+            numbered : false
         }, callback)
     };
 
@@ -70,7 +70,7 @@ describe('Bulletlist Model', function (done) {
             name          : 'Empty Bullet List',
             items         : [],
             order         : 1,
-            orderedItems : false
+            numbered : false
         }, function (err, listRes) {
 
             db.collection('resumes').insertOne({
@@ -98,21 +98,21 @@ describe('Bulletlist Model', function (done) {
             name          : 'Empty Bullet List',
             items         : [],
             order         : 1,
-            orderedItems : false
+            numbered : false
         }, function (err, listRes) {
 
             bulletlists.updateById(listRes.ops[0], {
                 name: 'A New Bullet List',
                 items: ['item1'],
                 order: 2,
-                orderedItems: true
+                numbered: true
             }, function (err, updateResult) {
 
                 db.collection('bulletlists').findOne({_id: listRes.insertedId}, function (err, list) {
                     list.name.should.equal('A New Bullet List');
                     list.items.should.not.be.empty();
                     list.order.should.equal(2);
-                    list.orderedItems.should.be.true();
+                    list.numbered.should.be.true();
                     done();
                 });
             });
@@ -125,7 +125,7 @@ describe('Bulletlist Model', function (done) {
             name          : 'Empty Bullet List',
             items         : [],
             order         : 1,
-            orderedItems : false
+            numbered : false
         }, function (err, listRes) {
 
             bulletlists.updateById(listRes.ops[0], {}, function (err, updateResult) {
@@ -140,7 +140,7 @@ describe('Bulletlist Model', function (done) {
             name          : 'Empty Bullet List',
             items         : [true, false], // invalid, must be strings
             order         : 1,
-            orderedItems : true
+            numbered : true
         }, function (err, listRes) {
 
             bulletlists.updateById(listRes.ops[0], {}, function (err, updateResult) {

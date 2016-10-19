@@ -133,7 +133,12 @@ exports.updateById = function (list, params, callback) {
     var newList = exports.getNewList(params);
     delete newList._id;
 
-    worklists.updateOne({_id: list._id}, newList, callback);
+    worklists.updateOne({_id: list._id}, newList, function(err, result) {
+        if (err)
+            callback(err, null);
+        else 
+            callback(null, _.extend(newList, {_id: list._id}));
+    });
 };
 
 /**

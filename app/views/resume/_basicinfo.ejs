@@ -1,77 +1,103 @@
 <script id="basicinfo-template" type="text/x-handlebars-template">
     <div class="card basicinfo" id="BasicInfo">
         <div class="card-content">
-            <span class="card-title">Personal Information</span>
+            <div class="edit-mode">
 
-            <form class=" basicinfo-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/basicinfo" method="post">
-                <div class="row">
-                    <div class="col s6">
-                        <div class="input-field">
-                            <label for="name">Name</label>
-                            <input name="name" type="text" value="{{param.name}}">
+                <span class="card-title">Personal Information</span>
+
+                <form class="basicinfo-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/basicinfo" method="post" data-display-template-id="basicinfo-display-template">
+                    <div class="row">
+                        <div class="col s6">
+                            <div class="input-field">
+                                <label for="name">Name</label>
+                                <input name="name" type="text" value="{{param.name}}">
+                            </div>
+
+                            <div class="input-field">
+                                <label for="email">Email</label>
+                                <input name="email" type="text" value="{{param.email}}">
+                            </div>
+
+                            <div class="input-field">
+                                <label for="address1">Address Line 1</label>
+                                <input name="address1" type="text" value="{{param.address1}}">
+                            </div>
+
+                            <div class="input-field">
+                                <label for="address2">Address Line 2</label>
+                                <input name="address2" type="text" value="{{param.address2}}">
+                            </div>
+
+                            <div class="input-field">
+                                <label for="address3">Address Line 3</label>
+                                <input name="address3" type="text" value="{{param.address3}}">
+                            </div>
+
                         </div>
 
-                        <div class="input-field">
-                            <label for="email">Email</label>
-                            <input name="email" type="text" value="{{param.email}}">
-                        </div>
+                        <div class="col s6">
+                            <div class="input-field">
+                                <label for="dob">Birthday</label>
+                                <input type="date" class="datepicker" name="dob" data-value="{{isoDate param.dob}}">
+                            </div>
 
-                        <div class="input-field">
-                            <label for="address1">Address Line 1</label>
-                            <input name="address1" type="text" value="{{param.address1}}">
-                        </div>
+                            <div class="input-field">
+                                <label for="website">Website</label>
+                                <input name="website" type="text" value="{{param.website}}">
+                            </div>
 
-                        <div class="input-field">
-                            <label for="address2">Address Line 2</label>
-                            <input name="address2" type="text" value="{{param.address2}}">
-                        </div>
+                            <div class="row" style="margin-bottom: 0">
 
-                        <div class="input-field">
-                            <label for="address3">Address Line 3</label>
-                            <input name="address3" type="text" value="{{param.address3}}">
+                                <div class="input-field col s6">
+                                    <label for="phone">Phone</label>
+                                    <input name="phone" type="text" value="{{param.phone}}">
+                                </div>
+
+                                <div class="input-field col s6">
+                                    <label for="fax">Fax</label>
+                                    <input name="fax" type="text" value="{{param.fax}}">
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="height: 145px; width: 145px; background: #eee; padding: 60px 52px; color: #555">
+                                    Photo
+                                </div>
+                            </div>
                         </div>
 
                     </div>
 
-                    <div class="col s6">
-                        <div class="input-field">
-                            <label for="dob">Birthday</label>
-                            <input type="date" class="datepicker" name="dob" data-value="{{date param.dob}}">
-                        </div>
-
-                        <div class="input-field">
-                            <label for="website">Website</label>
-                            <input name="website" type="text" value="{{param.website}}">
-                        </div>
-
-                        <div class="row" style="margin-bottom: 0">
-
-                            <div class="input-field col s6">
-                                <label for="phone">Phone</label>
-                                <input name="phone" type="text" value="{{param.phone}}">
-                            </div>
-
-                            <div class="input-field col s6">
-                                <label for="fax">Fax</label>
-                                <input name="fax" type="text" value="{{param.fax}}">
-                            </div>
-                        </div>
-
-                        <div>
-                            <div style="height: 145px; width: 145px; background: #eee; padding: 60px 52px; color: #555">
-                                Photo
-                            </div>
-                        </div>
+                    <div class="save-buttons">
+                        <button class="btn right">Save</button>
+                        <button class="btn-flat right">Cancel</button>
+                        <div class="clearfix"></div>
                     </div>
+                </form>
+            </div>
 
-                </div>
-
-                <div class="save-buttons">
-                    <button class="btn right">Save</button>
-                    <button class="btn-flat right">Cancel</button>
-                    <div class="clearfix"></div>
-                </div>
-            </form>
+            <div class="display-mode">
+                {{> basicinfoDisplay param=param }}
+            </div>
         </div>
     </div>
+</script>
+
+<script id="basicinfo-display-template" type="text/x-handlebars-template">
+    <span class="card-title">Personal Information</span>
+    <button class="btn edit">Edit</button>
+    <br>
+    name: {{param.name}}
+    <br>
+    email: {{param.email}}
+    <br>
+    website: {{param.website}}
+    <br>
+    phone: {{param.phone}}
+    <br>
+    fax: {{param.fax}}
+    <br>
+    dob: {{dateFormat param.dob}}
+    <br>
+    address1: {{param.address1}}
 </script>

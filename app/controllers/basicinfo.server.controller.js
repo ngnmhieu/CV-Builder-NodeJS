@@ -17,7 +17,7 @@ exports.read = function (req, res) {
  */
 exports.update = function (req, res) {
 
-    resumes.updateBasicInfo(req.resumeObj, req.body, function (err, result) {
+    resumes.updateBasicInfo(req.resumeObj, req.body, function (err, basicinfo) {
         if (err) {
             switch(err) {
                 case 'validation_error': 
@@ -27,6 +27,6 @@ exports.update = function (req, res) {
             }
         }
 
-        res.sendStatus(200);
+        res.status(200).json(basicinfo);
     });
 };

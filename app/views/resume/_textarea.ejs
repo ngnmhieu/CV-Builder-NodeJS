@@ -1,14 +1,11 @@
 <script id="textarea-template" type="text/x-handlebars-template">
-        <div class="card">
-            <div class="card-content">
+    <div class="card">
+        <div class="card-content">
+            <div class="edit-mode">
+                <!--
+                -->
 
-                <form action="/users/{{user._id}}/resumes/{{resume._id}}/textareas/{{param._id}}" class="delete-section-form show-on-hover">
-                    <a class="form-submit" href="#">
-                        <i class="material-icons teal-text">clear</i>
-                    </a>
-                </form>
-
-                <form class="textarea-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/textareas/{{param._id}}" method="put">
+                <form class="textarea-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/textareas/{{param._id}}" method="put" data-display-template-id="textarea-display-template">
                     <div class="row">
                         <div class="col s6">
                             <input type="text" name="name" value="{{param.name}}" class="card-title">
@@ -27,6 +24,23 @@
                     </div>
                 </form>
             </div>
-        </div>
 
+            <div class="display-mode">
+                {{> textareaDisplay param=param user=user resume=resume }}
+            </div>
+
+        </div>
+    </div>
+</script>
+
+<script id="textarea-display-template" type="text/x-handlebars-template">
+    <form action="/users/{{user._id}}/resumes/{{resume._id}}/textareas/{{param._id}}" class="delete-section-form show-on-hover">
+        <a class="form-submit" href="#">
+            <i class="material-icons teal-text">clear</i>
+        </a>
+    </form>
+    <span class="card-title">{{param.name}}</span>
+    <button class="btn edit">Edit</button>
+    <br>
+    content: {{param.content}}
 </script>

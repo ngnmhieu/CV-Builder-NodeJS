@@ -12,12 +12,27 @@ var Common = (function($) {
 
         selector = selector || '.show-on-hover';
 
-        parent.on('mouseenter', parentSelector, function() {
+        parent.on('mouseover', parentSelector, function() {
             $(this).find(selector).show();
         });
 
         parent.on('mouseleave', parentSelector, function() {
             $(this).find(selector).hide();
+        });
+    };
+
+    /**
+     * Change the type of the this element
+     */
+    $.fn.changeElementType = function(newType) {
+        var attrs = {};
+
+        $.each(this[0].attributes, function(idx, attr) {
+            attrs[attr.nodeName] = attr.nodeValue;
+        });
+
+        this.replaceWith(function() {
+            return $("<" + newType + "/>", attrs).append($(this).contents());
         });
     };
 

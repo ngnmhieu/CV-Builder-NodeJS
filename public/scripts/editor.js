@@ -2,7 +2,7 @@ var Editor = (function($) {
 
     var that = {};
 
-    var user, resume;
+    var user, resume, dobDatePicker;
 
     // helper function to render templates
     var render = function(source, context) {
@@ -21,14 +21,27 @@ var Editor = (function($) {
         Handlebars.registerPartial('bulletlistItem', $('#bulletlist-item-template').html());
         Handlebars.registerPartial('worklistItem', $('#worklist-item-template').html());
 
+        Handlebars.registerPartial('basicinfoDisplay', $('#basicinfo-display-template').html());
+        Handlebars.registerPartial('bulletlistDisplay', $('#bulletlist-display-template').html());
+        Handlebars.registerPartial('worklistDisplay', $('#worklist-display-template').html());
+        Handlebars.registerPartial('textareaDisplay', $('#textarea-display-template').html());
+
         // date helper
-        Handlebars.registerHelper('date', function(dateStr) {
+        Handlebars.registerHelper('isoDate', function(dateStr) {
             var date = isNaN(Date.parse(dateStr)) ? new Date() : new Date(dateStr);
             var year = date.getFullYear();
             var month = date.getMonth() + 1;
             var dateNum = date.getDate();
 
             return year + '-' + (month < 10 ? '0' + month : month) + '-' + (dateNum < 10 ? '0' + dateNum : dateNum);
+        });
+
+        Handlebars.registerHelper('dateFormat', function(dateStr) {
+            var date = isNaN(Date.parse(dateStr)) ? new Date() : new Date(dateStr);
+            var year = date.getFullYear();
+            var dateNum = date.getDate();
+
+            return (dateNum < 10 ? '0' + dateNum : dateNum) + ' ' + MONTHS[date.getMonth()] + ' ' + year 
         });
 
         Handlebars.registerHelper('tern', function(cond, pos, neg) {
@@ -39,7 +52,6 @@ var Editor = (function($) {
 
         Handlebars.registerHelper('monthSelect', function(selectedDate, options, disabled) {
             var date = isNaN(Date.parse(selectedDate)) ? new Date() : new Date(selectedDate);
-            console.log(disabled);
             var disabled = disabled ? 'disabled' : '';
             var html = '<select ' + options + ' ' + disabled +'>' ;
             var selectedMonth = date.getMonth();
@@ -76,13 +88,13 @@ var Editor = (function($) {
             selectMonths: true, // Creates a dropdown to control month
             selectYears: 100, // Creates a dropdown of 15 years to control year
             formatSubmit: 'yyyy-mm-dd',
-            format: 'yyyy-mm-dd'
+            format: 'dd mmm yyyy'
         };
 
         // enable datepicker
         $('.worklist .datepicker').pickadate(datepickerOpts);
 
-        $('.basicinfo .datepicker').pickadate(_.extend(datepickerOpts, {max: true}));
+        dobDatePicker = $('.basicinfo .datepicker').pickadate(_.extend(datepickerOpts, {max: true}));
 
         $('select').material_select();
 
@@ -104,14 +116,21 @@ var Editor = (function($) {
             $.post({
                 url: $(this).attr('action')
             }).done(function(data) {
-                container.append(render(template, {
+                var newSec = $(render(template, {
                     param: data,
                     user: user,
                     resume: resume,
                 }));
+
+                container.append(newSec);
+
+                // trigger edit mode
+                newSec.find('.edit').click();
+
                 refreshUI();
             }).fail(function() {
                 // TODO
+                console.log('fail to add seciton');
             });
         });
 
@@ -128,7 +147,7 @@ var Editor = (function($) {
             }).done(function(res) {
                 card.remove();
             }).fail(function(res) {
-                console.log('fail');
+                console.log('fail to delete section');
                 // TODO
             });
         });
@@ -143,29 +162,42 @@ var Editor = (function($) {
          */
         var saveSection = function(formSelector, dataExtractor, done, fail) {
 
-            var doneCallback = done || function(data) {
-                console.log('ok');
-            };
-
-            var failCallback = fail || function(data) {
-                console.log('fail');
-                // TODO
-            };
-
             $(document).on('submit', formSelector, function(e) {
 
                 e.preventDefault();
 
                 var data = dataExtractor($(this));
 
+                var form = $(this);
+
                 return $.ajax({
                     type: 'PUT',
-                    url: $(this).attr('action'),
+                    url: form.attr('action'),
                     data: JSON.stringify(data),
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
-                    success: done,
-                    fail: fail
+                }).done(done || function(data) {
+
+                    var card = form.closest('.card');
+                    var displayArea = card.find('.display-mode');
+                    var editArea = card.find('.edit-mode');
+                    
+                    var template = $('#' + form.data('display-template-id')).html();
+                    displayArea.html(render(template, {
+                        param: data,
+                        user: user,
+                        resume: resume
+                    }));
+
+                    editArea.hide();
+                    displayArea.show();
+
+                }).fail(fail || function(res, stastus) {
+
+                    console.log('fail to save');
+                    console.log(res);
+                    console.log(status);
+
                 });
             });
 
@@ -178,8 +210,8 @@ var Editor = (function($) {
 
             var container = $('#' + $(this).data('item-container-id'));
             var template = $('#' + $(this).data('item-template-id')).html();
-
-            container.append(render(template, {}));
+            // TODO: index of the newly added item
+            container.append(render(template, { }));
 
             refreshUI();
         });
@@ -203,6 +235,7 @@ var Editor = (function($) {
         // save bulletlist
         saveSection('.bulletlist-edit-form', function(form) {
             var name = form.find('input[name=name]').val();
+            var numbered = form.find('input[name=numbered]').is(':checked');
             var items = $.map(form.find('input[name=list-item]'), function(input) {
                 return {
                     content: input.value,
@@ -214,7 +247,7 @@ var Editor = (function($) {
                 name: name,
                 items: items,
                 order: 0,
-                orderedItems: false
+                numbered: numbered
             };
         });
 
@@ -229,7 +262,6 @@ var Editor = (function($) {
 
         // save basicinfo
         saveSection('.basicinfo-edit-form', function(form) {
-
             return {
                 name     : form.find('input[name=name]').val() || "",
                 email    : form.find('input[name=email]').val() || "",
@@ -239,11 +271,11 @@ var Editor = (function($) {
                 address1 : form.find('input[name=address1]').val() || "",
                 address2 : form.find('input[name=address2]').val() || "",
                 address3 : form.find('input[name=address3]').val() || "",
-                dob      : form.find('input[name=dob]').val() || "",
+                dob      : form.find('input[name=dob_submit]').val() || "",
             };
         });
 
-        var formatDate = function(month, year) {
+        var toISODate = function(month, year) {
             month = parseInt(month) < 10 ? '0' + month : month;
             return year + '-' + month + '-01';
         };
@@ -262,8 +294,8 @@ var Editor = (function($) {
                 return {
                     title       : item.find('input[name=title]').val(),
                     institution : item.find('input[name=institution]').val(),
-                    startDate   : formatDate(monthStart, yearStart),
-                    endDate     : formatDate(monthEnd, yearEnd),
+                    startDate   : toISODate(monthStart, yearStart),
+                    endDate     : toISODate(monthEnd, yearEnd),
                     tillNow     : item.find('input[name=tillNow]').is(':checked'),
                     desc        : item.find('textarea[name=desc]').val(),
                     order       : -1
@@ -274,7 +306,7 @@ var Editor = (function($) {
                 name: name,
                 items: items,
                 order: 0,
-                orderedItems: false
+                numbered: false
             };
         });
 
@@ -285,6 +317,21 @@ var Editor = (function($) {
             refreshUI();
         });
 
+        // toggle numbered list / bulletlist
+        $(document).on('change', 'input[name=numbered]', function(e) {
+            var numbered = $(this).is(':checked');
+            var list = $(this).closest('.bulletlist-card').find('.bulletlist');
+            if (numbered)
+                list.addClass('numbered');
+            else
+                list.removeClass('numbered');
+        });
+
+        $(document).on('click', '.edit', function() {
+            var card = $(this).closest('.card')
+            card.find('.edit-mode').show();
+            card.find('.display-mode').hide();
+        });
     };
 
     // render the resume

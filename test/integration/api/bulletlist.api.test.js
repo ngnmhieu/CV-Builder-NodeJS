@@ -91,7 +91,7 @@ describe('Bulletlist REST API', function() {
                         name: 'A bullet list',
                         items: ['item1', 'item2'],
                         order: 1,
-                        orderedItems: false
+                        numbered: false
                     })
                     .expect(200)
                     .end(done);

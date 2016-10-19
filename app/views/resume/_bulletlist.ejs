@@ -3,33 +3,36 @@
     <div class="card bulletlist-card" id="bulletlist_{{param._id}}">
         <div class="card-content">
 
-            <form action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}" class="delete-section-form show-on-hover">
-                <a class="form-submit" href="#">
-                    <i class="material-icons teal-text">clear</i>
-                </a>
-            </form>
-
-            <form class="bulletlist-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}" method="post">
-                <div class="row">
-                    <div class="col s6">
-                        <input type="text" value="{{param.name}}" name="name" class="card-title">
+            <div class="edit-mode">
+                <form class="bulletlist-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}" method="post" data-display-template-id="bulletlist-display-template">
+                    <div class="row">
+                        <div class="col s6">
+                            <input type="text" value="{{param.name}}" name="name" class="card-title">
+                        </div>
                     </div>
-                </div>
 
-                <span style="font-size: 20px">List Items</span>
+                    <p style="material-checkbox">
+                    <input type="checkbox" id="numbered_{{param._id}}" name="numbered" {{tern param.numbered 'checked' ''}} />
+                    <label for="numbered_{{param._id}}" >Numbered</label>
+                    </p>
 
-                <ul class="bulletlist">
-                    {{#each param.items}} {{> bulletlistItem }} {{/each}}
-                </ul>
+                    <ul class="bulletlist {{tern param.numbered 'numbered' ''}}">
+                        {{#each param.items}} {{> bulletlistItem }} {{/each}}
+                    </ul>
 
-                <a href="#" class="add-item-btn" data-item-template-id="bulletlist-item-template" data-item-container-id="bulletlist_{{param._id}} .bulletlist">+ Add entry</a>
+                    <a href="#" class="add-item-btn" data-item-template-id="bulletlist-item-template" data-item-container-id="bulletlist_{{param._id}} .bulletlist">+ Add entry</a>
 
-                <div class="save-buttons">
-                    <button type="submit" class="btn right">Save</button>
-                    <button class="btn-flat right">Cancel</button>
-                    <div class="clearfix"></div>
-                </div>
-            </form>
+                    <div class="save-buttons">
+                        <button type="submit" class="btn right">Save</button>
+                        <button class="btn-flat right">Cancel</button>
+                        <div class="clearfix"></div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="display-mode">
+                {{> bulletlistDisplay param=param user=user resume=resume }}
+            </div>
 
         </div>
     </div>
@@ -43,4 +46,17 @@
             <i class="material-icons teal-text">clear</i>
         </a>
     </li>
+</script>
+
+<script id="bulletlist-display-template" type="text/x-handlebars-template">
+
+    <form action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}" class="delete-section-form show-on-hover">
+        <a class="form-submit" href="#">
+            <i class="material-icons teal-text">clear</i>
+        </a>
+    </form>
+
+    <span class="card-title">{{param.name}}</span>
+
+    <button class="btn edit">Edit</button>
 </script>
