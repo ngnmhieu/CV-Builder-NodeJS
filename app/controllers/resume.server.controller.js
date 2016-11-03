@@ -67,13 +67,32 @@ exports.remove = function(req, res) {
 };
 
 /**
+ * PUT /users/:user_id/resumes/:resume_id
+ */
+exports.update = function(req, res) {
+
+    resumes.update(req.resumeObj, req.body, function(err, resume) {
+        if (err) {
+            switch (err) {
+                case 'validation_error':
+                    res.sendStatus(400);
+                    return;
+                default:
+                    throw err;
+            }
+        }
+
+        res.status(200).json(resume);
+    });
+};
+
+/**
  * Set the resume object
  */
 exports.byId = function(req, res, next, id) {
 
     if (!ObjectId.isValid(id)) {
-        res.sendStatus(404);
-        return;
+        return res.sendStatus(404);
     }
 
     resumes.findByUserAndId(req.userObj, ObjectId(id), function(err, result) {
@@ -81,6 +100,7 @@ exports.byId = function(req, res, next, id) {
         if (err) throw err;
 
         if (result == null) {
+            // TOOD: redirect if html
             return res.sendStatus(404);
         }
 

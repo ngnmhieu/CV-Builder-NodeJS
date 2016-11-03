@@ -16,11 +16,13 @@ var Editor = (function($) {
         $(document).enableShowOnHover('.bulletlist .bulletlist-item');
         $(document).enableShowOnHover('.worklist .worklist-item');
         $(document).enableShowOnHover('.card', '.delete-section-form');
+        $(document).enableShowOnHover('.card', '.edit');
 
         // register partials for handlebars
         Handlebars.registerPartial('bulletlistItem', $('#bulletlist-item-template').html());
         Handlebars.registerPartial('worklistItem', $('#worklist-item-template').html());
 
+        Handlebars.registerPartial('resumeinfoDisplay', $('#resumeinfo-display-template').html());
         Handlebars.registerPartial('basicinfoDisplay', $('#basicinfo-display-template').html());
         Handlebars.registerPartial('bulletlistDisplay', $('#bulletlist-display-template').html());
         Handlebars.registerPartial('worklistDisplay', $('#worklist-display-template').html());
@@ -28,6 +30,8 @@ var Editor = (function($) {
 
         // date helper
         Handlebars.registerHelper('isoDate', function(dateStr) {
+            if (typeof dateStr == 'undefined' || dateStr == null || dateStr.length == 0)
+                return '';
             var date = isNaN(Date.parse(dateStr)) ? new Date() : new Date(dateStr);
             var year = date.getFullYear();
             var month = date.getMonth() + 1;
@@ -36,12 +40,9 @@ var Editor = (function($) {
             return year + '-' + (month < 10 ? '0' + month : month) + '-' + (dateNum < 10 ? '0' + dateNum : dateNum);
         });
 
-        Handlebars.registerHelper('dateFormat', function(dateStr) {
-            var date = isNaN(Date.parse(dateStr)) ? new Date() : new Date(dateStr);
-            var year = date.getFullYear();
-            var dateNum = date.getDate();
-
-            return (dateNum < 10 ? '0' + dateNum : dateNum) + ' ' + MONTHS[date.getMonth()] + ' ' + year 
+        Handlebars.registerHelper('dateFormat', function(dateStr, format) {
+            var format = typeof format != 'string' ? 'D MMM YYYY' : format;
+            return moment(dateStr).format(format);
         });
 
         Handlebars.registerHelper('tern', function(cond, pos, neg) {
@@ -53,12 +54,12 @@ var Editor = (function($) {
         Handlebars.registerHelper('monthSelect', function(selectedDate, options, disabled) {
             var date = isNaN(Date.parse(selectedDate)) ? new Date() : new Date(selectedDate);
             var disabled = disabled ? 'disabled' : '';
-            var html = '<select ' + options + ' ' + disabled +'>' ;
+            var html = '<select ' + options + ' ' + disabled + '>';
             var selectedMonth = date.getMonth();
-            for (var i in MONTHS)  {
+            for (var i in MONTHS) {
                 var selected = selectedMonth == i ? 'selected' : '';
                 var month = parseInt(i) + 1;
-                html += '<option value="'+ month +'" ' + selected + '>' + MONTHS[i] + '</option>';
+                html += '<option value="' + month + '" ' + selected + '>' + MONTHS[i] + '</option>';
             }
             html += '</select>';
             return new Handlebars.SafeString(html);
@@ -67,12 +68,12 @@ var Editor = (function($) {
         Handlebars.registerHelper('yearSelect', function(selectedDate, options, disabled) {
             var date = isNaN(Date.parse(selectedDate)) ? new Date() : new Date(selectedDate);
             var disabled = disabled ? 'disabled' : '';
-            var html = '<select ' + options + ' ' + disabled +'>' ;
+            var html = '<select ' + options + ' ' + disabled + '>';
             var selectedYear = date.getFullYear();
 
-            for (var i = selectedYear - 50; i < selectedYear + 20; i++)  {
+            for (var i = selectedYear - 50; i < selectedYear + 20; i++) {
                 var selected = selectedYear == i ? 'selected' : '';
-                html += '<option value="'+ i +'" ' + selected + '>' + i + '</option>';
+                html += '<option value="' + i + '" ' + selected + '>' + i + '</option>';
             }
             html += '</select>';
 
@@ -94,7 +95,9 @@ var Editor = (function($) {
         // enable datepicker
         $('.worklist .datepicker').pickadate(datepickerOpts);
 
-        dobDatePicker = $('.basicinfo .datepicker').pickadate(_.extend(datepickerOpts, {max: true}));
+        dobDatePicker = $('.basicinfo .datepicker').pickadate(_.extend(datepickerOpts, {
+            max: true
+        }));
 
         $('select').material_select();
 
@@ -139,6 +142,12 @@ var Editor = (function($) {
 
             e.preventDefault();
 
+            // TODO: materialize confirm modal
+            var confirm = window.confirm("Do you want to delete this section?");
+
+            if (!confirm)
+                return;
+
             var card = $(this).closest('.card');
 
             // hide card first
@@ -152,7 +161,7 @@ var Editor = (function($) {
             }).fail(function(res) {
                 // TODO
                 console.log('fail to delete section');
-                
+
                 // show card if it cannot be saved
                 card.show();
             });
@@ -160,7 +169,7 @@ var Editor = (function($) {
 
         /**
          * @param {String} formSelector
-         * @param {Function} dataExtractor will be passed the jQuery form object 
+         * @param {Function} dataExtractor will be passed the jQuery form object
          *                   and should return data object
          * @param {Function} (optional) function to run when request succeeds
          * @param {Function} (optional) function to run when request fails
@@ -187,7 +196,11 @@ var Editor = (function($) {
                     data: JSON.stringify(data),
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
-                }).done(done || function(data) {
+                }).done(function(data) {
+
+                    if (typeof done == 'function') {
+                        return done(data, form, card, displayArea, editArea);
+                    }
 
                     var template = $('#' + form.data('display-template-id')).html();
                     displayArea.html(render(template, {
@@ -212,7 +225,7 @@ var Editor = (function($) {
             });
 
         };
-        
+
         // add item to list (temporarily)
         $(document).on('click', '.add-item-btn', function(e) {
 
@@ -222,7 +235,7 @@ var Editor = (function($) {
             var template = $('#' + $(this).data('item-template-id')).html();
             var itemCount = parseInt(container.data('item-count'));
 
-            container.append(render(template, { 
+            container.append(render(template, {
                 itemIndex: itemCount,
                 temporary: true // temporary items will be deleted when `Cancel` is clicked
             }));
@@ -247,7 +260,32 @@ var Editor = (function($) {
 
         /** END generic code for section **/
 
-        
+        saveSection('.resumeinfo-edit-form', function(form) {
+            var name = form.find('input[name=name]').val();
+            return {
+                name: name
+            };
+        }, function(data, form, card, displayArea, editArea) {
+
+            var template = $('#' + form.data('display-template-id')).html();
+
+            // save new resume
+            resume = data;
+
+            displayArea.html(render(template, {
+                user: user,
+                resume: resume
+            }));
+
+            // remove class .temporary from temporary entries
+            editArea.find('.temporary').removeClass('temporary');
+
+            editArea.hide();
+            
+            displayArea.show();
+        });
+
+
         // save bulletlist
         saveSection('.bulletlist-edit-form', function(form) {
             var name = form.find('input[name=name]').val();
@@ -279,15 +317,15 @@ var Editor = (function($) {
         // save basicinfo
         saveSection('.basicinfo-edit-form', function(form) {
             return {
-                name     : form.find('input[name=name]').val() || "",
-                email    : form.find('input[name=email]').val() || "",
-                website  : form.find('input[name=website]').val() || "",
-                phone    : form.find('input[name=phone]').val() || "",
-                fax      : form.find('input[name=fax]').val() || "",
-                address1 : form.find('input[name=address1]').val() || "",
-                address2 : form.find('input[name=address2]').val() || "",
-                address3 : form.find('input[name=address3]').val() || "",
-                dob      : form.find('input[name=dob_submit]').val() || "",
+                name: form.find('input[name=name]').val() || "",
+                email: form.find('input[name=email]').val() || "",
+                website: form.find('input[name=website]').val() || "",
+                phone: form.find('input[name=phone]').val() || "",
+                fax: form.find('input[name=fax]').val() || "",
+                address1: form.find('input[name=address1]').val() || "",
+                address2: form.find('input[name=address2]').val() || "",
+                address3: form.find('input[name=address3]').val() || "",
+                dob: form.find('input[name=dob_submit]').val() || "",
             };
         });
 
@@ -303,18 +341,18 @@ var Editor = (function($) {
             var items = $.map(form.find('.item'), function(el) {
                 var item = $(el);
                 var monthStart = item.find('select[name=monthStart]').val();
-                var yearStart  = item.find('select[name=yearStart]').val();
+                var yearStart = item.find('select[name=yearStart]').val();
                 var monthEnd = item.find('select[name=monthEnd]').val();
-                var yearEnd  = item.find('select[name=yearEnd]').val();
+                var yearEnd = item.find('select[name=yearEnd]').val();
 
                 return {
-                    title       : item.find('input[name=title]').val(),
-                    institution : item.find('input[name=institution]').val(),
-                    startDate   : toISODate(monthStart, yearStart),
-                    endDate     : toISODate(monthEnd, yearEnd),
-                    tillNow     : item.find('input.tillNow').is(':checked'),
-                    desc        : item.find('textarea[name=desc]').val(),
-                    order       : -1
+                    title: item.find('input[name=title]').val(),
+                    institution: item.find('input[name=institution]').val(),
+                    startDate: toISODate(monthStart, yearStart),
+                    endDate: toISODate(monthEnd, yearEnd),
+                    tillNow: item.find('input.tillNow').is(':checked'),
+                    desc: item.find('textarea[name=desc]').val(),
+                    order: -1
                 }
             });
 
@@ -406,10 +444,17 @@ var Editor = (function($) {
                     });
 
                     resumeEditor.append(html);
-                }; 
+                };
+
+                // resume information
+                renderSection({
+                    type: 'resumeinfo'
+                });
 
                 // personal information
-                renderSection(_.extend(resume.basicinfo, {type: 'basicinfo'}));
+                renderSection(_.extend(resume.basicinfo, {
+                    type: 'basicinfo'
+                }));
 
                 // sections
                 resume.sections.forEach(renderSection);

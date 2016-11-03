@@ -45,6 +45,21 @@ input:-webkit-autofill {
     line-height: 30px;
 }
 
+.container {
+    max-width: 800px;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+#MainContainer {
+    flex: 1;
+    min-height: 100%;
+}
+
 /**
  * Homepage
  */
@@ -118,8 +133,12 @@ input:-webkit-autofill {
 /**
  * Resume edit
  */
+#ResumeEditor {
+    padding-top: 20px;
+}
+
 #ResumeEditor .card-title {
-    display: block;
+    display: inline-block;
     margin-bottom: 10px;
 }
 
@@ -127,12 +146,17 @@ input:-webkit-autofill {
     margin-top: 20px;
 }
 
+.edit {
+    margin-left: 10px;
+    margin-top: -5px;
+}
+
 .edit-mode {
     display: none;
 }
 
 .save-buttons .btn {
-    margin-left: 5px; 
+    margin-left: 5px;
 }
 
 .delete-section-form {
@@ -144,25 +168,39 @@ input:-webkit-autofill {
     font-size: 30px;
 }
 
-.worklist .worklist-item {
+.worklist-card .edit-mode .worklist-item {
     position: relative;
     padding-top: 40px;
     border-top: 3px solid #333;
 }
 
-.worklist .worklist-item:first-child {
+.worklist-card .edit-mode .worklist-item:first-child {
     border-top: none;
     padding-top: 10px;
 }
 
-.worklist .worklist-item .delete-item-btn {
+.worklist-card .edit-mode .worklist-item .delete-item-btn {
     position: absolute;
     right: 0;
     top: 10px;
     font-size: 30px;
 }
-.worklist .worklist-item:first-child .delete-item-btn {
+.worklist-card .edit-mode .worklist-item:first-child .delete-item-btn {
     top: -20px;
+}
+
+.worklist-card .display-mode .worklist-item .title {
+    font-weight: bold;
+}
+.worklist-card .display-mode .worklist-item .desc {
+    margin-top: 5px;
+}
+.worklist-card .display-mode .worklist-item:not(:first-child) {
+    margin-top: 20px;
+}
+.worklist-card .display-mode .worklist-item .startDate,
+.worklist-card .display-mode .worklist-item .endDate {
+    font-weight: bold;
 }
 
 .bulletlist  {
@@ -171,7 +209,7 @@ input:-webkit-autofill {
 
 .bulletlist .bulletlist-item {
     position: relative;
-    padding-right: 40px;
+    padding-right: 33px;
 }
 
 .bulletlist .bulletlist-item input {
@@ -189,6 +227,15 @@ input:-webkit-autofill {
 
 .bulletlist .bulletlist-item .delete-item-btn {
     position: absolute;
-    top: 15px;
+    top: 6px;
     right: 0;
+}
+.bulletlist .bulletlist-item input {
+    height: 35px;
+}
+
+.textarea .content {
+    display: block;
+    margin: 5px 0 5px 0 !important;
+    text-align: justify
 }

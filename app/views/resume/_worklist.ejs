@@ -3,6 +3,12 @@
         <div class="card-content">
             <div class="edit-mode">
 
+                <form action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}" class="delete-section-form show-on-hover">
+                    <a class="form-submit" href="#">
+                        <i class="material-icons grey-text">delete</i>
+                    </a>
+                </form>
+
                 <form class="worklist-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}" method="post" data-display-template-id="worklist-display-template">
                     <div class="row">
                         <div class="col s6">
@@ -34,7 +40,7 @@
 <script id="worklist-item-template" type="text/x-handlebars-template">
 
     <div class="worklist-item item {{tern temporary 'temporary' ''}}">
-        
+
         <a class="delete-item-btn show-on-hover" href="#">
             <i class="material-icons teal-text">clear</i>
         </a>
@@ -93,16 +99,24 @@
 
 
 <script id="worklist-display-template" type="text/x-handlebars-template">
-    <form action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}" class="delete-section-form show-on-hover">
-        <a class="form-submit" href="#">
-            <i class="material-icons teal-text">clear</i>
-        </a>
-    </form>
     <span class="card-title">{{param.name}}</span>
-    <ul>
+    <a class="btn-floating edit" style="display:none">
+        <i class="material-icons">edit</i>
+    </a>
+
     {{#each param.items}}
-        <li><b>{{title}}</b> at {{institution}} (from {{dateFormat startDate}} to {{dateFormat endDate}})</li>
+    <div class="worklist-item">
+        <div class="left">
+            <div class="title">{{title}}</div>
+            <div class="institution">{{institution}}</div>
+        </div>
+        <div class="right">
+            <span class="startDate">{{dateFormat startDate 'MMM YYYY'}}</span>
+            -
+            <span class="endDate">{{#if tillNow}} Present {{else}} {{dateFormat endDate 'MMM YYYY'}} {{/if}}</span>
+        </div>
+        <div class="clearfix"></div>
+        <div class="desc">{{desc}}</div>
+    </div>
     {{/each}}
-    </ul>
-    <button class="btn edit">Edit</button>
 </script>

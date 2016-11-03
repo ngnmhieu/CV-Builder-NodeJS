@@ -4,6 +4,14 @@
         <div class="card-content">
 
             <div class="edit-mode">
+
+                <form action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}" class="delete-section-form show-on-hover">
+                    <a class="form-submit" href="#">
+                        <i class="material-icons grey-text">delete</i>
+                    </a>
+                </form>
+
+
                 <form class="bulletlist-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}" method="post" data-display-template-id="bulletlist-display-template">
                     <div class="row">
                         <div class="col s6">
@@ -12,8 +20,8 @@
                     </div>
 
                     <p style="material-checkbox">
-                    <input type="checkbox" id="numbered_{{param._id}}" name="numbered" {{tern param.numbered 'checked' ''}} />
-                    <label for="numbered_{{param._id}}" >Numbered</label>
+                        <input type="checkbox" id="numbered_{{param._id}}" name="numbered" {{tern param.numbered 'checked' ''}} />
+                        <label for="numbered_{{param._id}}">Numbered</label>
                     </p>
 
                     <ul class="bulletlist {{tern param.numbered 'numbered' ''}}" data-item-count="{{param.items.length}}">
@@ -40,7 +48,7 @@
 
 <script id="bulletlist-item-template" type="text/x-handlebars-template">
     <li class="bulletlist-item item {{tern temporary 'temporary' ''}}">
-    <input name="list-item-{{itemIndex}}" class="item-content" type="text" value="{{content}}">
+        <input name="list-item-{{itemIndex}}" class="item-content" type="text" value="{{content}}">
 
         <a class="delete-item-btn show-on-hover" href="#">
             <i class="material-icons teal-text">clear</i>
@@ -50,19 +58,14 @@
 
 <script id="bulletlist-display-template" type="text/x-handlebars-template">
 
-    <form action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}" class="delete-section-form show-on-hover">
-        <a class="form-submit" href="#">
-            <i class="material-icons teal-text">clear</i>
-        </a>
-    </form>
-
     <span class="card-title">{{param.name}}</span>
-    numbered: {{tern param.numbered 'yes' 'no'}}
-    <ul>
-    {{#each param.items}}
-        <li>{{content}}</li>
-    {{/each}}
-    </ul>
+    <a class="btn-floating edit" style="display: none">
+        <i class="material-icons">edit</i>
+    </a>
 
-    <button class="btn edit">Edit</button>
+    <ul class="{{tern param.numbered 'numbered' ''}}">
+        {{#each param.items}}
+        <li>{{content}}</li>
+        {{/each}}
+    </ul>
 </script>

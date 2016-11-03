@@ -35,6 +35,7 @@ module.exports = function(app) {
 
     app.route("/users/:user_id/resumes/:resume_id")
         .get(resumes.read)
+        .put(resumes.update)
         .delete(resumes.remove);
 
     app.get("/users/:user_id/resumes/:resume_id/sections", resumes.sections);

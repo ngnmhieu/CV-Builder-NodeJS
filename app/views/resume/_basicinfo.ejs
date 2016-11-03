@@ -1,8 +1,8 @@
 <script id="basicinfo-template" type="text/x-handlebars-template">
     <div class="card basicinfo" id="BasicInfo">
         <div class="card-content">
-            <div class="edit-mode">
 
+            <div class="edit-mode">
                 <span class="card-title">Personal Information</span>
 
                 <form class="basicinfo-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/basicinfo" method="post" data-display-template-id="basicinfo-display-template">
@@ -36,28 +36,27 @@
                         </div>
 
                         <div class="col s6">
+                            <!--
                             <div class="input-field">
                                 <label for="dob">Birthday</label>
                                 <input type="date" class="datepicker" name="dob" data-value="{{isoDate param.dob}}">
                             </div>
+                            -->
 
                             <div class="input-field">
                                 <label for="website">Website</label>
                                 <input name="website" type="text" value="{{param.website}}">
                             </div>
 
-                            <div class="row" style="margin-bottom: 0">
-
-                                <div class="input-field col s6">
+                                <div class="input-field ">
                                     <label for="phone">Phone</label>
                                     <input name="phone" type="text" value="{{param.phone}}">
                                 </div>
 
-                                <div class="input-field col s6">
+                                <div class="input-field ">
                                     <label for="fax">Fax</label>
                                     <input name="fax" type="text" value="{{param.fax}}">
                                 </div>
-                            </div>
 
                             <div>
                                 <div style="height: 145px; width: 145px; background: #eee; padding: 60px 52px; color: #555">
@@ -84,20 +83,38 @@
 </script>
 
 <script id="basicinfo-display-template" type="text/x-handlebars-template">
-    <span class="card-title">Personal Information</span>
-    <button class="btn edit">Edit</button>
-    <br>
-    name: {{param.name}}
-    <br>
-    email: {{param.email}}
-    <br>
-    website: {{param.website}}
-    <br>
-    phone: {{param.phone}}
-    <br>
-    fax: {{param.fax}}
-    <br>
-    dob: {{dateFormat param.dob}}
-    <br>
-    address1: {{param.address1}}
+
+    <div class="card-title">Personal Information</div>
+
+    <a class="btn-floating edit" style="display:none">
+        <i class="material-icons">edit</i>
+    </a>
+
+    <div style="margin-top: 5px; position: relative; padding-left: 160px; height: 150px;">
+        <div style="height: 145px; width: 145px; left: 0;  background: #eee; padding: 60px 52px; color: #555; position: absolute ">
+            Photo
+        </div>
+
+        <div style="font-size: 25px; margin-top: -6px; font-weight: bold">{{param.name}}</div>
+        <style>
+            .info {
+                line-height: 25px;
+            }
+        </style>
+        <div class="row">
+            <div class="col s6">
+                <div class="info">{{param.address1}}</div>
+                <div class="info">{{param.address2}}</div>
+                <div class="info">{{param.address3}}</div>
+            </div>
+
+            <div class="col s6">
+                <div class="info">{{param.email}}</div>
+                <div class="info">{{param.website}}</div>
+                <div class="info">{{param.phone}}</div>
+                <div class="info">{{param.fax}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
 </script>

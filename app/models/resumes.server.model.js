@@ -39,10 +39,47 @@ var getNewResume = function(options) {
  */
 exports.createEmpty = function(user, callback) {
 
-    var resume = getNewResume({user_id: user._id});
+    var resume = getNewResume({
+        user_id: user._id
+    });
     delete resume._id;
 
     resumes.insertOne(resume, callback);
+};
+
+var validateResume = function(params) {
+
+    if (params.name === undefined || params.name === null)
+        return false;
+
+    return true;
+};
+
+/**
+ * Update a resume with new data in params
+ */
+exports.update = function(oldResume, params, callback) {
+
+    if (!validateResume(params)) {
+        callback('validation_error', null);
+        return;
+    }
+
+    var resume = getNewResume(_.extend(params, {
+        user_id: oldResume.user_id
+    }));
+    delete resume._id;
+
+    resumes.updateOne({
+        _id: oldResume._id
+    }, resume, function(err, result) {
+        if (err) {
+            callback(err, null);
+        } else {
+            resume._id = oldResume._id;
+            callback(null, resume);
+        }
+    });
 };
 
 /**
@@ -75,15 +112,15 @@ var getNewBasicInfo = function(options) {
     var attr = options || {};
 
     return {
-        name     : attr.name     ? String(attr.name) : '',
-        email    : attr.email    ? String(attr.email) : '',
-        website  : attr.website  ? String(attr.website) : '',
-        phone    : attr.phone    ? String(attr.phone) : '',
-        fax      : attr.fax      ? String(attr.fax) : '',
-        dob      : (attr.dob instanceof Date) ? attr.dob : new Date(attr.dob),
-        address1 : attr.address1 ? String(attr.address1) : '',
-        address2 : attr.address2 ? String(attr.address2) : '',
-        address3 : attr.address3 ? String(attr.address3) : '',
+        name: attr.name ? String(attr.name) : '',
+        email: attr.email ? String(attr.email) : '',
+        website: attr.website ? String(attr.website) : '',
+        phone: attr.phone ? String(attr.phone) : '',
+        fax: attr.fax ? String(attr.fax) : '',
+        dob: (attr.dob instanceof Date) ? attr.dob : new Date(attr.dob),
+        address1: attr.address1 ? String(attr.address1) : '',
+        address2: attr.address2 ? String(attr.address2) : '',
+        address3: attr.address3 ? String(attr.address3) : '',
     };
 };
 
@@ -102,7 +139,13 @@ exports.updateBasicInfo = function(resume, params, callback) {
 
     var basicinfo = getNewBasicInfo(params);
 
-    resumes.updateOne({ _id: resume._id }, { '$set': { basicinfo: basicinfo } }, function(err, result) {
+    resumes.updateOne({
+        _id: resume._id
+    }, {
+        '$set': {
+            basicinfo: basicinfo
+        }
+    }, function(err, result) {
         if (err)
             callback(err, null);
         else
@@ -141,7 +184,7 @@ exports.findByUserAndId = function(user, id, done) {
 
             done(err, null);
 
-        } else if (!Array.isArray(result.sections) || result.sections.length == 0) { 
+        } else if (!Array.isArray(result.sections) || result.sections.length == 0) {
 
             done(err, getNewResume(result));
 
@@ -160,7 +203,7 @@ exports.findByUserAndId = function(user, id, done) {
                 var sec = result.sections[i];
                 if (sec.type in SECTION_TYPES) {
                     SECTION_TYPES[sec.type].findById(sec._id, function(err, result) {
-                        if(result != null) {
+                        if (result != null) {
                             sections.push(result);
                         }
                         sectionFetched();
@@ -178,9 +221,9 @@ exports.findByUserAndId = function(user, id, done) {
  * @param Section object or Section ID
  * @return {Boolean} if section belongs to resume
  */
-exports.isSectionOf = function (resume, section) {
+exports.isSectionOf = function(resume, section) {
 
-    if (typeof resume == 'undefined' || resume == null || typeof section == 'undefined' || section == null) 
+    if (typeof resume == 'undefined' || resume == null || typeof section == 'undefined' || section == null)
         return false;
 
     var sectionId = section._id || section;

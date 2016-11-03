@@ -19,13 +19,14 @@
     <script src="/components/jquery/dist/jquery.min.js"></script>
     <script src="/components/lodash/dist/lodash.min.js"></script>
     <script src="/components/handlebars/handlebars.min.js"></script>
+    <script src="/components/moment/min/moment-with-locales.min.js"></script>
 
     <title><%= title %></title>
 </head>
 
 <body>
     <nav class="teal">
-        <div class="nav-wrapper container">
+        <div class="nav-wrapper container" id="HeaderContainer">
             <a href="#" class="brand-logo">CV Builder</a>
 
             <ul id="nav-mobile" class="right hide-on-med-and-down">
@@ -61,4 +62,4 @@
 
     <%- include login-modal %>
 
-    <div class="container">
+    <div class="container" id="MainContainer">

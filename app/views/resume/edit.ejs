@@ -1,5 +1,9 @@
 <%- include ../common/header %>
+
+
     <div id="ResumeEditor">
+
+        <a href="/resumes" class="btn">Back</a>
 
         <input type="hidden" id="ResumeId" value="<%= resume._id %>">
         <input type="hidden" id="UserId" value="<%= user._id %>">
@@ -8,44 +12,28 @@
             <a href="#SectionAddModal" class="btn-floating btn-large modal-trigger" id="SectionAddBtn">
                 <i class="material-icons">add</i>
             </a>
-
         </div>
 
-        <div class="card" id="EditorHeader">
-            <div class="card-content">
-                <span class="card-title" style="margin:0 "><%= resume.name %></span>
-            </div>
-        </div>
-
-
+        <%- include _resumeinfo %>
+            <%- include _basicinfo %>
+                <%- include _textarea %>
+                    <%- include _worklist %>
+                        <%- include _bulletlist %>
     </div>
-
-    <%- include _basicinfo %>
-
-    <%- include _textarea %>
-
-    <%- include _worklist %>
-
-    <%- include _bulletlist %>
-
 
     <div class="modal" id="SectionAddModal" tabindex="-1" role="dialog" style="width: 500px">
         <div class="modal-content">
             <h3>Add a new section</h3>
 
-            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/bulletlists"
-                id="BulletlistAddForm" method="post" class="add-sec-form"
-                data-item-template-id="bulletlist-template" data-item-container-id="ResumeEditor">
+            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/bulletlists" id="BulletlistAddForm" method="post" class="add-sec-form" data-item-template-id="bulletlist-template" data-item-container-id="ResumeEditor">
                 <button type="submit" class="btn">Bullet List</button>
             </form>
             <br>
-            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/worklists" id="WorklistAddForm" method="post"
-                method="post" class="add-sec-form" data-item-template-id="worklist-template" data-item-container-id="ResumeEditor">
+            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/worklists" id="WorklistAddForm" method="post" method="post" class="add-sec-form" data-item-template-id="worklist-template" data-item-container-id="ResumeEditor">
                 <button type="submit" class="btn">Occupation List</button>
             </form>
             <br>
-            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/textareas" id="TextareaAddForm" method="post"
-                method="post" class="add-sec-form" data-item-template-id="textarea-template" data-item-container-id="ResumeEditor">
+            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/textareas" id="TextareaAddForm" method="post" method="post" class="add-sec-form" data-item-template-id="textarea-template" data-item-container-id="ResumeEditor">
                 <button type="submit" class="btn">Text Section</button>
             </form>
         </div>
