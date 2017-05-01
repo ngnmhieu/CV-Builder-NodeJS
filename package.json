@@ -2,6 +2,9 @@
   "name": "MEAN",
   "version": "0.0.1",
   "description": "A first web application with express",
+  "engines": {
+    "node": ">=5.10.1"
+  },
   "dependencies": {
     "bcryptjs": "^2.3.0",
     "body-parser": "^1.13.3",
