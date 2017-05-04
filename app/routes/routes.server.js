@@ -53,6 +53,10 @@ module.exports = function(app) {
         .all(user.authenticate)
         .get(page.editResume);
 
+    app.route('/resumes/:resume_id/pdf')
+        .all(user.authenticate)
+        .get(resume.renderPdf);
+
     /**
      * Basicinfo
      */

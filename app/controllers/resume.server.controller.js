@@ -1,5 +1,6 @@
 var resumes = require('../models/resumes.server.model');
 var ObjectId = require('mongodb').ObjectId;
+var config = require('../../config/config');
 
 /**
  * GET /users/:user_id/resumes/:id
@@ -108,5 +109,13 @@ exports.byId = function(req, res, next, id) {
 
         next();
     });
-
 };
+
+/**
+ * Render the pdf file from the template 
+ */
+exports.renderPdf = function() {
+    var file = `${config.app.root}/resources/`;
+};
+
+

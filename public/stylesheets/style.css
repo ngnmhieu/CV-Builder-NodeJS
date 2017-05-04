@@ -25,6 +25,14 @@
     padding-left: 30px;
 }
 
+.btn, .card, .btn:hover, .btn-floating, .btn-floating:hover {
+    box-shadow: none;
+}
+
+.card {
+    border: 1px solid #ddd;
+}
+
 .show-on-hover {
     display: none;
 }
