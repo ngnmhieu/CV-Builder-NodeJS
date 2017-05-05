@@ -18,13 +18,11 @@
 
 <script id="worklist-edit-template" type="text/x-handlebars-template">
 
-  <form class="worklist-edit-form" id="worklist-{{param._id}}-form"
+  <form class="worklist-edit-form" id="section-{{param._id}}-edit-form"
     action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}"
     method="post" data-display-template-id="worklist-display-template">
 
     {{> sectionHeaderEdit param=param }}
-
-    <hr />
 
     <div class="worklist css-worklist" data-item-count="{{param.items.length}}">
       {{#each param.items}} {{> worklistItem itemIndex=@index temporary=false }} {{/each}}
@@ -38,10 +36,9 @@
     </div>
     <div class="section-control level-right css-section-control">
       <button class="cancel button is-outlined css-cancel-btn">Cancel</button>
-      <button class="button is-info is-outlined form-submit-btn" data-form-id="worklist-{{param._id}}-form">Save</button>
+      <button class="button is-info is-outlined form-submit-btn" data-form-id="section-{{param._id}}-edit-form">Save</button>
     </div>
   </div>
-
 </script>
 
 <script id="worklist-item-template" type="text/x-handlebars-template">
@@ -121,8 +118,6 @@
 <script id="worklist-display-template" type="text/x-handlebars-template">
 
   {{> sectionHeaderDisplay param=param }}
-
-  <hr />
 
   {{#each param.items}}
   <div class="css-worklist-item">

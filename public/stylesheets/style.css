@@ -196,3 +196,8 @@ body {
   right: 0;
   top: 0;
 }
+
+/** Textarea **/
+.css-section .css-textarea {
+  margin-bottom: 20px;
+}
