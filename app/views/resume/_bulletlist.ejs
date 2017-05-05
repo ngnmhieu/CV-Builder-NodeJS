@@ -1,75 +1,106 @@
 <script id="bulletlist-template" type="text/x-handlebars-template">
 
-    <div class="card css-section bulletlist-card" id="bulletlist_{{param._id}}">
-        <div class="card-content">
+  <div class="card css-section bulletlist-card" id="bulletlist_{{param._id}}">
+    <div class="card-content">
 
-          <div class="edit-mode">
-                {{> bulletlistEdit param=param user=user resume=resume }}
-          </div>
+      <form action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}" class="section-delete-form" id="section-{{param._id}}-delete-form">
+      </form>
 
-            <div class="display-mode">
-                {{> bulletlistDisplay param=param user=user resume=resume }}
-            </div>
+      <div class="edit-mode css-edit-mode">
+        {{> bulletlistEdit param=param user=user resume=resume }}
+      </div>
 
-        </div>
+      <div class="display-mode css-display-mode">
+        {{> bulletlistDisplay param=param user=user resume=resume }}
+      </div>
+
     </div>
+  </div>
+</script>
+
+
+<script id="bulletlist-option-template" type="text/x-handlebars-template">
+
+  <div class="css-control">
+    <label class="checkbox" for="numbered_{{param._id}}">
+      <input type="checkbox" id="numbered_{{param._id}}" name="numbered" {{tern param.numbered 'checked' ''}} />
+      Numbered
+    </label>
+  </div>
+
+  <div class="css-control">
+    <label class="checkbox">
+      <input type="checkbox">
+      Richtext
+    </label>
+  </div>
+
 </script>
 
 <script id="bulletlist-edit-template" type="text/x-handlebars-template">
-  <form action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}" class="section-delete-form show-on-hover">
-    <a class="form-submit" href="#">
-      <i class="material-icons grey-text">delete</i>
-    </a>
-  </form>
 
+  <form class="bulletlist-edit-form" id="section-{{param._id}}-edit-form"
+    action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}"
+    method="post" data-display-template-id="bulletlist-display-template">
 
-  <form class="bulletlist-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}" method="post" data-display-template-id="bulletlist-display-template">
-    <div class="row">
-      <div class="col s6">
-        <input type="text" value="{{param.name}}" name="name">
-      </div>
-    </div>
+    {{> sectionHeaderEdit param=param extraOptionPartial='bulletlistOption' }}
 
-    <p style="material-checkbox">
-    <input type="checkbox" id="numbered_{{param._id}}" name="numbered" {{tern param.numbered 'checked' ''}} />
-    <label for="numbered_{{param._id}}">Numbered</label>
-    </p>
-
-    <ul class="bulletlist {{tern param.numbered 'numbered' ''}}" data-item-count="{{param.items.length}}">
+    <ul class="bulletlist {{tern param.numbered 'numbered' ''}} css-bulletlist"
+      data-item-count="{{param.items.length}}">
       {{#each param.items}} {{> bulletlistItem itemIndex=@index temporary=false }} {{/each}}
     </ul>
 
-    <a href="#" class="add-item-btn" data-item-template-id="bulletlist-item-template" data-item-container-id="bulletlist_{{param._id}} .bulletlist">+ Add entry</a>
-
-    <div class="save-buttons">
-      <button type="submit" class="btn right">Save</button>
-      <button class="btn-flat right cancel">Cancel</button>
-      <div class="clearfix"></div>
-    </div>
   </form>
+
+  <div class="level css-section-footer">
+    <div class="level-left">
+      <a href="#" class="add-item-btn css-add-item-btn" data-item-template-id="bulletlist-item-template" data-item-container-id="bulletlist_{{param._id}} .bulletlist">+ Add entry</a>
+
+    </div>
+    <div class="section-control level-right css-section-control">
+      <button class="cancel button is-outlined css-cancel-btn">Cancel</button>
+      <button class="button is-info is-outlined form-submit-btn" data-form-id="section-{{param._id}}-edit-form">Save</button>
+    </div>
+  </div>
 
 </script>
 
 <script id="bulletlist-item-template" type="text/x-handlebars-template">
-    <li class="bulletlist-item item {{tern temporary 'temporary' ''}}">
-        <input name="list-item-{{itemIndex}}" class="item-content" type="text" value="{{content}}">
+      <li class="bulletlist-item item {{tern temporary 'temporary' ''}} css-bulletlist-item">
+      <p class="control">
+      <input class="input item-content" name="list-item{{itemIndex}}" type="text" placeholder="" value="{{content}}">
+      </p>
 
-        <a class="item-delete-btn show-on-hover" href="#">
-            <i class="material-icons teal-text">clear</i>
-        </a>
-    </li>
+      <div class="css-order-control">
+        <i class="item-delete-btn fa fa-times css-item-delete"></i>
+        <i class="fa fa-chevron-up css-item-up"></i>
+        <i class="fa fa-chevron-down css-item-down"></i>
+      </div>
+      </li>
+</script>
+
+<script id="old-bulletlist-item-template" type="text/x-handlebars-template">
+  <li class="bulletlist-item item {{tern temporary 'temporary' ''}}">
+  <input name="list-item-{{itemIndex}}" class="item-content" type="text" value="{{content}}">
+
+  </li>
 </script>
 
 <script id="bulletlist-display-template" type="text/x-handlebars-template">
 
-    <span class="card-title">{{param.name}}</span>
-    <a class="btn-floating edit" style="display: none">
-        <i class="material-icons">edit</i>
-    </a>
+  {{> sectionHeaderDisplay param=param }}
 
-    <ul class="{{tern param.numbered 'numbered' ''}}">
-        {{#each param.items}}
-        <li>{{content}}</li>
-        {{/each}}
-    </ul>
+  <ul class="css-bulletlist {{tern param.numbered 'numbered' ''}}">
+    {{#each param.items}}
+    <li class="css-bulletlist-item">
+      {{content}}
+
+      <div class="css-order-control">
+        <i class="fa fa-chevron-up css-item-up"></i>
+        <i class="fa fa-chevron-down css-item-down"></i>
+      </div>
+
+    </li>
+    {{/each}}
+  </ul>
 </script>

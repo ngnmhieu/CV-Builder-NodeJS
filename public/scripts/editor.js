@@ -26,6 +26,7 @@ var Editor = (function($) {
     Handlebars.registerPartial('basicinfoEdit', $('#basicinfo-edit-template').html());
     Handlebars.registerPartial('bulletlistDisplay', $('#bulletlist-display-template').html());
     Handlebars.registerPartial('bulletlistEdit', $('#bulletlist-edit-template').html());
+    Handlebars.registerPartial('bulletlistOption', $('#bulletlist-option-template').html());
     Handlebars.registerPartial('bulletlistItem', $('#bulletlist-item-template').html());
     Handlebars.registerPartial('worklistDisplay', $('#worklist-display-template').html());
     Handlebars.registerPartial('worklistEdit', $('#worklist-edit-template').html());

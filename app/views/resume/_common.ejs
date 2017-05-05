@@ -5,6 +5,11 @@
     </div>
     <div class="section-control column is-6 css-section-control">
       <div class="is-pulled-right css-wrapper">
+
+        {{#if extraOptionPartial}}
+          {{> (lookup . 'extraOptionPartial') }}
+        {{/if}}
+
         <i class="fa fa-chevron-up css-control css-control-up"></i>
         <i class="fa fa-chevron-down css-control css-control-down"></i>
         <i class="fa fa-trash-o css-control css-control-delete form-submit-btn"
