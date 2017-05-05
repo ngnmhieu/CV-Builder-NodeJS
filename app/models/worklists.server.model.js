@@ -1,6 +1,6 @@
 var db = require('../../config/mongodb').client;
-
 var ObjectId = require('mongodb').ObjectId;
+var debug = require('debug')('cvbuilder.model.worklist');
 
 var resumes   = db.collection('resumes');
 var worklists = db.collection('worklists');
@@ -114,7 +114,6 @@ var validate = function (params) {
         if (item.tillNow === undefined) return false;
         if (item.desc === undefined) return false;
     }
-
     if (parseInt(params.order) < 0) return false;
     
     return true;

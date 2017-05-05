@@ -5,12 +5,12 @@ var Common = (function($) {
      * on descendants of this element that can be reached by the given parentSelector.
      * @param parentSelector selector of the container element
      * @param (optional) selector of the element that will be toggled
+     *
+     * TODO: optimization - avoid using find()
      */
     $.fn.enableShowOnHover = function (parentSelector, selector) {
 
         var parent = $(this);
-
-        selector = selector || '.show-on-hover';
 
         parent.on('mouseover', parentSelector, function() {
             $(this).find(selector).show();

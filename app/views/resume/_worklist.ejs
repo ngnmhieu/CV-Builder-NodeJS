@@ -1,122 +1,146 @@
 <script id="worklist-template" type="text/x-handlebars-template">
-    <div class="card worklist-card" id="worklist_{{param._id}}">
-        <div class="card-content">
-            <div class="edit-mode">
+  <div class="card css-section css-worklist-section" id="worklist_{{param._id}}">
+    <div class="card-content">
 
-                <form action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}" class="delete-section-form show-on-hover">
-                    <a class="form-submit" href="#">
-                        <i class="material-icons grey-text">delete</i>
-                    </a>
-                </form>
+      <form action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}" class="section-delete-form" id="section-{{param._id}}-delete-form">
+      </form>
 
-                <form class="worklist-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}" method="post" data-display-template-id="worklist-display-template">
-                    <div class="row">
-                        <div class="col s6">
-                            <input type="text" name="name" value="{{param.name}}" class="card-title">
-                        </div>
-                    </div>
+      <div class="edit-mode css-edit-mode">
+        {{> worklistEdit param=param user=user resume=resume}}
+      </div>
 
-                    <div class="worklist" data-item-count="{{param.items.length}}">
-                        {{#each param.items}} {{> worklistItem itemIndex=@index temporary=false }} {{/each}}
-                    </div>
-
-                    <a href="#" class="add-item-btn" data-item-template-id="worklist-item-template" data-item-container-id="worklist_{{param._id}} .worklist">+ Add entry</a>
-
-                    <div class="save-buttons">
-                        <button type="submit" class="btn right">Save</button>
-                        <button class="btn-flat right cancel">Cancel</button>
-                        <div class="clearfix"></div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="display-mode">
-                {{> worklistDisplay param=param user=user resume=resume }}
-            </div>
-        </div>
+      <div class="display-mode css-display-mode">
+        {{> worklistDisplay param=param user=user resume=resume }}
+      </div>
     </div>
+  </div>
+</script>
+
+<script id="worklist-edit-template" type="text/x-handlebars-template">
+
+  <form class="worklist-edit-form" id="worklist-{{param._id}}-form"
+    action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}"
+    method="post" data-display-template-id="worklist-display-template">
+
+    {{> sectionHeaderEdit param=param }}
+
+    <hr />
+
+    <div class="worklist css-worklist" data-item-count="{{param.items.length}}">
+      {{#each param.items}} {{> worklistItem itemIndex=@index temporary=false }} {{/each}}
+    </div>
+  </form>
+
+  <div class="level css-section-footer">
+    <div class="level-left">
+      <a href="#" class="add-item-btn css-add-item-btn" data-item-template-id="worklist-item-template" data-item-container-id="worklist_{{param._id}} .worklist">+ Add entry</a>
+
+    </div>
+    <div class="section-control level-right css-section-control">
+      <button class="cancel button is-outlined css-cancel-btn">Cancel</button>
+      <button class="button is-info is-outlined form-submit-btn" data-form-id="worklist-{{param._id}}-form">Save</button>
+    </div>
+  </div>
+
 </script>
 
 <script id="worklist-item-template" type="text/x-handlebars-template">
 
-    <div class="worklist-item item {{tern temporary 'temporary' ''}}">
+  <div class="item worklist-item css-worklist-item">
 
-        <a class="delete-item-btn show-on-hover" href="#">
-            <i class="material-icons teal-text">clear</i>
-        </a>
-
-        <div class="row">
-
-            <div class="col s6">
-                <div class="input-field">
-                    <label for="title">Title</label>
-                    <input name="title" type="text" value="{{title}}">
-                </div>
-                <div class="input-field">
-                    <label for="institution">Institution</label>
-                    <input name="institution" type="text" value="{{institution}}">
-                </div>
-            </div>
-
-            <div class="col s6">
-                <div class="row">
-
-                    <div class="row col s6 start-date-input">
-                        <div class="input-field col s6">
-                            {{monthSelect startDate 'name="monthStart"' false }}
-                            <label>From</label>
-                        </div>
-                        <div class="input-field col s6">
-                            {{yearSelect startDate 'name="yearStart"' false }}
-                        </div>
-                    </div>
-
-                    <div class="col s6 row end-date-input">
-                        <div class="input-field col s6">
-                            {{monthSelect endDate 'name="monthEnd"' tillNow }}
-                            <label>To</label>
-                        </div>
-                        <div class="input-field col s6">
-                            {{yearSelect endDate 'name="yearEnd"' tillNow }}
-                        </div>
-                        <p class="col s12 material-checkbox">
-                            <input type="checkbox" id="tillNow_{{itemIndex}}" class="tillNow" name="tillNow_{{itemIndex}}" {{tern tillNow 'checked' ''}} />
-                            <label for="tillNow_{{itemIndex}}">Until now</label>
-                        </p>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="input-field col s12">
-                <label for="desc">Description</label>
-                <textarea name="desc" class="materialize-textarea">{{desc}}</textarea>
-            </div>
-
+    <div class="columns">
+      <div class="column is-6">
+        <div class="field">
+          <label class="label">Title</label>
+          <p class="control">
+          <input class="input" name="title" type="text" placeholder="Occupation Title" value="{{title}}">
+          </p>
         </div>
+        <div class="field">
+          <label class="label">Institution</label>
+          <p class="control">
+          <input class="input" name="institution" type="text" placeholder="Insitution / Organization" value="{{institution}}">
+          </p>
+        </div>
+      </div>
+
+      <div class="column is-6">
+        <div class="columns">
+          <div class="column is-6">
+            <div class="field workitem-start-date">
+              <label class="label">From</label>
+              <p class="control">
+              <span class="select">
+                {{monthSelect startDate 'name="monthStart"' false }}
+              </span>
+              <span class="select">
+                {{yearSelect startDate 'name="yearStart"' false }}
+              </span>
+              </p>
+            </div>
+          </div>
+          <div class="column is-6">
+            <div class="field">
+              <label class="label">To</label>
+              <p class="control workitem-end-date">
+              <span class="select">
+                {{monthSelect endDate 'name="monthEnd"' tillNow }}
+              </span>
+              <span class="select">
+                {{yearSelect endDate 'name="yearEnd"' tillNow }}
+              </span>
+              </p>
+            </div>
+
+            <div class="field">
+              <p class="control">
+              <label for="tillNow_{{itemIndex}}">
+                <input type="checkbox" id="tillNow_{{itemIndex}}" class="tillNow" name="tillNow_{{itemIndex}}" {{tern tillNow 'checked' ''}} />
+                Until now
+              </label>
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div class="field">
+      <label class="label">Description</label>
+      <p class="control">
+        <textarea class="textarea" name="desc" placeholder="Description">{{desc}}</textarea>
+      </p>
+    </div>
+
+    <i class="item-delete-btn fa fa-times css-workitem-delete-btn"></i>
+
+  </div>
 </script>
 
-
 <script id="worklist-display-template" type="text/x-handlebars-template">
-    <span class="card-title">{{param.name}}</span>
-    <a class="btn-floating edit" style="display:none">
-        <i class="material-icons">edit</i>
-    </a>
 
-    {{#each param.items}}
-    <div class="worklist-item">
-        <div class="left">
-            <div class="title">{{title}}</div>
-            <div class="institution">{{institution}}</div>
-        </div>
-        <div class="right">
-            <span class="startDate">{{dateFormat startDate 'MMM YYYY'}}</span>
-            -
-            <span class="endDate">{{#if tillNow}} Present {{else}} {{dateFormat endDate 'MMM YYYY'}} {{/if}}</span>
-        </div>
-        <div class="clearfix"></div>
-        <div class="desc">{{desc}}</div>
+  {{> sectionHeaderDisplay param=param }}
+
+  <hr />
+
+  {{#each param.items}}
+  <div class="css-worklist-item">
+    <div class="columns">
+      <div class="column is-3 css-workitem-date">
+        <span class="startDate">{{dateFormat startDate 'MMM YYYY'}}</span> -
+        <span class="endDate">{{#if tillNow}} Present {{else}} {{dateFormat endDate 'MMM YYYY'}} {{/if}}</span>
+      </div>
+      <div class="column is-9">
+        <div class="css-workitem-title">{{title}}</div>
+        <div class="css-workitem-institution">{{institution}}</div>
+        <div class="css-workitem-desc">{{desc}}</div>
+      </div>
     </div>
-    {{/each}}
+    <div class="css-order-control" >
+      <i class="fa fa-chevron-up css-item-up"></i>
+      <i class="fa fa-chevron-down css-item-down"></i>
+    </div>
+  </div>
+  {{/each}}
 </script>

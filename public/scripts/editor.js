@@ -15,10 +15,13 @@ var Editor = (function($) {
         // show-on-hover elements
         $(document).enableShowOnHover('.bulletlist .bulletlist-item');
         $(document).enableShowOnHover('.worklist .worklist-item');
-        $(document).enableShowOnHover('.card', '.delete-section-form');
+        $(document).enableShowOnHover('.card', '.section-delete-form');
         $(document).enableShowOnHover('.card', '.section-edit-btn');
+        $(document).enableShowOnHover('.card', '.display-mode .section-control');
 
         // register partials for handlebars
+        Handlebars.registerPartial('sectionHeaderEdit', $('#section-header-edit-template').html());
+        Handlebars.registerPartial('sectionHeaderDisplay', $('#section-header-display-template').html());
         Handlebars.registerPartial('bulletlistItem', $('#bulletlist-item-template').html());
         Handlebars.registerPartial('worklistItem', $('#worklist-item-template').html());
 
@@ -27,6 +30,7 @@ var Editor = (function($) {
         Handlebars.registerPartial('basicinfoEdit', $('#basicinfo-edit-template').html());
         Handlebars.registerPartial('bulletlistDisplay', $('#bulletlist-display-template').html());
         Handlebars.registerPartial('worklistDisplay', $('#worklist-display-template').html());
+        Handlebars.registerPartial('worklistEdit', $('#worklist-edit-template').html());
         Handlebars.registerPartial('textareaDisplay', $('#textarea-display-template').html());
 
         // date helper
@@ -88,6 +92,7 @@ var Editor = (function($) {
     };
 
     // reinitializes some UI elements upon DOM change
+    // TODO: do we need date picker any more? search for 'refreshUI' in this file
     var refreshUI = function() {
 
         var datepickerOpts = {
@@ -135,7 +140,7 @@ var Editor = (function($) {
                 // trigger edit mode
                 newSec.find('.section-edit-btn').click();
 
-                refreshUI();
+                // refreshUI();
             }).fail(function() {
                 // TODO
                 console.log('fail to add seciton');
@@ -143,7 +148,7 @@ var Editor = (function($) {
         });
 
         // delete section
-        $(document).on('submit', '.delete-section-form', function(e) {
+        $(document).on('submit', '.section-delete-form', function(e) {
 
             e.preventDefault();
 
@@ -247,11 +252,11 @@ var Editor = (function($) {
 
             container.data('item-count', itemCount + 1)
 
-            refreshUI();
+            // refreshUI();
         });
 
         // delete item from list
-        $(document).on('click', '.delete-item-btn', function(e) {
+        $(document).on('click', '.item-delete-btn', function(e) {
             e.preventDefault();
             $(this).closest('.item').addClass('temporarily-removed').hide();
         });
@@ -262,6 +267,15 @@ var Editor = (function($) {
             e.preventDefault();
             $(this).closest('form').submit();
         });
+
+        // Elements with .form-submit-btn can be used to submit 
+        // a form with the corresponding id specified in data-form-id attribute
+        $(document).on('click', '.form-submit-btn', function(e) {
+            e.preventDefault();
+            var formId = $(this).data('form-id');
+            $('#' + formId).submit();
+        });
+
 
         /** END generic code for section **/
 
@@ -372,8 +386,8 @@ var Editor = (function($) {
         // toggle until now checkbox event
         $(document).on('change', 'input.tillNow', function(e) {
             var disableDate = $(this).is(':checked');
-            $(this).closest('.worklist-item').find('.end-date-input select').prop('disabled', disableDate);
-            refreshUI();
+            $(this).closest('.worklist-item').find('.workitem-end-date select').prop('disabled', disableDate);
+            // refreshUI();
         });
 
         // toggle numbered list / bulletlist
@@ -412,7 +426,7 @@ var Editor = (function($) {
                 editArea.find('.temporarily-removed')
                     .removeClass('temporarily-removed').show();
 
-                refreshUI();
+                // refreshUI();
 
                 displayArea.show();
             });
@@ -464,7 +478,7 @@ var Editor = (function($) {
                 // sections
                 resume.sections.forEach(renderSection);
 
-                refreshUI();
+                // refreshUI();
             });
         });
     };

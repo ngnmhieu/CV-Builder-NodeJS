@@ -55,7 +55,7 @@ module.exports = function(app) {
 
     app.route('/resumes/:resume_id/pdf')
         .all(user.authenticate)
-        .get(resume.renderPdf);
+        .get(resumes.renderPdf);
 
     /**
      * Basicinfo

@@ -1,0 +1,30 @@
+<script id="section-header-edit-template" type="text/x-handlebars-template">
+  <div class="columns css-section-header">
+    <div class="is-6 column">
+      <input class="is-medium input" name="name" type="text" placeholder="Section Name" value="{{param.name}}">
+    </div>
+    <div class="section-control column is-6 css-section-control">
+      <div class="is-pulled-right css-wrapper">
+        <i class="fa fa-chevron-up css-control css-control-up"></i>
+        <i class="fa fa-chevron-down css-control css-control-down"></i>
+        <i class="fa fa-trash-o css-control css-control-delete form-submit-btn"
+          data-form-id="section-{{param._id}}-delete-form"></i>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script id="section-header-display-template" type="text/x-handlebars-template">
+  <div class="level css-section-header">
+    <div class="level-left">
+      <p class="css-section-title">{{param.name}}</p>
+      <i class="section-edit-btn fa fa-pencil-square-o css-section-edit-btn"></i>
+    </div>
+    <div class="section-control level-right css-section-control">
+      <i class="fa fa-chevron-up css-control css-control-up"></i>
+      <i class="fa fa-chevron-down css-control css-control-down"></i>
+      <i class="fa fa-trash-o css-control css-control-delete form-submit-btn"
+        data-form-id="section-{{param._id}}-delete-form"></i>
+    </div>
+  </div>
+</script>

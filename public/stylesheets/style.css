@@ -2,11 +2,7 @@
  * Common
  ****************/
 .clearfix {
-    clear: both;
-}
-
-.show-on-hover {
-    display: none;
+  clear: both;
 }
 
 /* Remove auto-filled input field background in webkit */
@@ -15,8 +11,8 @@ input:-webkit-autofill {
 }
 
 body {
+  background: #f5f5f5;
 }
-
 
 .container {
     max-width: 1024px;
@@ -124,11 +120,27 @@ body {
 }
 .css-section .css-section-edit-btn {
   cursor: pointer;
+  display: none;
   margin-top: 6px;
   margin-left: 15px
 }
 .css-section .css-cancel-btn {
   margin-right: 5px;
+}
+.css-section .display-mode .css-section-control {
+  display: none;
+}
+.css-section .css-section-header .column {
+  padding-bottom: 0;
+}
+.css-section .css-section-control .css-wrapper {
+  margin-top: 10px;
+}
+.css-section .css-section-control .css-control {
+  margin-left: 15px
+}
+.css-section .css-section-control .css-control-delete {
+  margin-top: 2px;
 }
 
 /** Basic Info **/
@@ -136,3 +148,51 @@ body {
   width: 160px;
 }
 
+/** Worklist **/
+.css-section .display-mode .css-worklist-item {
+  margin-right: 35px;
+  position: relative;
+}
+
+.css-section .display-mode .css-worklist-item .css-order-control {
+  position: absolute;
+  height: 0;
+  top: 50%;
+  right: -20px;
+}
+.css-section .display-mode .css-worklist-item .css-order-control .css-item-up {
+  position: absolute;
+  bottom: 50%;
+}
+.css-section .display-mode .css-worklist-item .css-order-control .css-item-down {
+  position: absolute;
+  top: 50%;
+}
+
+.css-section .display-mode .css-worklist-item .css-workitem-date {
+  font-size: 1.3rem
+}
+.css-section .display-mode .css-worklist-item .css-workitem-title {
+  font-size: 1.3rem
+}
+.css-section .display-mode .css-worklist-item .css-workitem-desc {
+  margin-top: 15px;
+  text-align: justify
+}
+
+.css-section .edit-mode .css-worklist-item {
+  position: relative;
+  padding-bottom: 30px;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #ddd;
+}
+.css-section .edit-mode .css-worklist-item:hover {
+  border-bottom: 2px solid #888;
+}
+
+.css-section .edit-mode .css-worklist-item .css-workitem-delete-btn {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0;
+}

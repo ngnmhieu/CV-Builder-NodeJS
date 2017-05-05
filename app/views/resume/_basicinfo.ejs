@@ -15,6 +15,7 @@
 </script>
 
 <script id="basicinfo-edit-template" type="text/x-handlebars-template">
+
   <div class="level css-section-header">
     <div class="level-left">
       <p class="css-section-title">Personal Information</p>
@@ -23,7 +24,7 @@
   </div>
 
   <hr>
-  <form class="basicinfo-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/basicinfo" method="post" data-display-template-id="basicinfo-display-template">
+  <form class="basicinfo-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/basicinfo" id="basicinfo-form" method="post" data-display-template-id="basicinfo-display-template">
     <div class="media">
       <div class="media-left">
         <figure class="image css-profile-image">
@@ -73,22 +74,23 @@
         </div>
       </div>
     </div>
-
-    <div class="level">
-      <div class="level-left"></div>
-      <div class="section-control level-right">
-        <button class="cancel button is-outlined css-cancel-btn">Cancel</button>
-        <button class="button is-info is-outlined" type="submit" >Save</button>
-      </div>
-    </div>
   </form>
+
+  <div class="level css-section-footer">
+    <div class="level-left"></div>
+    <div class="section-control level-right css-section-control">
+      <button class="cancel button is-outlined css-cancel-btn">Cancel</button>
+      <button class="button is-info is-outlined form-submit-btn" data-form-id="basicinfo-form">Save</button>
+    </div>
+  </div>
 </script>
 
 <script id="basicinfo-display-template" type="text/x-handlebars-template">
+
   <div class="level css-section-header">
     <div class="level-left">
       <p class="css-section-title">Personal Information</p>
-      <i class="section-edit-btn fa fa-pencil-square-o css-section-edit-btn" aria-hidden="true"></i>
+      <i class="section-edit-btn fa fa-pencil-square-o css-section-edit-btn"></i>
     </div>
     <div class="section-control level-right"></div>
   </div>

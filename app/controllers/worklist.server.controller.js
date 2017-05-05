@@ -1,6 +1,7 @@
 var worklists = require('../models/worklists.server.model'),
     resumes = require('../models/resumes.server.model'),
-    ObjectId = require('mongodb').ObjectId;
+    ObjectId = require('mongodb').ObjectId
+    debug = require('debug')('cvbuilder.controller.worklist');
 
 /**
  * POST /resumes/:resume_id/worklists
@@ -90,6 +91,7 @@ exports.update = function(req, res) {
         if (err) {
             switch (err) {
                 case 'validation_error':
+                    debug('Failed to update worklist due to validation error.');
                     res.sendStatus(400);
                     return;
                 default:
