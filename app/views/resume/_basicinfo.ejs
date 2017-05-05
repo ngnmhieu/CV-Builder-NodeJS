@@ -1,129 +1,146 @@
 <script id="basicinfo-template" type="text/x-handlebars-template">
-    <div class="card basicinfo" id="BasicInfo">
-        <div class="card-content">
+  <div class="card basicinfo css-section css-basicinfo">
+    <div class="card-content">
 
-            <div class="edit-mode">
-                <span class="card-title">Personal Information</span>
+      <div class="edit-mode css-edit-mode">
+        {{> basicinfoEdit param=param}}
+      </div>
 
-                <form class="basicinfo-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/basicinfo" method="post" data-display-template-id="basicinfo-display-template">
-                    <div class="row">
-                        <div class="col s6">
-                            <div class="input-field">
-                                <label for="name">Name</label>
-                                <input name="name" type="text" value="{{param.name}}">
-                            </div>
+      <div class="display-mode css-display-mode">
+        {{> basicinfoDisplay param=param }}
+      </div>
 
-                            <div class="input-field">
-                                <label for="email">Email</label>
-                                <input name="email" type="text" value="{{param.email}}">
-                            </div>
-
-                            <div class="input-field">
-                                <label for="address1">Address Line 1</label>
-                                <input name="address1" type="text" value="{{param.address1}}">
-                            </div>
-
-                            <div class="input-field">
-                                <label for="address2">Address Line 2</label>
-                                <input name="address2" type="text" value="{{param.address2}}">
-                            </div>
-
-                            <div class="input-field">
-                                <label for="address3">Address Line 3</label>
-                                <input name="address3" type="text" value="{{param.address3}}">
-                            </div>
-
-                        </div>
-
-                        <div class="col s6">
-                            <!--
-                            <div class="input-field">
-                                <label for="dob">Birthday</label>
-                                <input type="date" class="datepicker" name="dob" data-value="{{isoDate param.dob}}">
-                            </div>
-                            -->
-
-                            <div class="input-field">
-                                <label for="website">Website</label>
-                                <input name="website" type="text" value="{{param.website}}">
-                            </div>
-
-                            <div class="input-field ">
-                                <label for="phone">Phone</label>
-                                <input name="phone" type="text" value="{{param.phone}}">
-                            </div>
-
-                            <div class="input-field ">
-                                <label for="fax">Fax</label>
-                                <input name="fax" type="text" value="{{param.fax}}">
-                            </div>
-
-                            <div>
-                                <div class="left" style="height: 145px; margin-right: 10px; width: 145px; background: #eee; padding: 60px 41px; color: #555;">
-                                    No photo
-                                </div>
-
-                                <div class="left">
-                                    <div class="file-field input-field" style="margin: 0">
-                                        <div class="btn white black-text">
-                                            <span><i class="material-icons">photo_camera</i> Choose Photo</span>
-                                            <input type="file">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="save-buttons">
-                        <button class="btn right">Save</button>
-                        <button class="btn-flat right cancel">Cancel</button>
-                        <div class="clearfix"></div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="display-mode">
-                {{> basicinfoDisplay param=param }}
-            </div>
-        </div>
     </div>
+  </div>
+</script>
+
+<script id="basicinfo-edit-template" type="text/x-handlebars-template">
+  <div class="level css-section-header">
+    <div class="level-left">
+      <p class="css-section-title">Personal Information</p>
+    </div>
+    <div class="section-control level-right"></div>
+  </div>
+
+  <hr>
+  <form class="basicinfo-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/basicinfo" method="post" data-display-template-id="basicinfo-display-template">
+    <div class="media">
+      <div class="media-left">
+        <figure class="image css-profile-image">
+          <img src="http://bulma.io/images/placeholders/256x256.png" alt="Image">
+        </figure>
+      </div>
+      <div class="media-content">
+        <div class="columns">
+          <div class="column is-6">
+            <table class="table">
+              <tr>
+                <td>Name</td>
+                <td><input class="input" name="name" type="text" placeholder="Full name" value="{{param.name}}"></td>
+              </tr>
+              <tr>
+                <td>E-Mail</td>
+                <td><input class="input" name="email" type="text" placeholder="E-Mail Address" value="{{param.email}}"></td>
+              </tr>
+              <tr>
+                <td>Phone</td>
+                <td><input class="input" name="phone" type="text" placeholder="Phone number" value="{{param.phone}}"></td>
+              </tr>
+              <tr>
+                <td>Fax</td>
+                <td><input class="input" name="fax" type="text" placeholder="Fax number" value="{{param.fax}}"></td>
+              </tr>
+            </table>
+          </div>
+          <div class="column is-6">
+            <table class="table">
+              <tr>
+                <td rowspan=3>Address</td>
+                <td><input class="input" name="address1" type="text" placeholder="Address Line 1" value="{{param.address1}}"></td>
+              </tr>
+              <tr>
+                <td><input class="input" name="address2" type="text" placeholder="Address Line 2" value="{{param.address2}}"></td>
+              </tr>
+              <tr>
+                <td><input class="input" name="address3" type="text" placeholder="Address Line 3" value="{{param.address3}}"></td>
+              </tr>
+              <tr>
+                <td>Website</td>
+                <td><input class="input" name="website" type="text" placeholder="Website" value="{{param.website}}"></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="level">
+      <div class="level-left"></div>
+      <div class="section-control level-right">
+        <button class="cancel button is-outlined css-cancel-btn">Cancel</button>
+        <button class="button is-info is-outlined" type="submit" >Save</button>
+      </div>
+    </div>
+  </form>
 </script>
 
 <script id="basicinfo-display-template" type="text/x-handlebars-template">
-
-    <div class="card-title">Personal Information</div>
-
-    <a class="btn-floating edit" style="display:none">
-        <i class="material-icons">edit</i>
-    </a>
-
-    <div style="margin-top: 5px; position: relative; padding-left: 160px; height: 150px;">
-        <div style="height: 145px; width: 145px; left: 0;  background: #eee; padding: 60px 52px; color: #555; position: absolute ">
-            Photo
-        </div>
-
-        <div style="font-size: 25px; margin-top: -6px; font-weight: bold">{{param.name}}</div>
-        <style>
-            .info {
-                line-height: 25px;
-            }
-        </style>
-        <div class="row">
-            <div class="col s6">
-                <div class="info">{{param.address1}}</div>
-                <div class="info">{{param.address2}}</div>
-                <div class="info">{{param.address3}}</div>
-            </div>
-
-            <div class="col s6">
-                <div class="info">{{param.email}}</div>
-                <div class="info">{{param.website}}</div>
-                <div class="info">{{param.phone}}</div>
-                <div class="info">{{param.fax}}</div>
-            </div>
-        </div>
+  <div class="level css-section-header">
+    <div class="level-left">
+      <p class="css-section-title">Personal Information</p>
+      <i class="section-edit-btn fa fa-pencil-square-o css-section-edit-btn" aria-hidden="true"></i>
     </div>
-    <div class="clearfix"></div>
+    <div class="section-control level-right"></div>
+  </div>
+
+  <hr>
+  <div class="media">
+    <div class="media-left">
+      <figure class="image css-profile-image">
+        <img src="http://bulma.io/images/placeholders/256x256.png" alt="Image">
+      </figure>
+    </div>
+    <div class="media-content">
+      <div class="columns">
+        <div class="column is-6">
+          <table class="table">
+            <tr>
+              <td>Name</td>
+              <td>{{placeholder param.name '<span class="css-field-placeholder">Full name</span>' }}</td>
+            </tr>
+            <tr>
+              <td>E-Mail</td>
+              <td>{{placeholder param.email '<span class="css-field-placeholder">E-mail Address</span>' }}</td>
+            </tr>
+            <tr>
+              <td>Phone</td>
+              <td>{{placeholder param.phone '<span class="css-field-placeholder">Personal / Work phone number</span>'}}</td>
+            </tr>
+            <tr>
+              <td>Fax</td>
+              <td>{{placeholder param.fax '<span class="css-field-placeholder">Fax number</span>'}}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="column is-6">
+          <table class="table">
+            <tr>
+              <td rowspan=3>Address</td>
+              <td>{{placeholder param.address1 '<span class="css-field-placeholder">Address Line 1</span>'}}</td>
+            </tr>
+            <tr>
+              <td>{{placeholder param.address2 '<span class="css-field-placeholder">Address Line 2</span>'}}</td>
+            </tr>
+            <tr>
+              <td>{{placeholder param.address3 '<span class="css-field-placeholder">Address Line 3</span>'}}</td>
+            </tr>
+            <tr>
+              <td>Website</td>
+              <td>{{placeholder param.website '<span class="css-field-placeholder">Personal / Organization Website</span>'}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </script>

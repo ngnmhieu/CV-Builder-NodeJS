@@ -1,10 +1,3 @@
-/**
- * For bootstrap (if not used please remove)
- */
-/* .btn, input.form-control, textarea.form-control { */
-/*     border-radius: 0 !important; */
-/* } */
-
 /****************
  * Common
  ****************/
@@ -12,65 +5,29 @@
     clear: both;
 }
 
-.material-icons.md-18 { font-size: 18px; }
-.material-icons.md-24 { font-size: 24px; }
-.material-icons.md-36 { font-size: 36px; }
-.material-icons.md-48 { font-size: 48px; }
-.material-icons {
-    display: inline-block !important;
-    vertical-align: middle;
-}
-
-.material-checkbox label {
-    padding-left: 30px;
-}
-
-.btn, .card, .btn:hover, .btn-floating, .btn-floating:hover {
-    box-shadow: none;
-}
-
-.card {
-    border: 1px solid #ddd;
-}
-
 .show-on-hover {
     display: none;
 }
 
-/**
- * Remove auto-filled input field background in Chrome
- */
+/* Remove auto-filled input field background in webkit */
 input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px white inset !important;
 }
 
-.modal .modal-title {
+body {
 }
 
-.modal .modal-title .text {
-    font-size: 20px;
-    vertical-align: middle;
-    line-height: 30px;
-}
 
 .container {
-    max-width: 800px;
-}
-
-body {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
+    max-width: 1024px;
 }
 
 #MainContainer {
-    flex: 1;
-    min-height: 100%;
 }
 
-/**
+/**************
  * Homepage
- */
+ **************/
 #RegisterForm {
     margin-top: 50px;
 }
@@ -89,9 +46,9 @@ body {
     margin: 0;
 }
 
-/**
+/******************
  * Resumes Listing
- */
+ ******************/
 #ResumesListing {
     padding-top: 20px
 }
@@ -138,112 +95,44 @@ body {
     margin-left: 10px;
 }
 
-/**
- * Resume edit
- */
-#ResumeEditor {
-    padding-top: 20px;
+/*********
+ * Editor
+ *********/
+
+/** Section Common **/
+.css-section {
+  margin-top: 30px;
+}
+.css-section .css-section-title {
+  font-size: 1.7rem;
+}
+.css-section .css-section-header {
+  margin-bottom: 0;
+}
+.css-section hr {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  background: #eee;
+}
+.css-section .css-edit-mode {
+  display:none; 
 }
 
-#ResumeEditor .card-title {
-    display: inline-block;
-    margin-bottom: 10px;
+.css-section .css-field-placeholder {
+  font-style: italic;
+  color: #aaa;
+}
+.css-section .css-section-edit-btn {
+  cursor: pointer;
+  margin-top: 6px;
+  margin-left: 15px
+}
+.css-section .css-cancel-btn {
+  margin-right: 5px;
 }
 
-#EditorHeader {
-    margin-top: 20px;
+/** Basic Info **/
+.css-profile-image {
+  width: 160px;
 }
 
-.edit {
-    margin-left: 10px;
-    margin-top: -5px;
-}
-
-.edit-mode {
-    display: none;
-}
-
-.save-buttons .btn {
-    margin-left: 5px;
-}
-
-.delete-section-form {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-}
-.delete-section-form i {
-    font-size: 30px;
-}
-
-.worklist-card .edit-mode .worklist-item {
-    position: relative;
-    padding-top: 40px;
-    border-top: 3px solid #333;
-}
-
-.worklist-card .edit-mode .worklist-item:first-child {
-    border-top: none;
-    padding-top: 10px;
-}
-
-.worklist-card .edit-mode .worklist-item .delete-item-btn {
-    position: absolute;
-    right: 0;
-    top: 10px;
-    font-size: 30px;
-}
-.worklist-card .edit-mode .worklist-item:first-child .delete-item-btn {
-    top: -20px;
-}
-
-.worklist-card .display-mode .worklist-item .title {
-    font-weight: bold;
-}
-.worklist-card .display-mode .worklist-item .desc {
-    margin-top: 5px;
-}
-.worklist-card .display-mode .worklist-item:not(:first-child) {
-    margin-top: 20px;
-}
-.worklist-card .display-mode .worklist-item .startDate,
-.worklist-card .display-mode .worklist-item .endDate {
-    font-weight: bold;
-}
-
-.bulletlist  {
-    padding-left: 18px;
-}
-
-.bulletlist .bulletlist-item {
-    position: relative;
-    padding-right: 33px;
-}
-
-.bulletlist .bulletlist-item input {
-    margin-bottom: 10px;
-}
-
-.bulletlist li {
-    list-style-type: disc;
-}
-
-.bulletlist.numbered li {
-    list-style-type: decimal;
-}
-
-
-.bulletlist .bulletlist-item .delete-item-btn {
-    position: absolute;
-    top: 6px;
-    right: 0;
-}
-.bulletlist .bulletlist-item input {
-    height: 35px;
-}
-
-.textarea .content {
-    display: block;
-    margin: 5px 0 5px 0 !important;
-    text-align: justify
-}

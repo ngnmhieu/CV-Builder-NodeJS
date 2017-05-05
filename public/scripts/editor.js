@@ -16,7 +16,7 @@ var Editor = (function($) {
         $(document).enableShowOnHover('.bulletlist .bulletlist-item');
         $(document).enableShowOnHover('.worklist .worklist-item');
         $(document).enableShowOnHover('.card', '.delete-section-form');
-        $(document).enableShowOnHover('.card', '.edit');
+        $(document).enableShowOnHover('.card', '.section-edit-btn');
 
         // register partials for handlebars
         Handlebars.registerPartial('bulletlistItem', $('#bulletlist-item-template').html());
@@ -24,6 +24,7 @@ var Editor = (function($) {
 
         Handlebars.registerPartial('resumeinfoDisplay', $('#resumeinfo-display-template').html());
         Handlebars.registerPartial('basicinfoDisplay', $('#basicinfo-display-template').html());
+        Handlebars.registerPartial('basicinfoEdit', $('#basicinfo-edit-template').html());
         Handlebars.registerPartial('bulletlistDisplay', $('#bulletlist-display-template').html());
         Handlebars.registerPartial('worklistDisplay', $('#worklist-display-template').html());
         Handlebars.registerPartial('textareaDisplay', $('#textarea-display-template').html());
@@ -80,6 +81,10 @@ var Editor = (function($) {
             return new Handlebars.SafeString(html);
         });
 
+        Handlebars.registerHelper('placeholder', function (value, placeholder) {
+            var out = value || placeholder;
+            return new Handlebars.SafeString(out);
+        });
     };
 
     // reinitializes some UI elements upon DOM change
@@ -128,7 +133,7 @@ var Editor = (function($) {
                 container.append(newSec);
 
                 // trigger edit mode
-                newSec.find('.edit').click();
+                newSec.find('.section-edit-btn').click();
 
                 refreshUI();
             }).fail(function() {
@@ -383,7 +388,7 @@ var Editor = (function($) {
         });
 
         // edit section
-        $(document).on('click', '.edit', function() {
+        $(document).on('click', '.section-edit-btn', function() {
             var card = $(this).closest('.card')
             var editArea = card.find('.edit-mode');
             var displayArea = card.find('.display-mode');
