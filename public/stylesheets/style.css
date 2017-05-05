@@ -3,22 +3,22 @@
  ****************/
 
 .clearfix {
-  clear: both;
+    clear: both;
 }
 
 
 /* Remove auto-filled input field background in webkit */
 
 input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
 }
 
 body {
-  background: #f5f5f5;
+    background: #f5f5f5;
 }
 
 .container {
-  max-width: 1024px;
+    max-width: 1024px;
 }
 
 #MainContainer {}
@@ -29,21 +29,21 @@ body {
  **************/
 
 #RegisterForm {
-  margin-top: 50px;
+    margin-top: 50px;
 }
 
 #RegisterNotice {
-  display: none;
-  margin-top: 10px;
+    display: none;
+    margin-top: 10px;
 }
 
 #LoginModal {
-  margin-top: 100px;
+    margin-top: 100px;
 }
 
 #LoginNotice {
-  display: none;
-  margin: 0;
+    display: none;
+    margin: 0;
 }
 
 
@@ -52,50 +52,50 @@ body {
  ******************/
 
 #ResumesListing {
-  padding-top: 20px
+    padding-top: 20px
 }
 
 #ResumesListing .collection-item {
-  padding: 16px 90px;
-  height: 100px;
-  box-sizing: border-box;
+    padding: 16px 90px;
+    height: 100px;
+    box-sizing: border-box;
 }
 
 #ResumesListing .collection-item:hover {
-  background: #ddd;
+    background: #ddd;
 }
 
 #ResumesListing .lang-circle {
-  position: absolute;
-  left: 15px;
-  display: block;
-  font-size: 20px;
-  width: 60px;
-  height: 60px;
-  line-height: 60px;
-  border-radius: 50%;
-  margin: 0;
-  color: #fff;
-  border: 1px solid #bbb;
-  text-align: center;
+    position: absolute;
+    left: 15px;
+    display: block;
+    font-size: 20px;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    margin: 0;
+    color: #fff;
+    border: 1px solid #bbb;
+    text-align: center;
 }
 
 #ResumesListing .resume-title {
-  font-size: 16px;
-  margin-top: 3px;
-  font-weight: bold;
-  color: rgba(0, 0, 0, .87);
+    font-size: 16px;
+    margin-top: 3px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, .87);
 }
 
 #ResumesListing .action-panel {
-  position: absolute;
-  right: 20px;
-  top: 30px;
+    position: absolute;
+    right: 20px;
+    top: 30px;
 }
 
 #ResumesListing .action-panel .action {
-  display: inline-block;
-  margin-left: 10px;
+    display: inline-block;
+    margin-left: 10px;
 }
 
 
@@ -107,190 +107,207 @@ body {
 /** Section Common **/
 
 .css-section {
-  margin-top: 30px;
+    margin-top: 30px;
 }
 
 .css-section .css-section-title {
-  font-size: 1.7rem;
+    font-size: 1.7rem;
 }
 
 .css-section .css-section-header {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 .css-section hr {
-  margin-top: 10px;
-  margin-bottom: 20px;
-  background: #eee;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    background: #eee;
 }
 
 .css-section .css-edit-mode {
-  display: none;
+    display: none;
 }
 
 .css-section .css-field-placeholder {
-  font-style: italic;
-  color: #aaa;
+    font-style: italic;
+    color: #aaa;
 }
 
 .css-section .css-section-edit-btn {
-  cursor: pointer;
-  display: none;
-  margin-top: 6px;
-  margin-left: 15px
+    cursor: pointer;
+    display: none;
+    margin-top: 6px;
+    margin-left: 15px
 }
 
 .css-section .css-cancel-btn {
-  margin-right: 5px;
+    margin-right: 5px;
 }
 
 .css-section .display-mode .css-section-control {
-  display: none;
+    display: none;
 }
 
 .css-section .css-section-header .column {
-  padding-bottom: 0;
+    padding-bottom: 0;
 }
 
 .css-section .css-section-control .css-wrapper {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 .css-section .css-section-control .css-control {
-  cursor: pointer;
-  display: inline-block;
-  margin-left: 15px
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 15px
 }
 
 .css-section .css-section-control .css-control-delete {
-  margin-top: 2px;
+    margin-top: 2px;
 }
 
 
 /** Basic Info **/
 
 .css-profile-image {
-  width: 160px;
+    width: 160px;
 }
 
 
 /** Worklist **/
 
 .css-section .display-mode .css-worklist-item {
-  margin-right: 35px;
-  position: relative;
+    margin-right: 35px;
+    position: relative;
 }
 
 .css-section .display-mode .css-worklist-item .css-order-control {
-  position: absolute;
-  height: 0;
-  top: 50%;
-  right: -20px;
+    position: absolute;
+    height: 0;
+    top: 50%;
+    right: -20px;
 }
 
 .css-section .display-mode .css-worklist-item .css-order-control .css-item-up {
-  position: absolute;
-  bottom: 50%;
+    position: absolute;
+    bottom: 50%;
 }
 
 .css-section .display-mode .css-worklist-item .css-order-control .css-item-down {
-  position: absolute;
-  top: 50%;
+    position: absolute;
+    top: 50%;
 }
 
 .css-section .display-mode .css-worklist-item .css-workitem-date {
-  font-size: 1.3rem
+    font-size: 1.3rem
 }
 
 .css-section .display-mode .css-worklist-item .css-workitem-title {
-  font-size: 1.3rem
+    font-size: 1.3rem
 }
 
 .css-section .display-mode .css-worklist-item .css-workitem-desc {
-  margin-top: 15px;
-  text-align: justify
+    margin-top: 15px;
+    text-align: justify
 }
 
 .css-section .edit-mode .css-worklist-item {
-  position: relative;
-  padding-bottom: 30px;
-  margin-bottom: 25px;
-  border-bottom: 2px solid #ddd;
+    position: relative;
+    padding-bottom: 30px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #ddd;
 }
 
 .css-section .edit-mode .css-worklist-item:hover {
-  border-bottom: 2px solid #888;
+    border-bottom: 2px solid #888;
 }
 
 .css-section .edit-mode .css-worklist-item .css-workitem-delete-btn {
-  cursor: pointer;
-  position: absolute;
-  right: 0;
-  top: 0;
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
 
 /** Bulletlist **/
+
 .css-section .edit-mode .css-bulletlist {
-  padding-left: 0;
-  margin-bottom: 20px;
-  padding-right: 55px;
-  list-style-type: none;
+    margin-bottom: 20px;
+    padding-right: 20px;
+    list-style-type: square;
 }
+
+.css-section .edit-mode .css-bulletlist.numbered {
+    list-style-type: decimal;
+}
+
 .css-section .display-mode .css-bulletlist {
-  padding-right: 30px;
-  list-style-type: none;
-  list-style-type: square;
+    padding-right: 30px;
+    list-style-type: square;
 }
+
 .css-section .display-mode .css-bulletlist.numbered {
-  list-style-type: decimal;
+    list-style-type: decimal;
 }
 
 .css-section .css-bulletlist-item {
-  position: relative;
-  border-radius: 5px;
-  padding: 10px;
-}
-.css-section .css-bulletlist-item:hover {
-  background: #f8f8f8
+    position: relative;
+    border-radius: 5px;
+    padding: 10px;
 }
 .css-section .edit-mode .css-bulletlist-item {
-  margin-left: -10px;
+    padding-top: 15px;
 }
+
+.css-section .css-bulletlist-item:hover {
+    background: #f8f8f8
+}
+
+.css-section .edit-mode .css-bulletlist-item {
+    margin-left: 20px;
+}
+.css-section .edit-mode .css-bulletlist-item input {
+    margin-top: -5px;
+}
+
 .css-section .display-mode .css-bulletlist-item {
-  margin-left: 20px;
+    margin-left: 20px;
 }
 
 .css-section .css-bulletlist-item .css-order-control {
-  position: absolute;
-  height: 0;
-  top: 50%;
+    position: absolute;
+    height: 0;
+    top: 50%;
 }
+
 .css-section .edit-mode .css-bulletlist-item .css-order-control {
-  right: -40px;
+    right: -40px;
 }
+
 .css-section .display-mode .css-bulletlist-item .css-order-control {
-  right: -12px;
+    right: -12px;
 }
 
 .css-section .css-bulletlist-item .css-order-control .css-item-delete {
-  position: absolute;
-  right: 20px;
-  top: -10px;
+    position: absolute;
+    right: 20px;
+    top: -10px;
 }
 
 .css-section .css-bulletlist-item .css-order-control .css-item-up {
-  position: absolute;
-  bottom: 50%;
+    position: absolute;
+    bottom: 50%;
 }
 
 .css-section .css-bulletlist-item .css-order-control .css-item-down {
-  position: absolute;
-  top: 50%;
+    position: absolute;
+    top: 50%;
 }
+
 
 /** Textarea **/
 
 .css-section .css-textarea {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
