@@ -25,7 +25,7 @@ describe('Bulletlist Model', function (done) {
 
     it('#createEmpty should create an empty bullet list, with default name and no items', function (done) {
 
-        resumes.createEmpty({_id: ObjectId()}, function (err, resume) {
+        resumes.createEmpty({_id: ObjectId()}).then(function (resume) {
 
             expect(resume.sections).to.be.empty;
 
@@ -42,7 +42,6 @@ describe('Bulletlist Model', function (done) {
 
                     // list should be added to resume sections
                     resumes.findById(resume._id, function(err, resumeResult) {
-                    console.log(resumeResult.sections);
                         expect(resumeResult.sections.length).to.equal(1);
                         done();
                     });
@@ -62,28 +61,19 @@ describe('Bulletlist Model', function (done) {
     };
 
     it('#deleteById should delete a bulletlist, and remove it from resumes.sections', function (done) {
-        db.collection('bulletlists').insertOne({
-            name          : 'Empty Bullet List',
-            items         : [],
-            order         : 1,
-            numbered : false
-        }, function (err, listRes) {
+        resumes.createEmpty({_id: ObjectId()}).then(function (resume) {
+            bulletlists.createEmpty(resume, function(err, listRes) {
 
-            db.collection('resumes').insertOne({
-                name: 'Test CV',
-                created_at : new Date(),
-                updated_at : new Date(),
-                sections: [{'type': 'bulletlist', _id: listRes.insertedId}]
-            }, function (err, resumeRes) {
-                bulletlists.deleteById(resumeRes.ops[0], listRes.ops[0], function () {
-                    db.collection('bulletlists').findOne({_id: listRes.insertedId}, function (err, list) {
+                bulletlists.deleteById(resume, listRes, function () {
+                    db.collection('bulletlists').findOne({_id: listRes._id}, function (err, list) {
                         should.not.exists(list);
-                        db.collection('resumes').findOne({_id: resumeRes.insertedId}, function (err, resume) {
+                        resumes.findById(resume._id, function (err, resume) {
                             resume.sections.should.be.empty();
                             done();
-                        })
+                        });
                     });
                 });
+
             });
         });
     });

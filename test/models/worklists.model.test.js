@@ -25,7 +25,7 @@ describe('Worklist Model', function (done) {
 
     it('#createEmpty should create an empty worklist, with default name and no items', function (done) {
 
-        resumes.createEmpty({_id: ObjectId()}, function (err, resume) {
+        resumes.createEmpty({_id: ObjectId()}).then(function (resume) {
             
             expect(resume.sections).to.be.empty;
 

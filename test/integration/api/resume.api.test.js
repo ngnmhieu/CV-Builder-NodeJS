@@ -59,8 +59,8 @@ describe('Resume REST API', function() {
 
         it('[GET /users/:user_id/resumes/:resume_id] should get a resume', function(done) {
 
-            resumes.createEmpty({_id: ObjectId(userId)}, function(err, result) {
-                request.get(getResumePath(result.insertedId))
+            resumes.createEmpty({_id: ObjectId(userId)}).then(function(result) {
+                request.get(getResumePath(result._id))
                     .expect('Content-Type', /json/)
                     .expect(200)
                     .end(function(err, result) {
@@ -72,15 +72,15 @@ describe('Resume REST API', function() {
         });
 
         it('[DELETE /users/:user_id/resumes/:resume_id] should delete a resume', function(done) {
-            resumes.createEmpty({_id: ObjectId(userId)}, function(err, result) {
-                request.delete(getResumePath(result.insertedId))
+            resumes.createEmpty({_id: ObjectId(userId)}).then(function(result) {
+                request.delete(getResumePath(result._id))
                     .expect(200)
                     .end(done);
             });
         });
 
         it('[GET /users/:user_id/resumes/:resume_id/sections] should return the sections of the resume', function(done) {
-            resumes.createEmpty({_id: ObjectId(userId)}, function(err, resume) {
+            resumes.createEmpty({_id: ObjectId(userId)}).then(function(resume) {
                 bulletlists.createEmpty(resume, function(err, listResult) {
                     bulletlists.createEmpty(resume, function(err, listResult) {
                         request.get(getResumePath(resume._id) + '/sections')

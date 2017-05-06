@@ -35,16 +35,20 @@ var getNewResume = function(options) {
 /**
  * Create an empty resume
  * @param {Object} User that owns the new resume
+ * @return Promise
  */
 exports.createEmpty = function(user, callback) {
 
     var resume = getNewResume({
         user_id: user._id
     });
+
     delete resume._id;
 
-    resumes.insertOne(resume, function(err, result) {
-        callback(err, _.extend(resume, {_id: result.insertedId, insertedId: result.insertedId}));
+    return new Promise(function(resolve, reject) {
+        resumes.insertOne(resume).then(function(result) {
+            resolve(_.extend(resume, { _id: result.insertedId }));
+        }, reject);
     });
 };
 

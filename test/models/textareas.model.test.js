@@ -25,7 +25,7 @@ describe('Textarea Model', function (done) {
 
     it('#createEmpty should create an empty textarea, with default name and empty content', function (done) {
 
-        resumes.createEmpty({_id: ObjectId()}, function (err, resume) {
+        resumes.createEmpty({_id: ObjectId()}).then(function (resume) {
 
             expect(resume.sections).to.be.empty;
 

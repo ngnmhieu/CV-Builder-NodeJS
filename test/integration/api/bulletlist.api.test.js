@@ -43,7 +43,7 @@ describe('Bulletlist REST API', function() {
     var resume;
 
     beforeEach(function(done) {
-        resumes.createEmpty({_id: ObjectId(userId)}, function(err, res) {
+        resumes.createEmpty({_id: ObjectId(userId)}).then(function(res) {
             resume = res;
             done();
         });
@@ -108,7 +108,7 @@ describe('Bulletlist REST API', function() {
         });
 
         it('[GET] should return 404 for a bullet list, which doesnt belong to a given resume', function(done) {
-            resumes.createEmpty({_id: ObjectId(userId)}, function(err, res) {
+            resumes.createEmpty({_id: ObjectId(userId)}).then(function(res) {
                 var anotherResume = res;
                 bulletlists.createEmpty(anotherResume, function(err, listResult) {
                     request.get(getBulletListURI(resume._id, listResult._id))

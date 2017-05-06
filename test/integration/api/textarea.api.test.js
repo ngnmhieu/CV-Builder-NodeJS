@@ -37,7 +37,7 @@ describe('Textarea REST API', function() {
     var resume;
 
     beforeEach(function(done) {
-        resumes.createEmpty({_id: ObjectId(userId)}, function(err, res) {
+        resumes.createEmpty({_id: ObjectId(userId)}).then(function(res) {
             resume = res;
             done();
         });
@@ -126,7 +126,7 @@ describe('Textarea REST API', function() {
         });
 
         it('[GET] should return 404 for a textarea, which doesnt belong to a given resume', function(done) {
-            resumes.createEmpty({_id: ObjectId(userId)}, function(err, res) {
+            resumes.createEmpty({_id: ObjectId(userId)}).then(function(res) {
                 var anotherResume = res;
                 textareas.createEmpty(anotherResume, function(err, textResult) {
                     request.get(getTextareaURI(resume._id, textResult._id))

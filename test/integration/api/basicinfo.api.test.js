@@ -21,8 +21,8 @@ describe('Resume Basicinfo REST API', function () {
             request = session(app.express);
             api_helper.createUser(db, function (err, resultUser) {
                 userId = resultUser.insertedId;
-                resumes.createEmpty({_id: ObjectId(userId)}, function (err, resultResume) {
-                    resumeId = resultResume.insertedId;
+                resumes.createEmpty({_id: ObjectId(userId)}).then(function (resultResume) {
+                    resumeId = resultResume._id;
                     done();
                 });
             });
@@ -88,8 +88,8 @@ describe('Resume Basicinfo REST API', function () {
     describe('Sad paths', function () {
 
         it('[PUT /users/:user_id/resumes/:resume_id/basicinfo] should return HTTP 400 with missing parameters', function (done) {
-            resumes.createEmpty({_id: ObjectId(userId)}, function (err, result) {
-                request.put(getBasicinfoURI(result.insertedId))
+            resumes.createEmpty({_id: ObjectId(userId)}).then(function (result) {
+                request.put(getBasicinfoURI(result._id))
                     .set('Content-Type', 'application/json')
                     .send({
                         name: 'A new name'

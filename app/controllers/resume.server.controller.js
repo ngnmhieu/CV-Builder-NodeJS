@@ -21,16 +21,14 @@ exports.read = function(req, res) {
  * @param res
  */
 exports.create = function(req, res) {
-
-    resumes.createEmpty(req.userObj, function(err, result) {
-
-        if (err) throw err;
-
+    resumes.createEmpty(req.userObj).then(function(result) {
         if (req.is('json')) {
-            res.location('/users/' + req.userObj._id + '/resumes/' + result.insertedId).sendStatus(201);
+            res.location('/users/' + req.userObj._id + '/resumes/' + result._id).sendStatus(201);
         } else {
-            res.redirect('/resumes/' + result.insertedId);
+            res.redirect('/resumes/' + result._id);
         }
+    }, function(err) {
+        throw err;
     });
 };
 
