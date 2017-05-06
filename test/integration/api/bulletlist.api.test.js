@@ -89,7 +89,7 @@ describe('Bulletlist REST API', function() {
                     .set('Content-Type', 'application/json')
                     .send({
                         name: 'A bullet list',
-                        items: [{ content: 'Item1', order:1 }, {content: 'Item2', order:2}],
+                        items: [{ content: 'Item1', order: 1 }, {content: 'Item2', order: 2}],
                         order: 1,
                         numbered: false
                     })

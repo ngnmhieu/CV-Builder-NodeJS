@@ -72,7 +72,7 @@ describe('Resume Model', function (done) {
                 address2: 'Hanoi',
                 address3: 'Vietnam',
             }, function (err, result) {
-                resumes.findById(resume._id, function (err, result) {
+                resumes.findById(resume._id).then(function(result) {
                     result.basicinfo.name.should.equal('A new name');
                     result.basicinfo.email.should.equal('xyz@example.com');
                     result.basicinfo.website.should.equal('nguyen.hieu.co');

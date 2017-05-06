@@ -37,11 +37,10 @@ describe('Bulletlist Model', function (done) {
                 db.collection('bulletlists').findOne({_id: result._id }).then(function (resultList) {
 
                     expect(resultList).to.exist;
-                    expect(resultList.name).to.not.be.empty;
                     expect(resultList.items).to.be.empty;
 
                     // list should be added to resume sections
-                    resumes.findById(resume._id, function(err, resumeResult) {
+                    resumes.findById(resume._id).then(function(resumeResult) {
                         expect(resumeResult.sections.length).to.equal(1);
                         done();
                     });
@@ -67,7 +66,7 @@ describe('Bulletlist Model', function (done) {
                 bulletlists.deleteById(resume, listRes, function () {
                     db.collection('bulletlists').findOne({_id: listRes._id}, function (err, list) {
                         should.not.exists(list);
-                        resumes.findById(resume._id, function (err, resume) {
+                        resumes.findById(resume._id).then(function (resume) {
                             resume.sections.should.be.empty();
                             done();
                         });
@@ -94,9 +93,7 @@ describe('Bulletlist Model', function (done) {
                 }],
                 order: 2,
                 numbered: true
-            }, function (err, updateResult) {
-                expect(err).to.not.exist;
-
+            }).then(function (updateResult) {
                 db.collection('bulletlists').findOne({_id: listRes.insertedId}, function (err, list) {
                     expect(list.name).to.not.be.empty;
                     expect(list.items).to.not.be.empty;
@@ -117,7 +114,8 @@ describe('Bulletlist Model', function (done) {
             numbered : false
         }, function (err, listRes) {
 
-            bulletlists.updateById(listRes.ops[0], {}, function (err, updateResult) {
+            bulletlists.updateById(listRes.ops[0], {}).then(function(result) {
+            }, function(err) {
                 should.exists(err);
                 done();
             });
@@ -131,8 +129,8 @@ describe('Bulletlist Model', function (done) {
             order         : 1,
             numbered : true
         }, function (err, listRes) {
-
-            bulletlists.updateById(listRes.ops[0], {}, function (err, updateResult) {
+            bulletlists.updateById(listRes.ops[0], {}).then(function(result) {
+            }, function(err) {
                 should.exists(err);
                 done();
             });

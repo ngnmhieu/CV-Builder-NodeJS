@@ -1,13 +1,21 @@
 var mongodb = require('../../config/mongodb').client;
 var resumes = mongodb.collection('resumes');
 var _ = require('lodash');
-var SECTION_TYPES = {
-    bulletlist: require('./bulletlists.server.model'),
-    worklist: require('./worklists.server.model'),
-    textarea: require('./textareas.server.model')
-};
 
-exports.collection = resumes;
+const SECTION_TYPES = {
+    bulletlist: {
+        name: 'bulletlist',
+        model: require('./bulletlists.server.model'),
+    },
+    worklist: {
+        name: 'worklist',
+        model: require('./worklists.server.model'),
+    },
+    textarea: {
+        name: 'textarea',
+        model: require('./textareas.server.model')
+    }
+};
 
 var LANGS = ['en', 'de'];
 
@@ -177,14 +185,15 @@ exports.findByUser = function(user, callback) {
 /**
  * @return Promise
  */
-exports.findById = function(id, done) {
-
-    resumes.findOne({
-        _id: id
-    }, function (err, result) {
-
-        getResume(err, result, function(err, resume) {
-            done(err, resume);
+exports.findById = function(id) {
+    return new Promise((resolve, reject) => {
+        resumes.findOne({
+            _id: id
+        }, (err, result) => {
+            getResume(err, result, (err, resume) => {
+                if (err) reject(err)
+                else resolve(resume);
+            });
         });
     });
 };
@@ -213,7 +222,7 @@ var getResume = function(err, result, done) {
         for (var i in result.sections) {
             var sec = result.sections[i];
             if (sec.type in SECTION_TYPES) {
-                SECTION_TYPES[sec.type].findById(sec._id, function(err, result) {
+                SECTION_TYPES[sec.type].model.findById(sec._id, function(err, result) {
                     if (result != null) {
                         sections.push(result);
                     }
@@ -255,3 +264,37 @@ exports.isSectionOf = function(resume, section) {
         return sec._id.equals(sectionId);
     });
 };
+
+/**
+ * Add a new section to the resume
+ *
+ * @param {ObjectId} id - id of the section
+ * @param {string} type - section type
+ * @param {Resume} resume - resume object
+ *
+ * @return {Promise}
+ */
+var addSection = function(id, type, resume) {
+
+    var section = {
+        _id: id,
+        type: type,
+        order: resume.sections.length + 1
+    };
+
+    return resumes.updateOne({_id: resume._id}, {'$push': {sections: section}});
+};
+
+exports.addBulletlist = function(id, resume) {
+    return addSection(id, SECTION_TYPES.bulletlist.name, resume);
+};
+
+exports.addWorklist = function() {
+    return addSection(id, SECTION_TYPES.worklist.name, resume);
+};
+
+exports.addTextarea = function() {
+    return addSection(id, SECTION_TYPES.textarea.name, resume);
+};
+
+exports.collection = resumes;

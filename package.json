@@ -1,9 +1,9 @@
 {
-  "name": "MEAN",
+  "name": "CV-Builder",
   "version": "0.0.1",
   "description": "A first web application with express",
   "engines": {
-    "node": ">=5.10.1"
+    "node": ">=6.10.0"
   },
   "dependencies": {
     "bcryptjs": "^2.3.0",

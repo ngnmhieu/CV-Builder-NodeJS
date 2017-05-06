@@ -322,7 +322,7 @@ var Editor = (function($) {
       return {
         name: name,
         items: items,
-        order: 0,
+        order: 1,
         numbered: numbered
       };
     });
@@ -381,7 +381,7 @@ var Editor = (function($) {
       return {
         name: name,
         items: items,
-        order: 0,
+        order: 1,
         numbered: false
       };
     });

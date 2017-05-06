@@ -1,6 +1,7 @@
 var bulletlists = require('../models/bulletlists.server.model'),
     resumes     = require('../models/resumes.server.model'),
-    ObjectId    = require('mongodb').ObjectId;
+    ObjectId    = require('mongodb').ObjectId,
+    debug       = require('debug')('cvbuilder.controller.bulletlist');
 
 /**
  * POST /resumes/:resume_id/bulletlists
@@ -14,7 +15,6 @@ exports.create = function (req, res) {
         if (err) throw err;
 
         res.status(201)
-        // .location('/users/' + req.userObj._id + '/resumes/' + resume._id + '/bulletlists/' + list._id);
         .location(`/users/${req.userObj._id}/resumes/${resume._id}/bulletlists/${list._id}`);
 
         res.json(list);
@@ -83,19 +83,10 @@ exports.byId = function (req, res, next, id) {
  * PUT /resumes/:resume_id/bulletlists/:bulletlist_id
  */
 exports.update = function (req, res) {
-
-    bulletlists.updateById(req.bulletList, req.body, function (err, list) {
-        if (err) {
-            switch(err) {
-                case 'validation_error': 
-                    res.sendStatus(400); return;
-                default:
-                    throw err;
-            }
-        }
-
-        res.status(200);
-
+    bulletlists.updateById(req.bulletList, req.body).then((list) => {
         res.json(list);
+    }, (errors) => {
+        debug('Update errors: %o', errors);
+        return res.sendStatus(400);
     });
 };

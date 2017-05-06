@@ -65,7 +65,7 @@ describe('Resume REST API', function() {
                     .expect(200)
                     .end(function(err, result) {
                         var resume = result.body;
-                        resume.name.should.equal("Unnamed CV");
+                        expect(resume.name).to.be.not.empty;
                         done(err);
                     });
             });

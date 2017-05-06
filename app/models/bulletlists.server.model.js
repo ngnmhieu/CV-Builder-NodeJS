@@ -1,12 +1,32 @@
 var db = require('../../config/mongodb').client,
     _  = require('lodash'),
     Joi = require('joi'),
-    ObjectId = require('mongodb').ObjectId;
+    ObjectId = require('mongodb').ObjectId,
+    resumes     = db.collection('resumes'),
+    bulletlists = db.collection('bulletlists');
 
-var resumes     = db.collection('resumes');
-var bulletlists = db.collection('bulletlists');
+/**
+ * Schema of a bulletlist object
+ */
+const BULLETLIST_SCHEMA = Joi.object().keys({
+    name: Joi.string().allow(''),
+    items: Joi.array().items(Joi.object().keys({
+        content: Joi.string().allow(''),
+        order: Joi.number()
+    })),
+    order: Joi.number(),
+    numbered: Joi.boolean().required()
+});
 
-exports.collection = bulletlists;
+/**
+ * @param a bulletlist object
+ * @return errors validation fails
+ */
+var validateBulletlist = function(params) {
+    var result = Joi.validate(params, BULLETLIST_SCHEMA);
+    if(result.error)
+    return result.error;
+};
 
 /**
  * @param params (optional) object conntaining the list's attributes.
@@ -14,31 +34,24 @@ exports.collection = bulletlists;
  *               a default value is used instead.
  * @return bulletlist object
  */
-var getNewList = function (params) {
+var getNewList = function (params = {}) {
 
-    params = typeof params !== 'undefined' && params !== null ? params : {};
-    
     var items = Array.isArray(params.items) ? params.items : [];
 
-    items = items.map(function(item) {
-
-        var order = parseInt(item.order);
-
+    items = items.map((item) => {
         return {
             content: item.content || '',
-            order: isNaN(item.order) ? -1 : item.order
+            order: isNaN(parseInt(item.order)) ? -1 : parseInt(item.order)
         };
     });
 
-    var order = parseInt(params.order);
-
     return {
-        _id           : params._id,
-        type          : "bulletlist",
-        name          : params.name ? params.name.toString() : "New bullet list",
-        items         : items,
-        order         : isNaN(params.order) ? -1 : params.order,
-        numbered  : params.numbered ? Boolean(params.numbered) : false,
+        _id      : params._id,
+        type     : "bulletlist",
+        name     : _.toString(params.name),
+        items    : items,
+        order    : isNaN(parseInt(params.order)) ? -1 : parseInt(params.order),
+        numbered : params.numbered ? Boolean(params.numbered) : false,
     };
 };
 
@@ -85,42 +98,25 @@ exports.deleteById = function (resume, list, callback) {
         });
 };
 
-var bulletlistSchema = Joi.object().keys({
-    name: Joi.string().required(),
-    items: Joi.array().items(Joi.object().keys({
-        content: Joi.string().required(),
-        order: Joi.number().greater(0).required()
-    })),
-    order: Joi.number(),
-    numbered: Joi.boolean().required()
-});
-
-/**
- * @param a bulletlist object from request
- * @return true if valid, else false
- */
-var validate = function (params) {
-
-    var result = Joi.validate(params, bulletlistSchema);
-
-    return result.error == null;
-};
-
 /**
  * Update an existing bulletlist
+ * @return Promise
  */
-exports.updateById = function (list, params, callback) {
+exports.updateById = function (list, params) {
 
-    if (!validate(params)) {
-        callback('validation_error');
-        return;
-    }
+    return new Promise(function(resolve, reject) {
 
-    var newList = exports.getNewList(params);
-    delete newList._id;
+        var errors = validateBulletlist(params);
+        if (errors) {
+            return reject(errors);
+        }
 
-    bulletlists.updateOne({_id: list._id}, newList, function(err, result) {
-        callback(err, _.extend(newList, {_id: list._id}));
+        var newList = getNewList(params);
+        delete newList._id;
+
+        bulletlists.updateOne({_id: list._id}, newList, function(err, result) {
+            resolve(_.extend(newList, {_id: list._id}));
+        });
     });
 };
 
@@ -144,3 +140,5 @@ var getNewItem = function (params) {
         order   : Number.isInteger(order) ? order : -1
     };
 };
+
+exports.collection = bulletlists;
