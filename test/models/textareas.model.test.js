@@ -1,7 +1,9 @@
 var helpers = require('../helpers'),
     app_root = helpers.app_root,
     mongo = require(app_root + 'config/mongodb'),
-    should = require('should');
+    ObjectId = require('mongodb').ObjectId,
+    should = require('should'),
+    expect = require('chai').expect;
 
 var db, textareas, resumes;
 
@@ -23,16 +25,9 @@ describe('Textarea Model', function (done) {
 
     it('#createEmpty should create an empty textarea, with default name and empty content', function (done) {
 
-        db.collection('resumes').insertOne({
-            name: 'Test CV',
-            created_at : new Date(),
-            updated_at : new Date(),
-            sections: []
-        }, function (err, res) {
-            var resume = res.ops[0];
+        resumes.createEmpty({_id: ObjectId()}, function (err, resume) {
 
-            // before creating
-            resume.sections.should.be.empty();
+            expect(resume.sections).to.be.empty;
 
             textareas.createEmpty(resume, function (err, result) {
 

@@ -80,11 +80,10 @@ describe('Resume REST API', function() {
         });
 
         it('[GET /users/:user_id/resumes/:resume_id/sections] should return the sections of the resume', function(done) {
-            resumes.createEmpty({_id: ObjectId(userId)}, function(err, result) {
-                var resume = result.ops[0];
+            resumes.createEmpty({_id: ObjectId(userId)}, function(err, resume) {
                 bulletlists.createEmpty(resume, function(err, listResult) {
                     bulletlists.createEmpty(resume, function(err, listResult) {
-                        request.get(getResumePath(result.insertedId) + '/sections')
+                        request.get(getResumePath(resume._id) + '/sections')
                         .expect(200)
                         .end(function(err, result) {
                             expect(result.body.length).to.equal(2)

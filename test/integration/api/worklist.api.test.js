@@ -43,7 +43,7 @@ describe('Worklist REST API', function() {
 
     beforeEach(function(done) {
         resumes.createEmpty({_id: ObjectId(userId)}, function (err, res) {
-            resume = res.ops[0];
+            resume = res;
             done();
         });
     });
@@ -130,7 +130,7 @@ describe('Worklist REST API', function() {
 
         it('[GET] should return 404 for a work list, which doesnt belong to a given resume', function(done) {
             resumes.createEmpty({_id: ObjectId(userId)}, function(err, res) {
-                var anotherResume = res.ops[0];
+                var anotherResume = res;
                 worklists.createEmpty(anotherResume, function(listResult) {
                     request.get(getWorkListURI(resume._id, listResult._id))
                         .expect(404)

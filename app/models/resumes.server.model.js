@@ -35,7 +35,6 @@ var getNewResume = function(options) {
 /**
  * Create an empty resume
  * @param {Object} User that owns the new resume
- * TODO: return real resume object
  */
 exports.createEmpty = function(user, callback) {
 
@@ -44,7 +43,9 @@ exports.createEmpty = function(user, callback) {
     });
     delete resume._id;
 
-    resumes.insertOne(resume, callback);
+    resumes.insertOne(resume, function(err, result) {
+        callback(err, _.extend(resume, {_id: result.insertedId, insertedId: result.insertedId}));
+    });
 };
 
 var validateResume = function(params) {
@@ -170,6 +171,58 @@ exports.findByUser = function(user, callback) {
 };
 
 /**
+ * @return Promise
+ */
+exports.findById = function(id, done) {
+
+    resumes.findOne({
+        _id: id
+    }, function (err, result) {
+
+        getResume(err, result, function(err, resume) {
+            done(err, resume);
+        });
+    });
+};
+
+var getResume = function(err, result, done) {
+
+    if (typeof result == 'undefined' || result == null) {
+
+        done(err, null);
+
+    } else if (!Array.isArray(result.sections) || result.sections.length == 0) {
+
+        done(err, getNewResume(result));
+
+    } else {
+
+        var sections = [];
+
+        // execute this after fetching all sections
+        var sectionFetched = _.after(result.sections.length, function() {
+            result.sections = sections;
+            done(err, getNewResume(result));
+        });
+
+        // fetch the sections
+        for (var i in result.sections) {
+            var sec = result.sections[i];
+            if (sec.type in SECTION_TYPES) {
+                SECTION_TYPES[sec.type].findById(sec._id, function(err, result) {
+                    if (result != null) {
+                        sections.push(result);
+                    }
+                    sectionFetched();
+                });
+            } else {
+                sectionFetched();
+            }
+        }
+    }
+};
+
+/**
  * @param {Object} User
  * @param {ObjectID} id Resume's ID
  */
@@ -179,41 +232,7 @@ exports.findByUserAndId = function(user, id, done) {
         _id: id,
         user_id: user._id
     }, function(err, result) {
-
-        if (typeof result == 'undefined' || result == null) {
-
-            done(err, null);
-
-        } else if (!Array.isArray(result.sections) || result.sections.length == 0) {
-
-            done(err, getNewResume(result));
-
-        } else {
-
-            var sections = [];
-
-            // execute this after fetching all sections
-            var sectionFetched = _.after(result.sections.length, function() {
-                result.sections = sections;
-                done(err, getNewResume(result));
-            });
-
-            // fetch the sections
-            for (var i in result.sections) {
-                var sec = result.sections[i];
-                if (sec.type in SECTION_TYPES) {
-                    SECTION_TYPES[sec.type].findById(sec._id, function(err, result) {
-                        if (result != null) {
-                            sections.push(result);
-                        }
-                        sectionFetched();
-                    });
-                } else {
-                    sectionFetched();
-                }
-            }
-        }
-
+        getResume(err, result, done);
     });
 };
 

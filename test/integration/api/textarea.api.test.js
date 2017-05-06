@@ -38,7 +38,7 @@ describe('Textarea REST API', function() {
 
     beforeEach(function(done) {
         resumes.createEmpty({_id: ObjectId(userId)}, function(err, res) {
-            resume = res.ops[0];
+            resume = res;
             done();
         });
     });
@@ -127,7 +127,7 @@ describe('Textarea REST API', function() {
 
         it('[GET] should return 404 for a textarea, which doesnt belong to a given resume', function(done) {
             resumes.createEmpty({_id: ObjectId(userId)}, function(err, res) {
-                var anotherResume = res.ops[0];
+                var anotherResume = res;
                 textareas.createEmpty(anotherResume, function(err, textResult) {
                     request.get(getTextareaURI(resume._id, textResult._id))
                         .expect(404)

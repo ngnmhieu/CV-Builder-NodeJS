@@ -1,7 +1,8 @@
 var helpers = require('../helpers'),
     app_root = helpers.app_root,
     mongo = require(app_root + 'config/mongodb'),
-    should = require('should');
+    should = require('should'),
+    ObjectId = require('mongodb').ObjectId,
     expect = require('chai').expect;
 
 var db, bulletlists, resumes;
@@ -24,13 +25,7 @@ describe('Bulletlist Model', function (done) {
 
     it('#createEmpty should create an empty bullet list, with default name and no items', function (done) {
 
-        db.collection('resumes').insertOne({
-            name: 'Test CV',
-            created_at : new Date(),
-            updated_at : new Date(),
-            sections: []
-        }, function (err, res) {
-            var resume = res.ops[0];
+        resumes.createEmpty({_id: ObjectId()}, function (err, resume) {
 
             expect(resume.sections).to.be.empty;
 
@@ -38,10 +33,6 @@ describe('Bulletlist Model', function (done) {
 
                 expect(err).to.not.exist;
                 expect(result).to.exist;
-                //
-                // db.collection('bulletlists').findOne({_id: result._id }).then(function (err, resultList) {
-                //     done();
-                // });
 
                 db.collection('bulletlists').findOne({_id: result._id }).then(function (resultList) {
 
@@ -50,8 +41,9 @@ describe('Bulletlist Model', function (done) {
                     expect(resultList.items).to.be.empty;
 
                     // list should be added to resume sections
-                    db.collection('resumes').findOne({_id: resume._id}, function (err, resumeResult) {
-                        resumeResult.sections.should.containEql({'type': 'bulletlist', _id: resultList._id});
+                    resumes.findById(resume._id, function(err, resumeResult) {
+                    console.log(resumeResult.sections);
+                        expect(resumeResult.sections.length).to.equal(1);
                         done();
                     });
                 });

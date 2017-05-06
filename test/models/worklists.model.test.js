@@ -2,6 +2,8 @@ var helpers = require('../helpers'),
     app_root = helpers.app_root,
     mongo = require(app_root + 'config/mongodb'),
     should = require('should');
+    ObjectId = require('mongodb').ObjectId,
+    expect = require('chai').expect;
 
 var db, worklists, resumes;
 
@@ -23,16 +25,9 @@ describe('Worklist Model', function (done) {
 
     it('#createEmpty should create an empty worklist, with default name and no items', function (done) {
 
-        db.collection('resumes').insertOne({
-            name: 'Test CV',
-            created_at : new Date(),
-            updated_at : new Date(),
-            sections: []
-        }, function (err, res) {
-            var resume = res.ops[0];
-
-            // before creating
-            resume.sections.should.be.empty();
+        resumes.createEmpty({_id: ObjectId()}, function (err, resume) {
+            
+            expect(resume.sections).to.be.empty;
 
             worklists.createEmpty(resume, function (result) {
 

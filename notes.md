@@ -1,7 +1,8 @@
 ## Notes
 
 - Sorting
--
+- Redo authentication
+- Redo api path structures
 
 
 ### Functionalities
