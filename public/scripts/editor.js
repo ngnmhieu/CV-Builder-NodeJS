@@ -21,6 +21,7 @@ var Editor = (function($) {
     // register partials for handlebars
     Handlebars.registerPartial('sectionHeaderDisplay', $('#section-header-display-template').html());
     Handlebars.registerPartial('sectionHeaderEdit', $('#section-header-edit-template').html());
+    Handlebars.registerPartial('addPageBreak', $('#add-page-break-template').html());
     Handlebars.registerPartial('resumeinfoDisplay', $('#resumeinfo-display-template').html());
     Handlebars.registerPartial('basicinfoDisplay', $('#basicinfo-display-template').html());
     Handlebars.registerPartial('basicinfoEdit', $('#basicinfo-edit-template').html());

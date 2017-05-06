@@ -69,7 +69,7 @@ describe('Textarea REST API', function() {
 
         it('[GET /users/:user_id/resumes/:resume_id/textareas/:textarea_id] should return a textarea', function(done) {
             textareas.createEmpty(resume, function(err, result) {
-                request.get(getTextareaURI(resume._id, result.insertedId))
+                request.get(getTextareaURI(resume._id, result._id))
                     .expect('Content-Type', /json/)
                     .expect(200)
                     .end(function(err, res) {
@@ -77,7 +77,7 @@ describe('Textarea REST API', function() {
                         should.exists(res.body.name);
                         should.exists(res.body.content);
                         should.exists(res.body.order);
-                        res.body._id.should.equal(result.insertedId.toString());
+                        res.body._id.should.equal(result._id.toString());
                         done(err);
                     });
             });
@@ -85,7 +85,7 @@ describe('Textarea REST API', function() {
 
         it('[DELETE /users/:user_id/resumes/:resume_id/textareas/:textarea_id] should delete a textarea', function(done) {
             textareas.createEmpty(resume, function(err, result) {
-                request.delete(getTextareaURI(resume._id, result.insertedId))
+                request.delete(getTextareaURI(resume._id, result._id))
                     .expect(200)
                     .end(done);
             });
@@ -93,7 +93,7 @@ describe('Textarea REST API', function() {
 
         it('[PUT /users/:user_id/resumes/:resume_id/textareas/:textarea_id] should update an existing textarea', function(done) {
             textareas.createEmpty(resume, function(err, textResult) {
-                request.put(getTextareaURI(resume._id, textResult.insertedId))
+                request.put(getTextareaURI(resume._id, textResult._id))
                     .set('Content-Type', 'application/json')
                     .send({
                         name: 'A new Textarea',
@@ -103,7 +103,7 @@ describe('Textarea REST API', function() {
                     .expect(200)
                     .end(function(err, res) {
                         textareas.collection.findOne({
-                            _id: textResult.insertedId
+                            _id: textResult._id
                         }, function(findErr, result) {
                             should.not.exists(findErr);
                             should.exists(result);
@@ -129,7 +129,7 @@ describe('Textarea REST API', function() {
             resumes.createEmpty({_id: ObjectId(userId)}, function(err, res) {
                 var anotherResume = res.ops[0];
                 textareas.createEmpty(anotherResume, function(err, textResult) {
-                    request.get(getTextareaURI(resume._id, textResult.insertedId))
+                    request.get(getTextareaURI(resume._id, textResult._id))
                         .expect(404)
                         .end(done);
                 });
@@ -144,7 +144,7 @@ describe('Textarea REST API', function() {
 
         it('[PUT] should not update textarea with malformed supertest entity', function(done) {
             textareas.createEmpty(resume, function(err, textResult) {
-                request.put(getTextareaURI(resume._id, textResult.insertedId))
+                request.put(getTextareaURI(resume._id, textResult._id))
                     .set('Content-Type', 'application/json')
                     .send('invalid data')
                     .expect(400)
@@ -154,7 +154,7 @@ describe('Textarea REST API', function() {
 
         it('[PUT] should not update textarea with semantics invalid data ', function(done) {
             textareas.createEmpty(resume, function(err, textResult) {
-                request.put(getTextareaURI(resume._id, textResult.insertedId))
+                request.put(getTextareaURI(resume._id, textResult._id))
                     .set('Content-Type', 'application/json')
                     .send({})
                     .expect(400)

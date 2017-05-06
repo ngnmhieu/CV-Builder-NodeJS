@@ -6,3 +6,4 @@ public/components/**
 *.swp
 *.DS_Store
 .idea
+*.log

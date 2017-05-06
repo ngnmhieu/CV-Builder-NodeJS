@@ -18,6 +18,7 @@ describe('Resume REST API', function() {
         app.init(function() {
             db = require(app_root + 'config/mongodb').client;
             resumes = require(app_root + 'app/models/resumes.server.model');
+            bulletlists = require(app_root + 'app/models/bulletlists.server.model');
             request = session(app.express);
             api_helper.createUser(db, function(err, result) {
                 userId = result.insertedId;
@@ -79,32 +80,19 @@ describe('Resume REST API', function() {
         });
 
         it('[GET /users/:user_id/resumes/:resume_id/sections] should return the sections of the resume', function(done) {
-
-            db.collection('bulletlists').insert({
-                name: 'bulletlist1'
-            }, function(err, result1) {
-                db.collection('bulletlists').insert({
-                    name: 'bulletlist2'
-                }, function(err, result2) {
-                    db.collection('resumes').insertOne({
-                        name: "Unnamed CV",
-                        created_at: new Date(),
-                        updated_at: new Date(),
-                        sections: [{ _id: result1.insertedId, type: "bulletlist" }, { _id: result2.insertedId, type: "bulletlist" }]
-                    }, function(err, result) {
-
+            resumes.createEmpty({_id: ObjectId(userId)}, function(err, result) {
+                var resume = result.ops[0];
+                bulletlists.createEmpty(resume, function(err, listResult) {
+                    bulletlists.createEmpty(resume, function(err, listResult) {
                         request.get(getResumePath(result.insertedId) + '/sections')
-                            .expect(200)
-                            .end(function(err, result) {
-                                should(result.body.length).equal(2)
-                                done(err);
-                            });
-
+                        .expect(200)
+                        .end(function(err, result) {
+                            expect(result.body.length).to.equal(2)
+                            done(err);
+                        });
                     });
-
                 });
             });
-
         });
 
     });

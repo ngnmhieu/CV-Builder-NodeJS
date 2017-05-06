@@ -39,7 +39,7 @@ describe('Textarea Model', function (done) {
                 // after creating
                 should.not.exists(err);
 
-                db.collection('textareas').findOne({_id: result.insertedId }, function (err, resultTextarea) {
+                db.collection('textareas').findOne({_id: result._id }, function (err, resultTextarea) {
 
                     // new list should have default name and no item
                     resultTextarea.name.should.equal('A new Textarea');

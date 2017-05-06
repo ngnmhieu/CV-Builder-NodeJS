@@ -2,6 +2,7 @@ var helpers = require('../helpers'),
     app_root = helpers.app_root,
     mongo = require(app_root + 'config/mongodb'),
     should = require('should');
+    expect = require('chai').expect;
 
 var db, bulletlists, resumes;
 
@@ -31,19 +32,22 @@ describe('Bulletlist Model', function (done) {
         }, function (err, res) {
             var resume = res.ops[0];
 
-            // before creating
-            resume.sections.should.be.empty();
+            expect(resume.sections).to.be.empty;
 
             bulletlists.createEmpty(resume, function (err, result) {
 
-                // after creating
-                should.not.exists(err);
+                expect(err).to.not.exist;
+                expect(result).to.exist;
+                //
+                // db.collection('bulletlists').findOne({_id: result._id }).then(function (err, resultList) {
+                //     done();
+                // });
 
-                db.collection('bulletlists').findOne({_id: result.insertedId }, function (err, resultList) {
+                db.collection('bulletlists').findOne({_id: result._id }).then(function (resultList) {
 
-                    // new list should have default name and no item
-                    resultList.name.should.equal('New bullet list');
-                    resultList.items.should.be.empty();
+                    expect(resultList).to.exist;
+                    expect(resultList.name).to.not.be.empty;
+                    expect(resultList.items).to.be.empty;
 
                     // list should be added to resume sections
                     db.collection('resumes').findOne({_id: resume._id}, function (err, resumeResult) {
@@ -100,19 +104,22 @@ describe('Bulletlist Model', function (done) {
             order         : 1,
             numbered : false
         }, function (err, listRes) {
-
             bulletlists.updateById(listRes.ops[0], {
                 name: 'A New Bullet List',
-                items: ['item1'],
+                items: [{
+                    content: 'Item 1',
+                    order: 1
+                }],
                 order: 2,
                 numbered: true
             }, function (err, updateResult) {
+                expect(err).to.not.exist;
 
                 db.collection('bulletlists').findOne({_id: listRes.insertedId}, function (err, list) {
-                    list.name.should.equal('A New Bullet List');
-                    list.items.should.not.be.empty();
-                    list.order.should.equal(2);
-                    list.numbered.should.be.true();
+                    expect(list.name).to.not.be.empty;
+                    expect(list.items).to.not.be.empty;
+                    expect(list.order).to.equal(2);
+                    expect(list.numbered).to.be.true;
                     done();
                 });
             });

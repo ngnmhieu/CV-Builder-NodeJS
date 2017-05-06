@@ -34,12 +34,11 @@ describe('Worklist Model', function (done) {
             // before creating
             resume.sections.should.be.empty();
 
-            worklists.createEmpty(resume, function (err, result) {
+            worklists.createEmpty(resume, function (result) {
 
-                // after creating
-                should.not.exists(err);
+                expect(result).to.exist;
 
-                db.collection('worklists').findOne({_id: result.insertedId }, function (err, resultList) {
+                db.collection('worklists').findOne({_id: result._id }, function (err, resultList) {
 
                     // new list should have default name and no item
                     resultList.name.should.equal('New worklist');

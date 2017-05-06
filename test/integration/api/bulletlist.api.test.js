@@ -56,9 +56,9 @@ describe('Bulletlist REST API', function() {
     describe('Happy paths', function() {
         it('[GET /users/:user_id/resumes/:resume_id/bulletlists] should return a bullet list', function(done) {
             bulletlists.createEmpty(resume, function(err, listResult) {
-                request.get(getBulletListURI(resume._id, listResult.insertedId))
-                    .expect('Content-Type', /json/)
+                request.get(getBulletListURI(resume._id, listResult._id))
                     .expect(200)
+                    .expect('Content-Type', /json/)
                     .end(done);
             });
         });
@@ -77,7 +77,7 @@ describe('Bulletlist REST API', function() {
 
         it('[DELETE /users/:user_id/resumes/:resume_id/bulletlists/:bulletlist_id] should delete a bullet list', function(done) {
             bulletlists.createEmpty(resume, function(err, listResult) {
-                request.delete(getBulletListURI(resume._id, listResult.insertedId))
+                request.delete(getBulletListURI(resume._id, listResult._id))
                     .expect(200)
                     .end(done);
             });
@@ -85,11 +85,11 @@ describe('Bulletlist REST API', function() {
 
         it('[PUT /users/:user_id/resumes/:resume_id/bulletlists/:bulletlist_id] should update an existing bullet list', function(done) {
             bulletlists.createEmpty(resume, function(err, listResult) {
-                request.put(getBulletListURI(resume._id, listResult.insertedId))
+                request.put(getBulletListURI(resume._id, listResult._id))
                     .set('Content-Type', 'application/json')
                     .send({
                         name: 'A bullet list',
-                        items: ['item1', 'item2'],
+                        items: [{ content: 'Item1', order:1 }, {content: 'Item2', order:2}],
                         order: 1,
                         numbered: false
                     })
@@ -111,7 +111,7 @@ describe('Bulletlist REST API', function() {
             resumes.createEmpty({_id: ObjectId(userId)}, function(err, res) {
                 var anotherResume = res.ops[0];
                 bulletlists.createEmpty(anotherResume, function(err, listResult) {
-                    request.get(getBulletListURI(resume._id, listResult.insertedId))
+                    request.get(getBulletListURI(resume._id, listResult._id))
                         .expect(404)
                         .end(done);
                 });
@@ -126,7 +126,7 @@ describe('Bulletlist REST API', function() {
 
         it('[PUT] should not update bullet list with malformed supertest entity', function(done) {
             bulletlists.createEmpty(resume, function(err, listResult) {
-                request.put(getBulletListURI(resume._id, listResult.insertedId))
+                request.put(getBulletListURI(resume._id, listResult._id))
                     .set('Content-Type', 'application/json')
                     .send('invalid data')
                     .expect(400)
@@ -136,7 +136,7 @@ describe('Bulletlist REST API', function() {
 
         it('[PUT] should not update bullet list with semantics invalid data', function(done) {
             bulletlists.createEmpty(resume, function(err, listResult) {
-                request.put(getBulletListURI(resume._id, listResult.insertedId))
+                request.put(getBulletListURI(resume._id, listResult._id))
                     .set('Content-Type', 'application/json')
                     .send({})
                     .expect(400)

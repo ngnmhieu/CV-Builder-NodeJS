@@ -16,8 +16,6 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "^3.3.7",
-    "materialize": "^0.97.7",
     "bulma": "^0.4.1",
     "handlebars": "^4.0.5",
     "lodash": "^4.16.4",

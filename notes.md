@@ -1,10 +1,10 @@
 ## Notes
 
+- Sorting
+-
 
 
 ### Functionalities
-
-
 
 **Page Break, Padding Section for PDF**
 

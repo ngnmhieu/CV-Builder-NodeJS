@@ -67,8 +67,8 @@ describe('Worklist REST API', function() {
         });
 
         it('[GET /users/:user_id/resumes/:resume_id/worklists/:worklist_id] should return a work list', function(done) {
-            worklists.createEmpty(resume, function(err, listResult) {
-                request.get(getWorkListURI(resume._id, listResult.insertedId))
+            worklists.createEmpty(resume, function(listResult) {
+                request.get(getWorkListURI(resume._id, listResult._id))
                     .expect('Content-Type', /json/)
                     .expect(200)
                     .end(function(err, res) {
@@ -76,7 +76,7 @@ describe('Worklist REST API', function() {
                         should.exists(res.body._id);
                         should.exists(res.body.items);
                         should.exists(res.body.order);
-                        res.body._id.should.equal(listResult.insertedId.toString());
+                        res.body._id.should.equal(listResult._id.toString());
                         done();
                     });
             });
@@ -84,16 +84,16 @@ describe('Worklist REST API', function() {
 
 
         it('[DELETE /users/:user_id/resumes/:resume_id/worklists/:worklist_id] should delete a work list', function(done) {
-            worklists.createEmpty(resume, function(err, listResult) {
-                request.delete(getWorkListURI(resume._id, listResult.insertedId))
+            worklists.createEmpty(resume, function(listResult) {
+                request.delete(getWorkListURI(resume._id, listResult._id))
                     .expect(200)
                     .end(done);
             });
         });
 
         it('[PUT /users/:user_id/resumes/:resume_id/worklists/:worklist_id] should update an existing work list', function(done) {
-            worklists.createEmpty(resume, function(err, listResult) {
-                request.put(getWorkListURI(resume._id, listResult.insertedId))
+            worklists.createEmpty(resume, function(listResult) {
+                request.put(getWorkListURI(resume._id, listResult._id))
                     .set('Content-Type', 'application/json')
                     .send({
                         name: 'A work list',
@@ -131,8 +131,8 @@ describe('Worklist REST API', function() {
         it('[GET] should return 404 for a work list, which doesnt belong to a given resume', function(done) {
             resumes.createEmpty({_id: ObjectId(userId)}, function(err, res) {
                 var anotherResume = res.ops[0];
-                worklists.createEmpty(anotherResume, function(err, listResult) {
-                    request.get(getWorkListURI(resume._id, listResult.insertedId))
+                worklists.createEmpty(anotherResume, function(listResult) {
+                    request.get(getWorkListURI(resume._id, listResult._id))
                         .expect(404)
                         .end(done);
                 });
@@ -146,8 +146,8 @@ describe('Worklist REST API', function() {
         });
 
         it('[PUT] should not update work list with malformed supertest entity', function(done) {
-            worklists.createEmpty(resume, function(err, listResult) {
-                request.put(getWorkListURI(resume._id, listResult.insertedId))
+            worklists.createEmpty(resume, function(listResult) {
+                request.put(getWorkListURI(resume._id, listResult._id))
                     .set('Content-Type', 'application/json')
                     .send('invalid data')
                     .expect(400)
@@ -156,8 +156,8 @@ describe('Worklist REST API', function() {
         });
 
         it('[PUT] should not update work list with semantics invalid data ', function(done) {
-            worklists.createEmpty(resume, function(err, listResult) {
-                request.put(getWorkListURI(resume._id, listResult.insertedId))
+            worklists.createEmpty(resume, function(listResult) {
+                request.put(getWorkListURI(resume._id, listResult._id))
                     .set('Content-Type', 'application/json')
                     .send({})
                     .expect(400)

@@ -13,6 +13,7 @@
     "ejs": "^2.3.4",
     "express": "~4.13.3",
     "express-session": "^1.11.3",
+    "joi": "^10.4.1",
     "lodash": "^4.16.4",
     "method-override": "^2.3.5",
     "mongodb": "^2.0.47",
@@ -22,6 +23,7 @@
     "supertest-session": "^2.0.1"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
     "debug": "^2.6.6",
     "should": "^7.1.1",
     "supertest": "^1.1.0"

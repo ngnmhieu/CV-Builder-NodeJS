@@ -1,4 +1,7 @@
+var debug = require('debug')('cvbuilder.config');
 var config = require('./env/' + process.env.NODE_ENV + '.js');
+
+debug(`Environment: ${process.env.NODE_ENV}`)
 
 /**
  * Default configurations

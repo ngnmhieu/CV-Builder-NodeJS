@@ -1,5 +1,6 @@
 var db = require('../../config/mongodb').client,
     _  = require('lodash'),
+    Joi = require('joi'),
     ObjectId = require('mongodb').ObjectId;
 
 var resumes     = db.collection('resumes');
@@ -84,35 +85,25 @@ exports.deleteById = function (resume, list, callback) {
         });
 };
 
+var bulletlistSchema = Joi.object().keys({
+    name: Joi.string().required(),
+    items: Joi.array().items(Joi.object().keys({
+        content: Joi.string().required(),
+        order: Joi.number().greater(0).required()
+    })),
+    order: Joi.number(),
+    numbered: Joi.boolean().required()
+});
+
 /**
  * @param a bulletlist object from request
  * @return true if valid, else false
  */
 var validate = function (params) {
 
-    if (!params) return false;
+    var result = Joi.validate(params, bulletlistSchema);
 
-    if (!params.name) return false;
-
-    if (!Array.isArray(params.items)) return false;
-
-    // validate items
-    for (var i in params.items) {
-
-        var item = params.items[i];
-
-        if (typeof item.content !== 'string')
-            return false;
-
-        if (isNaN(parseInt(item.order)))
-            return false;
-    }
-
-    if (params.numbered === undefined) return false;
-
-    if (isNaN(parseInt(params.order))) return false;
-    
-    return true;
+    return result.error == null;
 };
 
 /**

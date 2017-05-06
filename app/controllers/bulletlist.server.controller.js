@@ -13,7 +13,9 @@ exports.create = function (req, res) {
 
         if (err) throw err;
 
-        res.status(201).location('/users/' + req.userObj._id + '/resumes/' + resume._id + '/bulletlists/' + list._id);
+        res.status(201)
+        // .location('/users/' + req.userObj._id + '/resumes/' + resume._id + '/bulletlists/' + list._id);
+        .location(`/users/${req.userObj._id}/resumes/${resume._id}/bulletlists/${list._id}`);
 
         res.json(list);
     });

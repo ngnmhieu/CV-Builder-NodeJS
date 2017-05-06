@@ -124,6 +124,16 @@ body {
     background: #eee;
 }
 
+.css-section .css-add-page-break {
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+}
+.css-section .css-add-page-break .button {
+    position: relative;
+    left: -50%;
+}
+
 .css-section .css-edit-mode {
     display: none;
 }
