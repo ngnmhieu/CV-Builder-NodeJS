@@ -15,6 +15,16 @@ var Editor = (function($) {
         return template(context);
     };
 
+    // TODO: gradually replace render with renderOptimized
+    var compiledTemplates = {};
+    var renderOptimized = function(sourceId, context) {
+        if (!_.has(compiledTemplates, sourceId)) {
+            compiledTemplates[sourceId] = Handlebars.compile($(sourceId).html());
+        }
+        var template = compiledTemplates[sourceId];
+        return template(context);
+    };
+
     var initUI = function() {
 
         // show-on-hover elements
@@ -58,8 +68,18 @@ var Editor = (function($) {
             return moment(dateStr).format(format);
         });
 
+        // ternary expression
         Handlebars.registerHelper('tern', function(cond, pos, neg) {
             return cond ? pos : neg;
+        });
+
+        // return array sorted by key
+        Handlebars.registerHelper('sortBy', function(array, key) {
+            return array.sort((a, b) => {
+                var x = a[key];
+                var y = b[key];
+                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+            });
         });
 
         var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -220,8 +240,15 @@ var Editor = (function($) {
                         return done(data, form, card, displayArea, editArea);
                     }
 
-                    var template = $('#' + form.data('display-template-id')).html();
-                    displayArea.html(render(template, {
+                    var templateId = '#' + form.data('display-template-id');
+                    displayArea.html(renderOptimized(templateId, {
+                        param: data,
+                        user: user,
+                        resume: resume
+                    }));
+
+                    templateId = '#' + form.data('edit-template-id');
+                    editArea.html(renderOptimized(templateId, {
                         param: data,
                         user: user,
                         resume: resume
@@ -231,6 +258,7 @@ var Editor = (function($) {
                     editArea.find('.temporary').removeClass('temporary');
 
                     editArea.hide();
+
                     displayArea.show();
 
                 }).fail(fail || function(res, status) {
@@ -250,8 +278,8 @@ var Editor = (function($) {
             e.preventDefault();
 
             var container = $('#' + $(this).data('item-container-id'));
-            var template = $('#' + $(this).data('item-template-id')).html();
             var itemCount = parseInt(container.data('item-count'));
+            var template = $('#' + $(this).data('item-template-id')).html();
 
             container.append(render(template, {
                 itemIndex: itemCount,
@@ -321,8 +349,11 @@ var Editor = (function($) {
         saveSection('.bulletlist-edit-form', function(form) {
             var name = form.find('input[name=name]').val();
             var numbered = form.find('input[name=numbered]').is(':checked');
-            var items = $.map(form.find('input.item-content'), function(input) {
-                return { content: input.value }
+            var items = [];
+            form.find('.bulletlist-item').each((idx, element) => {
+                var item = $(element);
+                var input = item.find('input.item-content');
+                items.push({ content: input.val(), order: item.data('order') });
             });
 
             return {
@@ -376,14 +407,14 @@ var Editor = (function($) {
                     startDate: toISODate(monthStart, yearStart),
                     endDate: toISODate(monthEnd, yearEnd),
                     tillNow: item.find('input.tillNow').is(':checked'),
-                    desc: item.find('textarea[name=desc]').val()
+                    desc: item.find('textarea[name=desc]').val(),
+                    order: item.data('order')
                 }
             });
 
             return {
                 name: name,
-                items: items,
-                numbered: false
+                items: items
             };
         });
 
@@ -442,27 +473,87 @@ var Editor = (function($) {
 
         // by saving the form, the order of the sections is also saved
         var updateSectionOrder = function() {
-            $('#ResumeSaveForm').submit();
         };
 
-        $(document).on('click', '.section-move-up', function() {
-            var section = $(this).closest('.cv-section');
-            var prevSection = section.prev();
-            if (prevSection.length > 0) {
-                section.insertBefore(prevSection);
-                updateSectionOrder();
-            }
-        });
+        /**
+         * Enable ordering on a set of items
+         * Important data-* attributes:
+         *  - 'data-form-id' has be specified in the surrounding '.order-control' element;
+         *    this specifies the form, which will save the ordering.
+         *  - If some items are to be sorted in sync, 'data-parallel-item-id' should
+         *    be specified on the item element. Notice, parallel items must have the
+         *    same item selector
+         */
+        var enableSortable = function(itemSelector, upSelector, downSelector) {
 
-        $(document).on('click', '.section-move-down', function() {
-            var section = $(this).closest('.cv-section');
-            var nextSection = section.next();
-            if (nextSection.length > 0) {
-                section.insertAfter(nextSection);
-                updateSectionOrder();
-            }
-        });
+            var increaseOrder = function(item) {
+                var order = parseInt(item.data('order'));
+                item.data('order', order + 1);
+            };
 
+            var decreaseOrder = function(item) {
+                var order = parseInt(item.data('order'));
+                item.data('order', order - 1);
+            };
+
+            var swapItem = function(itemBefore, itemAfter) {
+                itemBefore.insertAfter(itemAfter);
+                decreaseOrder(itemAfter);
+                increaseOrder(itemBefore);
+            };
+
+            var addDirection = function(direction) {
+
+                var controlSelector = direction == 'down' ? downSelector : upSelector;
+
+                $(document).on('click', controlSelector, function() {
+                    var sortItems = [];
+                    var item = $(this).closest(itemSelector);
+                    sortItems.push(item);
+
+                    var parallelItemId = item.data('parallel-item-id');
+                    if (parallelItemId) {
+                        sortItems.push($('#' + parallelItemId));
+                    }
+
+                    var orderChanged = false;
+                    if (direction == 'down') {
+                        if (item.next(itemSelector).length > 0) { // is there any item after
+                            sortItems.forEach((item) => {
+                                swapItem(item, item.next(itemSelector));
+                            });
+                            orderChanged = true;
+                        }
+                    } else if (direction == 'up') {
+                        if (item.prev(itemSelector).length > 0) { // is there any item before
+                            sortItems.forEach((item) => {
+                                var prevItem = item.prev(itemSelector);
+                                swapItem(prevItem, item);
+                            });
+                            orderChanged = true;
+                        }
+                    }
+
+                    if (orderChanged) { // if any thing changed, submit the form
+                        var submitForm = $('#' + $(this).closest('.order-control').data('form-id'));
+                        submitForm.submit();
+                    }
+                });
+            };
+
+            addDirection('down');
+            addDirection('up');
+        };
+
+        // Enable ordering for the sections
+        enableSortable('.cv-section', '.section-move-up', '.section-move-down');
+        
+        // Enable ordering for the bulletlist items
+        enableSortable('.bulletlist-item', '.item-move-up', '.item-move-down');
+
+        // Enable ordering for the worklist items
+        enableSortable('.worklist-item', '.item-move-up', '.item-move-down');
+        
     };
 
     // render the resume

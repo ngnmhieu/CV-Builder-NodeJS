@@ -172,6 +172,11 @@ body {
     margin-left: 15px
 }
 
+.css-section:first-child .css-section-control .css-control-up,
+.css-section:last-child .css-section-control .css-control-down {
+    display:none;
+}
+
 .css-section .css-section-control .css-control-delete {
     margin-top: 2px;
 }

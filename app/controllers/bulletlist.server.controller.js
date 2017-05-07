@@ -83,7 +83,7 @@ exports.byId = function (req, res, next, id) {
  * PUT /resumes/:resume_id/bulletlists/:bulletlist_id
  */
 exports.update = function (req, res) {
-    bulletlists.updateById(req.bulletList, req.body).then((list) => {
+    bulletlists.updateById(req.bulletList._id, req.body).then((list) => {
         res.json(list);
     }, (errors) => {
         debug('Bulletlist update errors: %o', errors);

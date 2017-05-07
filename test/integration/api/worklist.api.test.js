@@ -102,16 +102,17 @@ describe('Worklist REST API', function() {
                             startDate: new Date(),
                             endDate: new Date(),
                             desc: '',
-                            tillNow: false
+                            tillNow: false,
+                            order: 1
                         }, {
                             title: 'accountant',
                             institution: 'xyz gmbh',
                             startDate: new Date(),
                             endDate: new Date(),
                             desc: '',
-                            tillNow: true
-                        }],
-                        order: 1,
+                            tillNow: true,
+                            order: 2
+                        }]
                     })
                     .expect(200)
                     .end(done);
@@ -149,16 +150,6 @@ describe('Worklist REST API', function() {
                 request.put(getWorkListURI(resume._id, listResult._id))
                     .set('Content-Type', 'application/json')
                     .send('invalid data')
-                    .expect(400)
-                    .end(done);
-            });
-        });
-
-        it('[PUT] should not update work list with semantics invalid data ', function(done) {
-            worklists.createEmpty(resume, function(listResult) {
-                request.put(getWorkListURI(resume._id, listResult._id))
-                    .set('Content-Type', 'application/json')
-                    .send({})
                     .expect(400)
                     .end(done);
             });

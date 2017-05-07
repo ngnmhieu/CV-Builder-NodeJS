@@ -86,19 +86,10 @@ exports.byId = function(req, res, next, id) {
  * PUT /resumes/:resume_id/worklists/:worklist_id
  */
 exports.update = function(req, res) {
-
-    worklists.updateById(req.workList, req.body, function(err, list) {
-        if (err) {
-            switch (err) {
-                case 'validation_error':
-                    debug('Failed to update worklist due to validation error.');
-                    res.sendStatus(400);
-                    return;
-                default:
-                    throw err;
-            }
-        }
-
+    worklists.updateById(req.workList._id, req.body).then((list) => {
         res.status(200).json(list);
+    }, (err) => {
+        debug('Failed to update worklist: %o', err);
+        res.sendStatus(400);
     });
 }

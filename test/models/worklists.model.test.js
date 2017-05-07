@@ -89,14 +89,13 @@ describe('Worklist Model', function (done) {
             items         : [],
         }, function (err, listRes) {
 
-            worklists.updateById(listRes.ops[0], {
+            worklists.updateById(listRes.insertedId, {
                 name: 'A New Work List',
                 items: [
-                    { title: 'web developer', institution: 'abc gmbh', startDate: new Date(), endDate: new Date(), desc: '', tillNow: false },
-                    { title: 'accountant', institution: 'xyz gmbh', startDate: new Date(), endDate: new Date(), desc: '', tillNow: false }
+                    { title: 'web developer', institution: 'abc gmbh', startDate: new Date(), endDate: new Date(), desc: '', tillNow: false, order: 1 },
+                    { title: 'accountant', institution: 'xyz gmbh', startDate: new Date(), endDate: new Date(), desc: '', tillNow: false, order: 1 }
                 ]
-            }, function (err, updateResult) {
-
+            }).then(() => {
                 db.collection('worklists').findOne({_id: listRes.insertedId}, function (err, list) {
                     list.name.should.equal('A New Work List');
                     list.items.should.not.be.empty();
@@ -104,30 +103,19 @@ describe('Worklist Model', function (done) {
                 });
             });
         });
-    });
+    })
 
-    it('1#updateById should not update a work list when attributes are missing', function (done) {
-        db.collection('worklists').insertOne({
-            name          : 'Empty Work List',
-        }, function (err, listRes) {
-
-            worklists.updateById(listRes.ops[0], {}, function (err, updateResult) {
-                should.exists(err);
-                done();
-            });
-        });
-    });
-
-    it('2#updateById should not update a work list when invalid parameters are provided', function (done) {
+    it('1#updateById should not update a work list when invalid parameters are provided', function (done) {
         db.collection('worklists').insertOne({
             name  : 'Empty Work List',
             items : ['string'],
         }, function (err, listRes) {
 
-            worklists.updateById(listRes.ops[0], {
+            worklists.updateById(listRes.insertedId, {
                 name  : 'A New Work List',
                 items : ['string'], // invalid
-            }, function (err, updateResult) {
+            }).then(function () {
+            }, (err) => {
                 should.exists(err);
                 done();
             });

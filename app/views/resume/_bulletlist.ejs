@@ -4,7 +4,8 @@
         data-section-id="{{param._id}}">
 
         <div class="card-content">
-            <form action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}" class="section-delete-form" id="section-{{param._id}}-delete-form">
+            <form action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}"
+                class="section-delete-form" id="section-{{param._id}}-delete-form">
             </form>
 
             <div class="edit-mode css-edit-mode">
@@ -43,14 +44,15 @@
 <script id="bulletlist-edit-template" type="text/x-handlebars-template">
 
     <form class="bulletlist-edit-form" id="section-{{param._id}}-edit-form"
-        action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}"
-        method="post" data-display-template-id="bulletlist-display-template">
+        action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}" method="post"
+        data-display-template-id="bulletlist-display-template"
+        data-edit-template-id="bulletlist-edit-template">
 
         {{> sectionHeaderEdit param=param extraOptionPartial='bulletlistOption' }}
 
         <ul class="bulletlist {{tern param.numbered 'numbered' ''}} css-bulletlist"
             data-item-count="{{param.items.length}}">
-            {{#each param.items}} {{> bulletlistItem itemIndex=@index temporary=false }} {{/each}}
+            {{#each param.items}} {{> bulletlistItem list=../param itemIndex=@index temporary=false }} {{/each}}
         </ul>
 
     </form>
@@ -68,18 +70,23 @@
 
 </script>
 
+<!-- 
+Parameters:
+    - list: bulletlist object
+    - temporary: is this item a temporary one
+    - itemIndex: index of the item
+-->
 <script id="bulletlist-item-template" type="text/x-handlebars-template">
-    <li class="bulletlist-item item {{tern temporary 'temporary' ''}} css-bulletlist-item">
+    <li class="bulletlist-item item {{tern temporary 'temporary' ''}} css-bulletlist-item"
+        id="bulletlist-{{list._id}}-edit-item-{{order}}"
+        data-order="{{order}}"
+        data-parallel-item-id="bulletlist-{{list._id}}-display-item-{{order}}">
     <p class="control">
     <input class="input item-content" name="list-item{{itemIndex}}" type="text" placeholder="" value="{{content}}">
     </p>
 
     <div class="css-order-control">
         <i class="item-delete-btn fa fa-times css-item-delete"></i>
-        <!--
-        <i class="fa fa-chevron-up css-item-up"></i>
-        <i class="fa fa-chevron-down css-item-down"></i>
-        -->
     </div>
     </li>
 </script>
@@ -88,14 +95,17 @@
 
     {{> sectionHeaderDisplay param=param }}
 
-    <ul class="css-bulletlist {{tern param.numbered 'numbered' ''}}">
-        {{#each param.items}}
-        <li class="css-bulletlist-item">
+    <ul class="bulletlist css-bulletlist {{tern param.numbered 'numbered' ''}}">
+        {{#each (sortBy param.items 'order')}}
+        <li class="bulletlist-item css-bulletlist-item"
+            id="bulletlist-{{../param._id}}-display-item-{{order}}"
+            data-order="{{order}}"
+            data-parallel-item-id="bulletlist-{{../param._id}}-edit-item-{{order}}">
         {{content}}
 
-        <div class="css-order-control">
-            <i class="fa fa-chevron-up css-item-up"></i>
-            <i class="fa fa-chevron-down css-item-down"></i>
+        <div class="order-control css-order-control" data-form-id="section-{{../param._id}}-edit-form">
+            <i class="fa fa-chevron-up item-move-up css-item-up"></i>
+            <i class="fa fa-chevron-down item-move-down css-item-down"></i>
         </div>
 
         </li>

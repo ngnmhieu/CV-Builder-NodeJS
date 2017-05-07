@@ -132,7 +132,6 @@ exports.updateById = function(id, params) {
                     return secA.order - secB.order; 
                 }).map((section, idx) => {
                     section.order = idx + 1; // normalize the order
-                    debug(section);
                     return section;
                 });
             }

@@ -1,11 +1,25 @@
-var db = require('../../config/mongodb').client;
+var db       = require('../../config/mongodb').client;
 var ObjectId = require('mongodb').ObjectId;
-var debug = require('debug')('cvbuilder.model.worklist');
+var debug    = require('debug')('cvbuilder.model.worklist');
+var Joi      = require('Joi');
 
 var resumes   = db.collection('resumes');
 var worklists = db.collection('worklists');
 
 exports.collection = worklists;
+
+const WORKLIST_SCHEMA = Joi.object().keys({
+    name: Joi.string().allow(''),
+    items: Joi.array().items(Joi.object().keys({
+        title       : Joi.string().allow(''),
+        institution : Joi.string().allow(''), 
+        startDate   : [Joi.string().isoDate(), Joi.date()],
+        endDate     : [Joi.string().isoDate(), Joi.date()],
+        tillNow     : Joi.boolean(),
+        desc        : Joi.string().allow(''),
+        order       : Joi.number()
+    }))
+});
 
 /**
  * @param params (optional) object conntaining the list's attributes.
@@ -20,14 +34,15 @@ var getNewList = function (params) {
     var items = [];
     if (Array.isArray(params.items)) {
         for (var i in params.items) {
-            var item = params.items[i]
+            var item = params.items[i];
             items.push({
                 title       : String(item.title),
                 institution : String(item.institution),
                 startDate   : (item.startDate instanceof Date) ? item.startDate : new Date(item.startDate),
                 endDate     : (item.endDate instanceof Date)   ? item.endDate   : new Date(item.endDate),
                 tillNow     : Boolean(item.tillNow),
-                desc        : String(item.desc)
+                desc        : String(item.desc),
+                order       : isNaN(parseInt(item.order)) ? (i + 1) : parseInt(item.order)
             });
         }
     }
@@ -48,7 +63,7 @@ exports.getNewList = getNewList;
  */
 exports.createEmpty = function (resume, callback) {
 
-    var list = exports.getNewList();
+    var list = getNewList();
 
     worklists.insertOne(list, function (err, result) {
 
@@ -93,48 +108,49 @@ var isDate = function (date) {
 
 /**
  * @param a worklist object from request
- * @return true if valid, else false
+ * @return errors
  */
 var validate = function (params) {
-
-    if (!params) return false;
-
-    if (!params.name) return false;
-
-    if (!Array.isArray(params.items)) return false;
-
-    // validate items
-    for (var i in params.items) {
-        var item = params.items[i];
-        if (item.title === undefined) return false;
-        if (item.institution === undefined) return false;
-        if (!isDate(item.startDate)) return false;
-        if (!isDate(item.endDate)) return false;
-        if (item.tillNow === undefined) return false;
-        if (item.desc === undefined) return false;
-    }
-    
-    return true;
+    var result = Joi.validate(params, WORKLIST_SCHEMA);
+    return result.error;
 };
 
 /**
  * Update an existing worklist
+ * @param {ObjectId} id - worklist id
+ * @param {Object} params - request's parameters
+ * @return {Promise}
  */
-exports.updateById = function (list, params, callback) {
+exports.updateById = function (id, params) {
+    return new Promise((resolve, reject) => {
+        worklists.findOne({_id: id}).then((worklist) => {
 
-    if (!validate(params)) {
-        callback('validation_error');
-        return;
-    }
+            var errors = validate(params);
+            debug(errors)
+            if (errors)
+                return reject(errors);
 
-    var newList = exports.getNewList(params);
-    delete newList._id;
+            var changes = {};
 
-    worklists.updateOne({_id: list._id}, newList, function(err, result) {
-        if (err)
-            callback(err, null);
-        else 
-            callback(null, _.extend(newList, {_id: list._id}));
+            if (params.name)
+                changes.name = params.name;
+
+            if (params.items) {
+                changes.items = params.items.sort((itemA, itemB) => { // sort by the order field
+                    return itemA.order - itemB.order;
+                }).map((item, idx) => { // normalize the ordering
+                    item.order = idx + 1;
+                    return item;
+                })
+            }
+
+            var newList = _.extend(worklist, changes);
+            delete newList._id;
+
+            worklists.updateOne({_id: id}, newList).then(() => {
+                resolve(_.extend(newList, {_id: id}));
+            }, reject);
+        }, reject);
     });
 };
 

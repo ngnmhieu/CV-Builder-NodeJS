@@ -19,9 +19,9 @@
 </script>
 
 <script id="textarea-edit-template" type="text/x-handlebars-template">
-  <form class="textarea-edit-form" id="section-{{param._id}}-edit-form"
+  <form class="textarea-edit-form" id="section-{{param._id}}-edit-form" method="put" 
     action="/users/{{user._id}}/resumes/{{resume._id}}/textareas/{{param._id}}"
-    method="put" data-display-template-id="textarea-display-template">
+    data-display-template-id="textarea-display-template" data-edit-template-id="textarea-edit-template">
 
     {{> sectionHeaderEdit param=param}}
 

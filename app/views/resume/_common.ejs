@@ -3,7 +3,7 @@
     <div class="is-6 column">
       <input class="is-medium input" name="name" type="text" placeholder="Section Name" value="{{param.name}}">
     </div>
-    <div class="section-control column is-6 css-section-control">
+    <div class="section-control order-control column is-6 css-section-control" data-form-id="ResumeSaveForm">
       <div class="is-pulled-right css-wrapper">
 
         {{#if extraOptionPartial}}
@@ -27,7 +27,7 @@
       <p class="css-section-title">{{param.name}}</p>
       <i class="section-edit-btn fa fa-pencil-square-o css-section-edit-btn"></i>
     </div>
-    <div class="section-control level-right css-section-control">
+    <div class="section-control order-control level-right css-section-control" data-form-id="ResumeSaveForm">
         <i class="fa fa-chevron-up section-move-up css-control css-control-up"></i>
         <i class="fa fa-chevron-down section-move-down css-control css-control-down"></i>
         <i class="fa fa-trash-o css-control css-control-delete form-submit-btn"

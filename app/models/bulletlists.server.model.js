@@ -1,6 +1,7 @@
-var db = require('../../config/mongodb').client,
-    _  = require('lodash'),
-    Joi = require('joi'),
+var db          = require('../../config/mongodb').client,
+    _           = require('lodash'),
+    Joi         = require('joi'),
+    debug       = require('debug')('cvbuilder.model.bulletlist'),
     resumes     = db.collection('resumes'),
     bulletlists = db.collection('bulletlists');
 
@@ -99,21 +100,37 @@ exports.deleteById = function (resume, list, callback) {
  * Update an existing bulletlist
  * @return Promise
  */
-exports.updateById = function (list, params) {
-
+exports.updateById = function (id, params) {
     return new Promise(function(resolve, reject) {
+        bulletlists.findOne({_id: id}).then((bulletlist) => {
+            var errors = validateBulletlist(params);
+            if (errors)
+                return reject(errors);
 
-        var errors = validateBulletlist(params);
-        if (errors) {
-            return reject(errors);
-        }
+            var changes = {};
 
-        var newList = getNewList(params);
-        delete newList._id;
+            if (params.name)
+                changes.name = params.name;
 
-        bulletlists.updateOne({_id: list._id}, newList, function(err, result) {
-            resolve(_.extend(newList, {_id: list._id}));
-        });
+            if (params.numbered)
+                changes.numbered = params.numbered;
+
+            if (params.items) {
+                changes.items = params.items.sort((itemA, itemB) => { // sort by the order field
+                    return itemA.order - itemB.order;
+                }).map((item, idx) => { // normalize the ordering
+                    item.order = idx + 1;
+                    return item;
+                })
+            }
+
+            var newList = _.extend(bulletlist, changes);
+            delete newList._id;
+
+            bulletlists.updateOne({_id: id}, newList).then(() => {
+                resolve(_.extend(newList, {_id: id}));
+            }, reject);
+        }, reject);
     });
 };
 

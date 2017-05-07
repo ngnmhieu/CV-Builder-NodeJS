@@ -85,7 +85,7 @@ describe('Bulletlist Model', function (done) {
             order         : 1,
             numbered : false
         }, function (err, listRes) {
-            bulletlists.updateById(listRes.ops[0], {
+            bulletlists.updateById(listRes.insertedId, {
                 name: 'A New Bullet List',
                 items: [{
                     content: 'Item 1',
@@ -112,7 +112,7 @@ describe('Bulletlist Model', function (done) {
             numbered : false
         }, function (err, listRes) {
 
-            bulletlists.updateById(listRes.ops[0], {}).then(function(result) {
+            bulletlists.updateById(listRes.insertedId, {}).then(function(result) {
             }, function(err) {
                 should.exists(err);
                 done();
@@ -127,7 +127,7 @@ describe('Bulletlist Model', function (done) {
             order         : 1,
             numbered : true
         }, function (err, listRes) {
-            bulletlists.updateById(listRes.ops[0], {}).then(function(result) {
+            bulletlists.updateById(listRes.insertedId, {}).then(function(result) {
             }, function(err) {
                 should.exists(err);
                 done();

@@ -20,14 +20,15 @@
 
 <script id="worklist-edit-template" type="text/x-handlebars-template">
 
-    <form class="worklist-edit-form" id="section-{{param._id}}-edit-form"
+    <form class="worklist-edit-form" id="section-{{param._id}}-edit-form" method="post" 
         action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}"
-        method="post" data-display-template-id="worklist-display-template">
+        data-display-template-id="worklist-display-template"
+        data-edit-template-id="worklist-edit-template">
 
         {{> sectionHeaderEdit param=param }}
 
         <div class="worklist css-worklist" data-item-count="{{param.items.length}}">
-            {{#each param.items}} {{> worklistItem itemIndex=@index temporary=false }} {{/each}}
+            {{#each param.items}} {{> worklistItem list=../param itemIndex=@index temporary=false }} {{/each}}
         </div>
     </form>
 
@@ -45,7 +46,9 @@
 
 <script id="worklist-item-template" type="text/x-handlebars-template">
 
-    <div class="item worklist-item css-worklist-item">
+    <div class="item worklist-item css-worklist-item" data-order="{{order}}"
+        id="worklist-{{list._id}}-edit-item-{{order}}"
+        data-parallel-item-id="worklist-{{list._id}}-display-item-{{order}}">
 
         <div class="columns">
             <div class="column is-6">
@@ -122,7 +125,10 @@
     {{> sectionHeaderDisplay param=param }}
 
     {{#each param.items}}
-    <div class="css-worklist-item">
+    <div class="worklist-item css-worklist-item" data-order="{{order}}"
+        id="worklist-{{../param._id}}-display-item-{{order}}"
+        data-parallel-item-id="worklist-{{../param._id}}-edit-item-{{order}}" >
+
         <div class="columns">
             <div class="column is-3 css-workitem-date">
                 <span class="startDate">{{dateFormat startDate 'MMM YYYY'}}</span> -
@@ -134,9 +140,9 @@
                 <div class="css-workitem-desc">{{desc}}</div>
             </div>
         </div>
-        <div class="css-order-control" >
-            <i class="fa fa-chevron-up css-item-up"></i>
-            <i class="fa fa-chevron-down css-item-down"></i>
+        <div class="order-control css-order-control" data-form-id="section-{{../param._id}}-edit-form">
+            <i class="fa fa-chevron-up item-move-up css-item-up"></i>
+            <i class="fa fa-chevron-down item-move-down css-item-down"></i>
         </div>
     </div>
     {{/each}}

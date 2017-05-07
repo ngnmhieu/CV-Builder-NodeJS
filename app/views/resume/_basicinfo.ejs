@@ -25,7 +25,10 @@
   </div>
 
   <hr>
-  <form class="basicinfo-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}/basicinfo" id="basicinfo-form" method="post" data-display-template-id="basicinfo-display-template">
+  <form class="basicinfo-edit-form" id="basicinfo-form" method="post" 
+      action="/users/{{user._id}}/resumes/{{resume._id}}/basicinfo"
+      data-display-template-id="basicinfo-display-template"
+      data-edit-template-id="basicinfo-edit-template">
     <div class="media">
       <div class="media-left">
         <figure class="image css-profile-image">
