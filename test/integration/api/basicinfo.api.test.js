@@ -87,18 +87,6 @@ describe('Resume Basicinfo REST API', function () {
 
     describe('Sad paths', function () {
 
-        it('[PUT /users/:user_id/resumes/:resume_id/basicinfo] should return HTTP 400 with missing parameters', function (done) {
-            resumes.createEmpty({_id: ObjectId(userId)}).then(function (result) {
-                request.put(getBasicinfoURI(result._id))
-                    .set('Content-Type', 'application/json')
-                    .send({
-                        name: 'A new name'
-                    })
-                    .expect(400)
-                    .end(done);
-            });
-        });
-
         it('[PUT /users/:user_id/resumes/:resume_id/basicinfo] should not update bullet list with malformed supertest entity', function (done) {
             request.put(getBasicinfoURI())
                 .set('Content-Type', 'application/json')

@@ -20,21 +20,24 @@
         <%- include _textarea %>
         <%- include _worklist %>
         <%- include _bulletlist %>
+
+        <div id="UnsortableSections"></div>
+        <div id="SortableSections"></div>
     </div>
 
     <div class="modal" id="SectionAddModal" tabindex="-1" role="dialog" style="width: 500px">
         <div class="modal-content">
             <h3>Add a new section</h3>
 
-            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/bulletlists" id="BulletlistAddForm" method="post" class="add-sec-form" data-item-template-id="bulletlist-template" data-item-container-id="ResumeEditor">
+            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/bulletlists" id="BulletlistAddForm" method="post" class="add-sec-form" data-item-template-id="bulletlist-template" data-item-container-id="SortableSections">
                 <button type="submit" class="btn">Bullet List</button>
             </form>
             <br>
-            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/worklists" id="WorklistAddForm" method="post" method="post" class="add-sec-form" data-item-template-id="worklist-template" data-item-container-id="ResumeEditor">
+            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/worklists" id="WorklistAddForm" method="post" method="post" class="add-sec-form" data-item-template-id="worklist-template" data-item-container-id="SortableSections">
                 <button type="submit" class="btn">Occupation List</button>
             </form>
             <br>
-            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/textareas" id="TextareaAddForm" method="post" method="post" class="add-sec-form" data-item-template-id="textarea-template" data-item-container-id="ResumeEditor">
+            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/textareas" id="TextareaAddForm" method="post" method="post" class="add-sec-form" data-item-template-id="textarea-template" data-item-container-id="SortableSections">
                 <button type="submit" class="btn">Text Section</button>
             </form>
         </div>

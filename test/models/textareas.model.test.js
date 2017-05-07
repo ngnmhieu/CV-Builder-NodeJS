@@ -55,7 +55,6 @@ describe('Textarea Model', function (done) {
         db.collection('textareas').insertOne({
             name    : 'Empty textarea',
             content : '',
-            order   : 1
         }, callback)
     };
 
@@ -63,7 +62,6 @@ describe('Textarea Model', function (done) {
         db.collection('textareas').insertOne({
             name    : 'Empty textarea',
             content : '',
-            order   : 1
         }, function (err, textRes) {
 
             db.collection('resumes').insertOne({
@@ -90,18 +88,15 @@ describe('Textarea Model', function (done) {
         db.collection('textareas').insertOne({
             name    : 'Empty Textarea',
             content : '',
-            order   : 1
         }, function (err, textRes) {
 
             textareas.updateById(textRes.ops[0], {
                 name: 'A new Textarea',
                 content: '',
-                order: 2
-            }, function (err, updateResult) {
+            }).then(function (updateResult) {
 
                 db.collection('textareas').findOne({_id: textRes.insertedId}, function (err, list) {
                     list.name.should.equal('A new Textarea');
-                    list.order.should.equal(2);
                     done();
                 });
             });
@@ -113,7 +108,8 @@ describe('Textarea Model', function (done) {
             name          : 'Empty Textarea',
         }, function (err, listRes) {
 
-            textareas.updateById(listRes.ops[0], {}, function (err, updateResult) {
+            textareas.updateById(listRes.ops[0], {}).then(function (updateResult) {
+            }, (err) => {
                 should.exists(err);
                 done();
             });
@@ -124,13 +120,12 @@ describe('Textarea Model', function (done) {
         db.collection('textareas').insertOne({
             name    : 'Empty Textarea',
             content : null,
-            order   : 1
         }, function (err, listRes) {
 
             textareas.updateById(listRes.ops[0], {
                 name  : 'A new Textarea',
-                order : 1
-            }, function (err, updateResult) {
+            }).then(function (updateResult) {
+            }, (err) => {
                 should.exists(err);
                 done();
             });

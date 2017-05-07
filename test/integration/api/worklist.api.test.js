@@ -75,7 +75,6 @@ describe('Worklist REST API', function() {
                         if (err) throw err;
                         should.exists(res.body._id);
                         should.exists(res.body.items);
-                        should.exists(res.body.order);
                         res.body._id.should.equal(listResult._id.toString());
                         done();
                     });

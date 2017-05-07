@@ -3,7 +3,7 @@
     <div class="card" id="EditorHeader">
         <div class="card-content">
             <div class="edit-mode">
-                <form class="resumeinfo-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}" method="put" data-display-template-id="resumeinfo-display-template">
+                <form id="ResumeSaveForm" class="resumeinfo-edit-form" action="/users/{{user._id}}/resumes/{{resume._id}}" method="put" data-display-template-id="resumeinfo-display-template">
                     <div class="row">
                         <div class="col s6">
                             <input type="text" name="name" value="{{resume.name}}" class="card-title">

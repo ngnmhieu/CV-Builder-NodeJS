@@ -1,5 +1,6 @@
 var textareas = require('../models/textareas.server.model'),
     resumes = require('../models/resumes.server.model'),
+    debug = require('debug')('cvbuilder.controller.textarea'),
     ObjectId = require('mongodb').ObjectId;
 
 exports.read = function(req, res) {
@@ -55,18 +56,11 @@ exports.byId = function(req, res, next, id) {
  */
 exports.update = function(req, res) {
 
-    textareas.updateById(req.textarea, req.body, function(err, textarea) {
-        if (err) {
-            switch (err) {
-                case 'validation_error':
-                    res.sendStatus(400);
-                    return;
-                default:
-                    throw err;
-            }
-        }
-
+    textareas.updateById(req.textarea, req.body).then(function(err, textarea) {
         res.status(200).json(textarea);
+    }, (err) => {
+        debug('Failed updating textarea: %o', err)
+        res.sendStatus(400);
     });
 }
 

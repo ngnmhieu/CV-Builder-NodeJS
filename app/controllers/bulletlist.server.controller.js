@@ -86,7 +86,7 @@ exports.update = function (req, res) {
     bulletlists.updateById(req.bulletList, req.body).then((list) => {
         res.json(list);
     }, (errors) => {
-        debug('Update errors: %o', errors);
+        debug('Bulletlist update errors: %o', errors);
         return res.sendStatus(400);
     });
 };

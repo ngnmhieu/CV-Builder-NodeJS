@@ -90,7 +90,6 @@ describe('Bulletlist REST API', function() {
                     .send({
                         name: 'A bullet list',
                         items: [{ content: 'Item1', order: 1 }, {content: 'Item2', order: 2}],
-                        order: 1,
                         numbered: false
                     })
                     .expect(200)

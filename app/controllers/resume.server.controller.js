@@ -1,5 +1,6 @@
 var resumes = require('../models/resumes.server.model');
 var ObjectId = require('mongodb').ObjectId;
+var debug = require('debug')('cvbuilder.controller.resume');
 var config = require('../../config/config');
 
 /**
@@ -69,19 +70,11 @@ exports.remove = function(req, res) {
  * PUT /users/:user_id/resumes/:resume_id
  */
 exports.update = function(req, res) {
-
-    resumes.update(req.resumeObj, req.body, function(err, resume) {
-        if (err) {
-            switch (err) {
-                case 'validation_error':
-                    res.sendStatus(400);
-                    return;
-                default:
-                    throw err;
-            }
-        }
-
+    resumes.updateById(req.resumeObj._id, req.body).then(function(resume) {
         res.status(200).json(resume);
+    }, (err) => {
+        debug('Resume update errors: %o', err);
+        res.sendStatus(400);
     });
 };
 
@@ -94,18 +87,16 @@ exports.byId = function(req, res, next, id) {
         return res.sendStatus(404);
     }
 
-    resumes.findByUserAndId(req.userObj, ObjectId(id), function(err, result) {
-
-        if (err) throw err;
-
+    resumes.findByUserAndId(req.userObj, ObjectId(id)).then(function(result) {
         if (result == null) {
-            // TOOD: redirect if html
-            return res.sendStatus(404);
+            res.sendStatus(404); // TOOD: redirect if html
+        } else {
+            req.resumeObj = result;
+            next();
         }
-
-        req.resumeObj = result;
-
-        next();
+    }, (err) => {
+        debug('Cannot get resume: %o', err);
+        res.sendStatus(400);
     });
 };
 

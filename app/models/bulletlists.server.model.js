@@ -1,7 +1,6 @@
 var db = require('../../config/mongodb').client,
     _  = require('lodash'),
     Joi = require('joi'),
-    ObjectId = require('mongodb').ObjectId,
     resumes     = db.collection('resumes'),
     bulletlists = db.collection('bulletlists');
 
@@ -14,7 +13,6 @@ const BULLETLIST_SCHEMA = Joi.object().keys({
         content: Joi.string().allow(''),
         order: Joi.number()
     })),
-    order: Joi.number(),
     numbered: Joi.boolean().required()
 });
 
@@ -24,7 +22,6 @@ const BULLETLIST_SCHEMA = Joi.object().keys({
  */
 var validateBulletlist = function(params) {
     var result = Joi.validate(params, BULLETLIST_SCHEMA);
-    if(result.error)
     return result.error;
 };
 
@@ -124,9 +121,18 @@ exports.updateById = function (list, params) {
  * Return the bullet list with the id
  */
 exports.findById = function(id, callback) {
-    bulletlists.findOne({_id: id}, function(err, result) {
-        callback(err, getNewList(result));
-    });
+    if (typeof callback == 'function') {
+        bulletlists.findOne({_id: id}, function(err, result) {
+            callback(err, getNewList(result));
+        });
+    } else {
+        return new Promise((resolve, reject) => {
+            bulletlists.findOne({_id: id}, function(err, result) {
+                if (err) reject(err);
+                else resolve(getNewList(result));
+            });
+        });
+    }
 };
 
 var getNewItem = function (params) {

@@ -1,6 +1,9 @@
-var mongodb = require('../../config/mongodb').client;
-var resumes = mongodb.collection('resumes');
-var _ = require('lodash');
+var mongodb  = require('../../config/mongodb').client;
+    resumes  = mongodb.collection('resumes'),
+    Joi      = require('joi'),
+    debug    = require('debug')('cvbuilder.model.resume'),
+    ObjectId = require('mongodb').ObjectId,
+    _        = require('lodash');
 
 const SECTION_TYPES = {
     bulletlist: {
@@ -17,12 +20,42 @@ const SECTION_TYPES = {
     }
 };
 
-var LANGS = ['en', 'de'];
+const LANGS = ['en', 'de'];
+
+const BASICINFO_SCHEMA = Joi.object().keys({
+    name     : Joi.string().allow(''),
+    email    : Joi.string().allow(''),
+    website  : Joi.string().allow(''),
+    phone    : Joi.string().allow(''),
+    fax      : Joi.string().allow(''),
+    address1 : Joi.string().allow(''),
+    address2 : Joi.string().allow(''),
+    address3 : Joi.string().allow('')
+});
+
+const RESUME_SCHEMA = Joi.object().keys({
+    name      : Joi.string().required(),
+    sections  : Joi.array().items(Joi.object().keys({
+        _id   : Joi.string().hex().length(24).required(),
+        order : Joi.number().required()
+    })),
+    basicinfo : BASICINFO_SCHEMA
+});
+
+var validateResume = function(params) {
+    var result = Joi.validate(params, RESUME_SCHEMA);
+    return result.error;
+};
+
+var validateBasicInfo = function(params) {
+    var result = Joi.validate(params, BASICINFO_SCHEMA);
+    return result.error;
+};
 
 /**
- * Initialize a new Resume with the provided attributes
+ * @return {object} database representation of a resume
  */
-var getNewResume = function(options) {
+var getDBResume = function(options) {
 
     var attr = options || {};
 
@@ -35,7 +68,7 @@ var getNewResume = function(options) {
         updatedAt: attr.updatedAt || new Date(),
         sections: attr.sections || [],
         lang: lang && LANGS.indexOf(lang) != -1 ? attr.lang : 'en',
-        basicinfo: getNewBasicInfo(attr.basicinfo),
+        basicinfo: getDBBasicInfo(attr.basicinfo),
         user_id: attr.user_id || null
     };
 };
@@ -47,7 +80,7 @@ var getNewResume = function(options) {
  */
 exports.createEmpty = function(user, callback) {
 
-    var resume = getNewResume({
+    var resume = getDBResume({
         user_id: user._id
     });
 
@@ -60,80 +93,77 @@ exports.createEmpty = function(user, callback) {
     });
 };
 
-var validateResume = function(params) {
-
-    if (params.name === undefined || params.name === null)
-        return false;
-
-    return true;
-};
-
 /**
  * Update a resume with new data in params
+ * @param {ObjectId} id - resume's id
+ * @param {Object} params - changes to resume
+ * @return {Promise}
  */
-exports.update = function(oldResume, params, callback) {
+exports.updateById = function(id, params) {
+    return new Promise((resolve, reject) => {
 
-    if (!validateResume(params)) {
-        callback('validation_error', null);
-        return;
-    }
+        var errors = validateResume(params);
+        if (errors)
+            return reject(errors);
 
-    var resume = getNewResume(_.extend(params, {
-        user_id: oldResume.user_id
-    }));
-    delete resume._id;
+        resumes.findOne({
+            _id: id
+        }).then((resume) => {
 
-    resumes.updateOne({
-        _id: oldResume._id
-    }, resume, function(err, result) {
-        if (err) {
-            callback(err, null);
-        } else {
-            resume._id = oldResume._id;
-            callback(null, resume);
-        }
+            var changes = {};
+
+            if (params.name) {
+                changes.name = params.name;
+            }
+
+            if (params.sections) {
+                var sectionLookup = {};
+                params.sections.forEach((section) => {
+                    sectionLookup[section._id] = section;
+                });
+
+                changes.sections = resume.sections.map((section) => {
+                    var sectionId = section._id.toHexString();
+                    if (_.has(sectionLookup, sectionId)) {
+                        section.order = sectionLookup[sectionId].order;
+                    }
+                    return section;
+                }).sort((secA, secB) => {
+                    return secA.order - secB.order; 
+                }).map((section, idx) => {
+                    section.order = idx + 1; // normalize the order
+                    debug(section);
+                    return section;
+                });
+            }
+
+            var newResume = _.extend(resume, changes);
+            delete newResume._id;
+
+            resumes.updateOne({
+                _id: id
+            }, newResume, function(err, result) {
+                if (err) reject(err);
+                else exports.findById(id).then(resolve, reject);
+            });
+
+        }, reject);
     });
 };
 
-/**
- * @param params parameters for basicinfo
- * @return boolean true if the parameters are valid, else false
- */
-var validateBasicInfo = function(params) {
-
-    if (params.name === undefined || params.name === null)
-        return false;
-    if (params.email === undefined || params.email === null)
-        return false;
-    if (params.website === undefined || params.website === null)
-        return false;
-    if (params.phone === undefined || params.phone === null)
-        return false;
-    if (params.address1 === undefined || params.address1 === null)
-        return false;
-    if (params.address2 === undefined || params.address2 === null)
-        return false;
-    if (params.address3 === undefined || params.address3 === null)
-        return false;
-    // todo date of birth
-
-    return true;
-};
-
-var getNewBasicInfo = function(options) {
+var getDBBasicInfo = function(options) {
 
     var attr = options || {};
 
     return {
-        name: attr.name ? String(attr.name) : '',
-        email: attr.email ? String(attr.email) : '',
-        website: attr.website ? String(attr.website) : '',
-        phone: attr.phone ? String(attr.phone) : '',
-        fax: attr.fax ? String(attr.fax) : '',
-        dob: (attr.dob instanceof Date) ? attr.dob : new Date(attr.dob),
-        address1: attr.address1 ? String(attr.address1) : '',
-        address2: attr.address2 ? String(attr.address2) : '',
-        address3: attr.address3 ? String(attr.address3) : '',
+        name     : _.toString(attr.name),
+        email    : _.toString(attr.email),
+        website  : _.toString(attr.website),
+        phone    : _.toString(attr.phone),
+        fax      : _.toString(attr.fax),
+        address1 : _.toString(attr.address1),
+        address2 : _.toString(attr.address2),
+        address3 : _.toString(attr.address3)
     };
 };
 
@@ -145,24 +175,18 @@ var getNewBasicInfo = function(options) {
  */
 exports.updateBasicInfo = function(resume, params, callback) {
 
-    if (!validateBasicInfo(params)) {
-        callback('validation_error', null);
-        return;
-    }
+    return new Promise((resolve, reject) => {
 
-    var basicinfo = getNewBasicInfo(params);
+        var errors = validateBasicInfo(params);
+        if (errors)
+            return reject(errors);
 
-    resumes.updateOne({
-        _id: resume._id
-    }, {
-        '$set': {
-            basicinfo: basicinfo
-        }
-    }, function(err, result) {
-        if (err)
-            callback(err, null);
-        else
-            callback(null, basicinfo);
+        var basicinfo = getDBBasicInfo(params);
+
+        resumes.updateOne({ _id: resume._id }, { '$set': { basicinfo: basicinfo } })
+        .then((result) => {
+            resolve(basicinfo);
+        }, reject);
     });
 };
 
@@ -175,77 +199,93 @@ exports.findByUser = function(user, callback) {
     resumes.find({
         user_id: user._id
     }).toArray(function(err, result) {
-        var resumes = (result || []).map(function(r) {
-            return getNewResume(r);
+        var resumePromises = (result || []).map(function(r) {
+            return getResume(r, false);
         });
-        callback(resumes);
+        Promise.all(resumePromises).then((resumes) => {
+            callback(resumes);
+        });
     });
 };
 
 /**
- * @return Promise
+ * Return a resume by id
+ * @param {ObjectId}
+ * @return {Promise}
  */
 exports.findById = function(id) {
     return new Promise((resolve, reject) => {
         resumes.findOne({
             _id: id
         }, (err, result) => {
-            getResume(err, result, (err, resume) => {
-                if (err) reject(err)
-                else resolve(resume);
-            });
+            if (err) reject(err);
+            else getResume(result).then(resolve, reject);
         });
     });
 };
 
-var getResume = function(err, result, done) {
+/**
+ * @param result - result from DB query
+ * @param {function} done - callback that is called upon finish
+ * @param {boolean} fetchSections - should sections be queried
+ *
+ * @return {Promise}
+ */
+var getResume = function(result, fetchSections = true) {
 
-    if (typeof result == 'undefined' || result == null) {
+    return new Promise((resolve, reject) => {
 
-        done(err, null);
+        if (typeof result == 'undefined' || result == null)
+            return resolve(null);
 
-    } else if (!Array.isArray(result.sections) || result.sections.length == 0) {
-
-        done(err, getNewResume(result));
-
-    } else {
-
-        var sections = [];
-
-        // execute this after fetching all sections
-        var sectionFetched = _.after(result.sections.length, function() {
-            result.sections = sections;
-            done(err, getNewResume(result));
-        });
+        var resume = {
+            _id       : result._id,
+            name      : _.toString(result.name),
+            lang      : _.toString(result.lang),
+            createdAt : result.createdAt,
+            updatedAt : result.updatedAt,
+            sections  : result.sections,
+            basicinfo : {
+                name     : _.toString(result.basicinfo.name),
+                email    : _.toString(result.basicinfo.email),
+                website  : _.toString(result.basicinfo.website),
+                phone    : _.toString(result.basicinfo.phone),
+                fax      : _.toString(result.basicinfo.fax),
+                address1 : _.toString(result.basicinfo.address1),
+                address2 : _.toString(result.basicinfo.address2),
+                address3 : _.toString(result.basicinfo.address3)
+            }
+        };
 
         // fetch the sections
-        for (var i in result.sections) {
-            var sec = result.sections[i];
-            if (sec.type in SECTION_TYPES) {
-                SECTION_TYPES[sec.type].model.findById(sec._id, function(err, result) {
-                    if (result != null) {
-                        sections.push(result);
-                    }
-                    sectionFetched();
-                });
-            } else {
-                sectionFetched();
-            }
+        if (fetchSections) {
+            var sectionPromises = result.sections.map((section) => {
+                return SECTION_TYPES[section.type].model.findById(section._id);
+            });
+
+            Promise.all(sectionPromises).then((sections) => {
+                resume.sections = sections;
+                resolve(resume);
+            }, reject);
+        } else {
+            resolve(resume);
         }
-    }
+    });
 };
 
 /**
  * @param {Object} User
- * @param {ObjectID} id Resume's ID
+ * @param {ObjectId} id Resume's ID
+ * @param {Promise}
  */
-exports.findByUserAndId = function(user, id, done) {
-
-    resumes.findOne({
-        _id: id,
-        user_id: user._id
-    }, function(err, result) {
-        getResume(err, result, done);
+exports.findByUserAndId = function(user, id) {
+    return new Promise((resolve, reject) => {
+        resumes.findOne({
+            _id: id,
+            user_id: user._id
+        }).then(function(result) {
+            getResume(result).then(resolve, reject);
+        }, reject);
     });
 };
 

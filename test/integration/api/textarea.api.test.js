@@ -76,7 +76,6 @@ describe('Textarea REST API', function() {
                         should.exists(res.body._id);
                         should.exists(res.body.name);
                         should.exists(res.body.content);
-                        should.exists(res.body.order);
                         res.body._id.should.equal(result._id.toString());
                         done(err);
                     });
@@ -98,7 +97,6 @@ describe('Textarea REST API', function() {
                     .send({
                         name: 'A new Textarea',
                         content: 'New Content',
-                        order: 2,
                     })
                     .expect(200)
                     .end(function(err, res) {
@@ -109,7 +107,6 @@ describe('Textarea REST API', function() {
                             should.exists(result);
                             result.name.should.equal('A new Textarea');
                             result.content.should.equal('New Content');
-                            result.order.should.equal(2);
                             done(err);
                         });
                     });

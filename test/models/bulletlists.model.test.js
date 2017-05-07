@@ -91,13 +91,11 @@ describe('Bulletlist Model', function (done) {
                     content: 'Item 1',
                     order: 1
                 }],
-                order: 2,
                 numbered: true
             }).then(function (updateResult) {
                 db.collection('bulletlists').findOne({_id: listRes.insertedId}, function (err, list) {
                     expect(list.name).to.not.be.empty;
                     expect(list.items).to.not.be.empty;
-                    expect(list.order).to.equal(2);
                     expect(list.numbered).to.be.true;
                     done();
                 });

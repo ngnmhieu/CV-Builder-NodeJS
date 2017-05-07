@@ -36,8 +36,7 @@ var getNewList = function (params) {
         _id   : params._id,
         type  : "worklist",
         name  : params.name ? String(params.name)  : "New worklist",
-        items : items,
-        order : params.order ? parseInt(params.order) : -1
+        items : items
     };
 };
 
@@ -114,7 +113,6 @@ var validate = function (params) {
         if (item.tillNow === undefined) return false;
         if (item.desc === undefined) return false;
     }
-    if (parseInt(params.order) < 0) return false;
     
     return true;
 };
@@ -144,8 +142,17 @@ exports.updateById = function (list, params, callback) {
  * Return the worklist with the id
  */
 exports.findById = function(id, callback) {
-    worklists.findOne({_id: id}, function(err, result) {
-        callback(err, getNewList(result));
-    });
+    if (typeof callback == 'function') {
+        worklists.findOne({_id: id}, function(err, result) {
+            callback(err, getNewList(result));
+        });
+    } else {
+        return new Promise((resolve, reject) => {
+            worklists.findOne({_id: id}, function(err, result) {
+                if (err) reject(err);
+                else resolve(getNewList(result));
+            });
+        });
+    }
 };
 

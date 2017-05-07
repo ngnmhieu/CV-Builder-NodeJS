@@ -1,4 +1,5 @@
 var resumes   = require('../models/resumes.server.model'),
+    debug     = require('debug')('cvbuilder.controller.basicinfo'),
     ObjectId  = require('mongodb').ObjectId;
 
 /**
@@ -16,17 +17,10 @@ exports.read = function (req, res) {
  * @param res
  */
 exports.update = function (req, res) {
-
-    resumes.updateBasicInfo(req.resumeObj, req.body, function (err, basicinfo) {
-        if (err) {
-            switch(err) {
-                case 'validation_error': 
-                    res.sendStatus(400); return;
-                default:
-                    throw err;
-            }
-        }
-
+    resumes.updateBasicInfo(req.resumeObj, req.body).then((basicinfo) => {
         res.status(200).json(basicinfo);
+    }, (err) => {
+        debug('Failed to update basicinfo: %o', err);
+        res.sendStatus(400);
     });
 };

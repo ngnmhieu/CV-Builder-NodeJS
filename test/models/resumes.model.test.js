@@ -71,7 +71,7 @@ describe('Resume Model', function (done) {
                 address1: 'Altona',
                 address2: 'Hanoi',
                 address3: 'Vietnam',
-            }, function (err, result) {
+            }).then(function (result) {
                 resumes.findById(resume._id).then(function(result) {
                     result.basicinfo.name.should.equal('A new name');
                     result.basicinfo.email.should.equal('xyz@example.com');
@@ -81,7 +81,7 @@ describe('Resume Model', function (done) {
                     result.basicinfo.address2.should.equal('Hanoi');
                     result.basicinfo.address3.should.equal('Vietnam');
 
-                    done(err);
+                    done();
                 });
             });
         });

@@ -54,7 +54,6 @@ describe('Worklist Model', function (done) {
         db.collection('worklists').insertOne({
             name          : 'Empty work List',
             items         : [],
-            order         : 1
         }, callback)
     };
 
@@ -62,7 +61,6 @@ describe('Worklist Model', function (done) {
         db.collection('worklists').insertOne({
             name          : 'Empty work List',
             items         : [],
-            order         : 1
         }, function (err, listRes) {
 
             db.collection('resumes').insertOne({
@@ -89,7 +87,6 @@ describe('Worklist Model', function (done) {
         db.collection('worklists').insertOne({
             name          : 'Empty Work List',
             items         : [],
-            order         : 1
         }, function (err, listRes) {
 
             worklists.updateById(listRes.ops[0], {
@@ -97,14 +94,12 @@ describe('Worklist Model', function (done) {
                 items: [
                     { title: 'web developer', institution: 'abc gmbh', startDate: new Date(), endDate: new Date(), desc: '', tillNow: false },
                     { title: 'accountant', institution: 'xyz gmbh', startDate: new Date(), endDate: new Date(), desc: '', tillNow: false }
-                ],
-                order: 2
+                ]
             }, function (err, updateResult) {
 
                 db.collection('worklists').findOne({_id: listRes.insertedId}, function (err, list) {
                     list.name.should.equal('A New Work List');
                     list.items.should.not.be.empty();
-                    list.order.should.equal(2);
                     done();
                 });
             });
@@ -127,13 +122,11 @@ describe('Worklist Model', function (done) {
         db.collection('worklists').insertOne({
             name  : 'Empty Work List',
             items : ['string'],
-            order : 1
         }, function (err, listRes) {
 
             worklists.updateById(listRes.ops[0], {
                 name  : 'A New Work List',
                 items : ['string'], // invalid
-                order : 1
             }, function (err, updateResult) {
                 should.exists(err);
                 done();

@@ -1,5 +1,6 @@
 var db = require('../../config/mongodb').client,
-    ObjectId = require('mongodb').ObjectId;
+    ObjectId = require('mongodb').ObjectId,
+    debug = require('debug')('cvbuilder.model.textarea'),
     _ = require('lodash');
 
 var resumes   = db.collection('resumes'),
@@ -15,8 +16,7 @@ exports.createEmpty = function (resume, callback) {
 
     var textarea = {
         name    : 'A new Textarea',
-        content : '',
-        order   : -1
+        content : ''
     };
 
     textareas.insertOne(textarea, function (err, result) {
@@ -63,8 +63,6 @@ var validate = function (params) {
     if (params.content === undefined || params.content === null)
         return false;
 
-    if (isNaN(parseInt(params.order))) return false;
-
     return true;
 };
 
@@ -82,8 +80,7 @@ var getNewTextarea = function (params) {
         _id     : params._id,
         type    : "textarea",
         name    : params.name ? params.name.toString() : "New Textarea",
-        content : params.content ? params.content.toString() : "",
-        order   : parseInt(params.order) > 0 ? parseInt(params.order) : 0
+        content : params.content ? params.content.toString() : ""
     };
 };
 
@@ -94,19 +91,17 @@ exports.getNewTextarea = getNewTextarea;
  */
 exports.updateById = function (textarea, params, callback) {
 
-    if (!validate(params)) {
-        callback('validation_error');
-        return;
-    }
+    return new Promise((resolve, reject) => {
+        if (!validate(params)) {
+            return reject('validation_error');
+        }
 
-    var newTextarea = exports.getNewTextarea(params);
-    delete newTextarea._id;
+        var newTextarea = exports.getNewTextarea(params);
+        delete newTextarea._id;
 
-    textareas.updateOne({_id: textarea._id}, newTextarea, function(err, result) {
-        if (err)
-            callback(err, null);
-        else 
-            callback(null, _.extend(newTextarea, {_id: textarea._id}));
+        textareas.updateOne({_id: textarea._id}, newTextarea).then(function(result) {
+            resolve(_.extend(newTextarea, {_id: textarea._id}));
+        }, reject);
     });
 };
 
@@ -114,11 +109,18 @@ exports.updateById = function (textarea, params, callback) {
  * Return the textarea with the id
  */
 exports.findById = function(id, callback) {
-    textareas.findOne({_id: id}, function(err, result) {
-        if (result == null)
-            callback(err, null);
-        else 
+
+    if (typeof callback == 'function') {
+        textareas.findOne({_id: id}, function(err, result) {
             callback(err, getNewTextarea(result));
-    });
+        });
+    } else {
+        return new Promise((resolve, reject) => {
+            textareas.findOne({_id: id}, function(err, result) {
+                if (err) reject(err);
+                else resolve(getNewTextarea(result));
+            });
+        });
+    }
 };
 

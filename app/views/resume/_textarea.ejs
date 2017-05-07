@@ -1,5 +1,6 @@
 <script id="textarea-template" type="text/x-handlebars-template">
-  <div class="card css-section css-textarea-section" id="textarea_{{param._id}}">
+  <div class="card cv-section css-section css-textarea-section" id="textarea_{{param._id}}"
+        data-section-id="{{param._id}}">
     <div class="card-content">
 
       <form action="/users/{{user._id}}/resumes/{{resume._id}}/textareas/{{param._id}}" class="section-delete-form" id="section-{{param._id}}-delete-form"></form>
