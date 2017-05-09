@@ -124,26 +124,30 @@
 
     {{> sectionHeaderDisplay param=param }}
 
-    {{#each param.items}}
-    <div class="worklist-item css-worklist-item" data-order="{{order}}"
-        id="worklist-{{../param._id}}-display-item-{{order}}"
-        data-parallel-item-id="worklist-{{../param._id}}-edit-item-{{order}}" >
+    <div class="worklist css-worklist">
+        {{#each param.items}}
+        <div class="worklist-item css-worklist-item" data-order="{{order}}"
+            id="worklist-{{../param._id}}-display-item-{{order}}"
+            data-parallel-item-id="worklist-{{../param._id}}-edit-item-{{order}}" >
 
-        <div class="columns">
-            <div class="column is-3 css-workitem-date">
-                <span class="startDate">{{dateFormat startDate 'MMM YYYY'}}</span> -
-                <span class="endDate">{{#if tillNow}} Present {{else}} {{dateFormat endDate 'MMM YYYY'}} {{/if}}</span>
+            <div class="columns">
+                <div class="column is-3 css-workitem-date">
+                    <span class="startDate">{{dateFormat startDate 'MMM YYYY'}}</span> -
+                    <span class="endDate">{{#if tillNow}} Present {{else}} {{dateFormat endDate 'MMM YYYY'}} {{/if}}</span>
+                </div>
+                <div class="column is-9">
+                    <div class="css-workitem-title">{{title}}</div>
+                    <div class="css-workitem-institution">{{institution}}</div>
+                    <div class="css-workitem-desc">{{desc}}</div>
+                </div>
             </div>
-            <div class="column is-9">
-                <div class="css-workitem-title">{{title}}</div>
-                <div class="css-workitem-institution">{{institution}}</div>
-                <div class="css-workitem-desc">{{desc}}</div>
+            <div class="order-control css-order-control" data-form-id="section-{{../param._id}}-edit-form">
+                <i class="fa fa-chevron-up item-move-up css-item-up"></i>
+                <i class="fa fa-chevron-down item-move-down css-item-down"></i>
             </div>
         </div>
-        <div class="order-control css-order-control" data-form-id="section-{{../param._id}}-edit-form">
-            <i class="fa fa-chevron-up item-move-up css-item-up"></i>
-            <i class="fa fa-chevron-down item-move-down css-item-down"></i>
-        </div>
+        {{else}}
+        <i class="css-field-placeholder">Education, work experiences, voluntary activities, ...</i>
+        {{/each}}
     </div>
-    {{/each}}
 </script>

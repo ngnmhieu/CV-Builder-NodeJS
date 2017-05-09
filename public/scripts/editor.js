@@ -31,6 +31,8 @@ var Editor = (function($) {
         $(document).enableShowOnHover('.bulletlist .bulletlist-item');
         $(document).enableShowOnHover('.worklist .worklist-item');
         $(document).enableShowOnHover('.card', '.section-edit-btn');
+        $(document).enableShowOnHover('.card', '.add-page-break');
+        $(document).enableShowOnHover('.card', '.display-mode .order-control');
         $(document).enableShowOnHover('.card', '.display-mode .section-control');
 
         // register partials for handlebars

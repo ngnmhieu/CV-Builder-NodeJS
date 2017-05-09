@@ -85,7 +85,7 @@ Parameters:
     <input class="input item-content" name="list-item{{itemIndex}}" type="text" placeholder="" value="{{content}}">
     </p>
 
-    <div class="css-order-control">
+    <div class="css-item-control">
         <i class="item-delete-btn fa fa-times css-item-delete"></i>
     </div>
     </li>
@@ -109,6 +109,8 @@ Parameters:
         </div>
 
         </li>
+        {{else}}
+        <i class="css-field-placeholder">Awards, publications, hobbies, skills, ... </i>
         {{/each}}
     </ul>
 </script>

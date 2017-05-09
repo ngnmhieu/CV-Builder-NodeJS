@@ -3,16 +3,12 @@
 
     <div id="ResumeEditor">
 
-        <a href="/resumes" class="btn">Back</a>
+        <div style="margin: 10px 0">
+            <a href="/resumes" class="button">Back</a>
+        </div>
 
         <input type="hidden" id="ResumeId" value="<%= resume._id %>">
         <input type="hidden" id="UserId" value="<%= user._id %>">
-
-        <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
-            <a href="#SectionAddModal" class="btn-floating btn-large modal-trigger" id="SectionAddBtn">
-                <i class="material-icons">add</i>
-            </a>
-        </div>
 
         <%- include _common %>
         <%- include _resumeinfo %>
@@ -23,9 +19,12 @@
 
         <div id="UnsortableSections"></div>
         <div id="SortableSections"></div>
+
+        <a href="#SectionAddModal" class="button is-outlined is-info modal-trigger" style="width: 100%; font-size: 1.3rem; font-weight: bold; margin-top: 40px">+ Add Section</a>
     </div>
 
-    <div class="modal" id="SectionAddModal" tabindex="-1" role="dialog" style="width: 500px">
+    <div class="modal" id="SectionAddModal">
+        <div class="modal-background"></div>
         <div class="modal-content">
             <h3>Add a new section</h3>
 
@@ -41,8 +40,8 @@
                 <button type="submit" class="btn">Text Section</button>
             </form>
         </div>
+        <button class="modal-close"></button>
     </div>
-
 
     <script src="/scripts/editor.js"></script>
 
