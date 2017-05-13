@@ -222,9 +222,9 @@ var Editor = (function($) {
                 e.preventDefault();
 
                 var form = $(this);
-                var card = form.closest('.card');
-                var displayArea = card.find('.display-mode');
-                var editArea = card.find('.edit-mode');
+                var section = form.closest('.cv-section');
+                var displayArea = section.find('.display-mode');
+                var editArea = section.find('.edit-mode');
 
                 editArea.find('.temporarily-removed').remove();
 
@@ -239,7 +239,7 @@ var Editor = (function($) {
                 }).done(function(data) {
 
                     if (typeof done == 'function') {
-                        return done(data, form, card, displayArea, editArea);
+                        return done(data, form, section, displayArea, editArea);
                     }
 
                     var templateId = '#' + form.data('display-template-id');
@@ -285,6 +285,7 @@ var Editor = (function($) {
 
             container.append(render(template, {
                 itemIndex: itemCount,
+                order: itemCount + 1,
                 temporary: true // temporary items will be deleted when `Cancel` is clicked
             }));
 
@@ -326,13 +327,14 @@ var Editor = (function($) {
                 sections.push({ _id: $(section).data('section-id'), order: idx + 1 });
             });
             return { name: name, sections: sections };
-        }, function(data, form, card, displayArea, editArea) {
+        }, function(data, form, section, displayArea, editArea) {
 
             var template = $('#' + form.data('display-template-id')).html();
 
             // save new resume
             resume = data;
 
+            // TODO: temporary, keep or remove?
             displayArea.html(render(template, {
                 user: user,
                 resume: resume
@@ -440,7 +442,7 @@ var Editor = (function($) {
 
         // edit section
         $(document).on('click', '.section-edit-btn', function() {
-            var card = $(this).closest('.card')
+            var card = $(this).closest('.cv-section')
             var editArea = card.find('.edit-mode');
             var displayArea = card.find('.display-mode');
 

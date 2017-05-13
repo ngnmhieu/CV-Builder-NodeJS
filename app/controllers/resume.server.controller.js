@@ -1,7 +1,8 @@
-var resumes = require('../models/resumes.server.model');
-var ObjectId = require('mongodb').ObjectId;
-var debug = require('debug')('cvbuilder.controller.resume');
-var config = require('../../config/config');
+const resumes       = require('../models/resumes.server.model');
+const ObjectId      = require('mongodb').ObjectId;
+const debug         = require('debug')('cvbuilder.controller.resume');
+const config        = require('../../config/config');
+const renderService = require('../services/render.service');
 
 /**
  * GET /users/:user_id/resumes/:id
@@ -103,8 +104,23 @@ exports.byId = function(req, res, next, id) {
 /**
  * Render the pdf file from the template 
  */
-exports.renderPdf = function() {
-    var file = `${config.app.root}/resources/`;
+exports.renderPdf = function(req, res) {
+    var resume = req.resumeObj;
+    var filename = resume.name.replace(' ', '-');
+    res.set('Content-Disposition', `inline; filename=${filename}.pdf"`);
+    res.set('Content-Type', "application/pdf");
+
+    renderService.renderPdf(resume, (output) => {
+      output.pipe(res);
+    })
 };
 
+exports.renderHtml = function(req, res) {
+    var resume = req.resumeObj;
 
+    res.set('Content-Type', "text/html");
+
+    renderService.renderHtml(resume, (output) => {
+      output.pipe(res);
+    })
+};

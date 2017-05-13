@@ -1,0 +1,62 @@
+@font-face {
+    font-family: ebgaramond;
+    src: url('ebgaramond.ttf');
+}
+
+body {
+  font-family: "ebgaramond";
+  font-size: 1.1em;
+  color: #000;
+  background: #fff;
+  padding: 0 50px;
+}
+
+h1 {
+  margin: 10px 0;
+}
+
+h2 {
+  margin-bottom: 15px;
+  border-bottom: 2px solid #333;
+}
+
+h4 {
+  margin: 15px 0;
+}
+
+ul {
+  margin-top: 0;
+}
+p {
+    text-align: justify;
+}
+.section {
+    margin-top: 20px;
+}
+.field-separator {
+  color: #ddd;
+}
+.basicinfo {
+    margin-top: 20px;
+}
+
+.worklist .item {
+    margin-bottom: 15px;
+    page-break-inside: avoid;
+}
+.worklist .date,
+.worklist .title {
+    font-size: 20px;
+}
+.worklist .institution {
+    font-size: 18px
+}
+.bulletlist {
+    padding-left: 32px;
+}
+.bulletlist li {
+    margin-bottom: 5px;
+}
+.content {
+    margin-left: 10px;
+}

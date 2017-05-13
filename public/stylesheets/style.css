@@ -103,11 +103,26 @@ body {
  * Editor
  *********/
 
+/** Resume Header **/
+.css-resume-header {
+  margin-bottom: 20px !important;
+}
+.css-resume-header .button {
+  margin-left: 5px
+}
+.css-resume-header .display-mode {
+  position: relative;
+}
+.css-resume-header .css-resume-edit-btn {
+  position: relative;
+  right: -10px;
+  top: 12px;
+}
 
 /** Section Common **/
 
 .css-section {
-    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .css-section .css-section-title {
@@ -135,7 +150,7 @@ body {
     left: -50%;
 }
 
-.css-section .css-edit-mode {
+.css-edit-mode {
     display: none;
 }
 

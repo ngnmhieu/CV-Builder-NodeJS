@@ -1,11 +1,11 @@
 <%- include ../common/header %>
 
 
-    <div id="ResumeEditor">
+    <div id="ResumeEditor" style="margin-top: 30px">
 
-        <div style="margin: 10px 0">
-            <a href="/resumes" class="button">Back</a>
-        </div>
+        <!-- <div style="margin: 10px 0"> -->
+        <!--     <a href="/resumes" class="button">Back</a> -->
+        <!-- </div> -->
 
         <input type="hidden" id="ResumeId" value="<%= resume._id %>">
         <input type="hidden" id="UserId" value="<%= user._id %>">
@@ -20,7 +20,7 @@
         <div id="UnsortableSections"></div>
         <div id="SortableSections"></div>
 
-        <a href="#SectionAddModal" class="button is-outlined is-info modal-trigger" style="width: 100%; font-size: 1.3rem; font-weight: bold; margin-top: 40px">+ Add Section</a>
+        <a href="#SectionAddModal" class="button is-outlined is-info modal-trigger" style="width: 100%; font-size: 1.3rem; font-weight: bold; margin-top: 15px">+ Add Section</a>
     </div>
 
     <div class="modal" id="SectionAddModal">

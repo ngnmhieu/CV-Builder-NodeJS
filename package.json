@@ -5,6 +5,10 @@
   "engines": {
     "node": ">=6.10.0"
   },
+  "scripts": {
+    "start": "nodemon bootstrap.js",
+    "debug": "cross-env DEBUG=cvbuilder.* npm run start"
+  },
   "dependencies": {
     "bcryptjs": "^2.3.0",
     "body-parser": "^1.13.3",
@@ -13,17 +17,21 @@
     "ejs": "^2.3.4",
     "express": "~4.13.3",
     "express-session": "^1.11.3",
+    "handlebars": "^4.0.8",
     "joi": "^10.4.1",
     "lodash": "^4.16.4",
     "method-override": "^2.3.5",
+    "moment": "^2.18.1",
     "mongodb": "^2.0.47",
     "morgan": "^1.6.1",
     "passport": "^0.3.0",
     "passport-local": "^1.0.0",
-    "supertest-session": "^2.0.1"
+    "supertest-session": "^2.0.1",
+    "wkhtmltopdf": "^0.3.4"
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "cross-env": "^5.0.0",
     "debug": "^2.6.6",
     "should": "^7.1.1",
     "supertest": "^1.1.0"

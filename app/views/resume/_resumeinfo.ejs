@@ -1,81 +1,56 @@
 <script id="resumeinfo-template" type="text/x-handlebars-template">
-    <style type="text/css" media="all">
-        .cv-control .button {
-            margin-left: 5px
-        }
-    </style>
-    <div class="level cv-control">
-        <div class="level-left"><h1 class="title">BMW Application</h1></div>
-        <div class="level-right">
-            <a class="button">
-                <span class="icon"><i class="fa fa-share-alt"></i></span>
-                <span>Share</span>
-            </a>
-            <a class="button">
-                <span class="icon"><i class="fa fa-file-text"></i></span>
-                <span>Preview</span>
-            </a>
-            <a class="button">
-                <span class="icon"><i class="fa fa-download"></i></span>
-                <span>Download</span>
-            </a>
-            <a class="button">
-                <span class="icon"><i class="fa fa-cog"></i></span>
-            </a>
-        </div>
-    </div>
-</script>
 
+  <div class="cv-section level css-resume-header columns">
 
-<script id="old-resumeinfo-template" type="text/x-handlebars-template">
+    <div class="column is-6">
 
-    <div class="card" id="EditorHeader">
-        <div class="card-content">
-            <div class="edit-mode">
-                <form id="ResumeSaveForm" class="resumeinfo-edit-form"
-                    action="/users/{{user._id}}/resumes/{{resume._id}}" method="put"
-                    data-display-template-id="resumeinfo-display-template"
-                    data-edit-template-id="resumeinfo-edit-template">
+      <div class="edit-mode css-edit-mode">
 
-                    <div class="row">
-                        <div class="col s6">
-                            <input type="text" name="name" value="{{resume.name}}" class="card-title">
-                        </div>
-                    </div>
+        <form id="ResumeSaveForm"
+          class="resumeinfo-edit-form field is-grouped"
+          action="/users/{{user._id}}/resumes/{{resume._id}}" method="put"
+          data-display-template-id="resumeinfo-display-template"
+          data-edit-template-id="resumeinfo-edit-template">
+          <p class="control is-expanded">
+          <input class="is-medium input" name="name" type="text" placeholder="Resume Name" value="{{resume.name}}">
+          </p>
+          <p class="control">
+          <button class="button is-info is-medium is-outlined form-submit">Save</button>
+          </p>
+        </form>
+      </div>
 
-                    <div class="row">
-                        <div class="input-field col s3">
-                            <select>
-                              <option value="en">English</option>
-                              <option value="de">German</option>
-                              <option value="vi">Vietnamese</option>
-                            </select>
-                            <label>Language</label>
-                        </div>
-                    </div>
-
-                    <div class="save-buttons">
-                        <button class="btn right">Save</button>
-                        <button class="btn-flat right cancel">Cancel</button>
-                        <div class="clearfix"></div>
-                    </div>
-                </form>
-
-            </div>
-
-            <div class="display-mode">
-                {{> resumeinfoDisplay param=param user=user resume=resume }}
-            </div>
-        </div>
+      <div class="display-mode">
+        {{> resumeinfoDisplay param=param user=user resume=resume }}
+      </div>
     </div>
 
+    <div class="column is-6">
+      <div class="is-pulled-right">
+        <a class="button">
+          <span class="icon"><i class="fa fa-share-alt"></i></span>
+          <span>Share</span>
+        </a>
+        <a class="button">
+          <span class="icon"><i class="fa fa-file-text"></i></span>
+          <span>Preview</span>
+        </a>
+        <a class="button">
+          <span class="icon"><i class="fa fa-download"></i></span>
+          <span>Download</span>
+        </a>
+        <a class="button">
+          <span class="icon"><i class="fa fa-cog"></i></span>
+        </a>
+      </div>
+    </div>
+  </div>
 </script>
 
 <script id="resumeinfo-display-template" type="text/x-handlebars-template">
-
-    <span class="card-title" style="margin:0 ">{{resume.name}}%></span>
-
-    <a class="btn-floating edit" style="display:none">
-        <i class="material-icons">edit</i>
-    </a>
+  <h1 class="title">
+    {{resume.name}}
+    <i class="section-edit-btn fa fa-pencil-square-o css-resume-edit-btn"></i>
+  </h1>
+  
 </script>

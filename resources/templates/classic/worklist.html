@@ -1,0 +1,22 @@
+<div class="section">
+    <h2>{{section.name}}</h2>
+
+    <div class="worklist content">
+        {{#each section.items}}
+        <table width="100%" class="item">
+            <tr>
+                <td class="title"><b>{{title}}</b></td>
+                <td align="right" class="date">
+                    <b>{{dateFormat startDate 'MMM YYYY'}} - {{dateFormat endDate 'MMM YYYY'}}</b>
+                </td>
+            </tr>
+            <tr>
+                <td colspan=2 class="institution">{{institution}}</td>
+            </tr>
+            <tr>
+                <td colspan=2 class="institution"><p>{{desc}}</p></td>
+            </tr>
+        </table>
+        {{/each}}
+    </div>
+</div>

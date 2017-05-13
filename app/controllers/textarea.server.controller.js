@@ -56,11 +56,11 @@ exports.byId = function(req, res, next, id) {
  */
 exports.update = function(req, res) {
 
-    textareas.updateById(req.textarea, req.body).then(function(err, textarea) {
-        res.status(200).json(textarea);
+    textareas.updateById(req.textarea, req.body).then(function(textarea) {
+      res.status(200).json(textarea);
     }, (err) => {
-        debug('Failed updating textarea: %o', err)
-        res.sendStatus(400);
+      debug('Failed updating textarea: %o', err)
+      res.sendStatus(400);
     });
 }
 
