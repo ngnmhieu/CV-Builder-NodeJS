@@ -17,6 +17,11 @@ body {
     background: #f5f5f5;
 }
 
+html.modal-opened,
+body.modal-opened {
+    overflow: hidden;
+}
+
 .container {
     max-width: 1024px;
 }
@@ -377,4 +382,12 @@ body {
 
 .css-section .css-textarea {
     margin-bottom: 20px;
+}
+
+/** Modals **/
+.css-setting-modal .css-modal-controls {
+    justify-content: flex-end;
+ }
+.css-setting-modal .css-modal-controls .button {
+    width: 80px;
 }

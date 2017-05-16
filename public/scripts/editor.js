@@ -146,11 +146,20 @@ var Editor = (function($) {
 
     var openModal = function(id) {
         $('#'+id).addClass('is-active');
+
+        // disable scroll
+        $('body').addClass('modal-opened');
+        $('html').addClass('modal-opened');
+
         // TODO: click outside also close the modal
     };
 
     var closeModal = function(id) {
         $('#'+id).removeClass('is-active');
+
+        // enable scroll
+        $('body').removeClass('modal-opened');
+        $('html').removeClass('modal-opened');
     };
 
     var initEvents = function() {
