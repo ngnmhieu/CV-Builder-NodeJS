@@ -1,0 +1,41 @@
+<div class="modal" id="AddSectionModal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Add Section</p>
+            <button class="delete close-modal"></button>
+        </header>
+        <section class="modal-card-body">
+
+            <div class="columns">
+                <div class="column is-12">
+                    <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/bulletlists" id="BulletlistAddForm" method="post" class="add-sec-form" data-item-template-id="bulletlist-template" data-item-container-id="SortableSections">
+                        <button type="submit" class="button is-outlined is-info  css-add-section-btn">
+                            <i class="fa fa-th-list" aria-hidden="true"></i>
+                            &nbsp;
+                            Bullet List
+                        </button>
+                    </form>
+                    <br>
+                    <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/worklists" id="WorklistAddForm" method="post" method="post" class="add-sec-form" data-item-template-id="worklist-template" data-item-container-id="SortableSections">
+                        <button type="submit" class="button is-outlined is-info css-add-section-btn">
+                            <i class="fa fa-briefcase" aria-hidden="true"></i>
+                            &nbsp;
+                            Work List
+                        </button>
+                    </form>
+                    <br>
+                    <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/textareas" id="TextareaAddForm" method="post" method="post" class="add-sec-form" data-item-template-id="textarea-template" data-item-container-id="SortableSections">
+                        <button type="submit" class="button is-outlined is-info css-add-section-btn">
+
+                            <i class="fa fa-paragraph" aria-hidden="true"></i>
+                            &nbsp;
+                            Paragraph
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</div>

@@ -59,7 +59,6 @@ var Homepage = (function($) {
     };
 
     var initUI = function() {
-        $('.modal-trigger').leanModal();
     };
 
     that.init = function() {

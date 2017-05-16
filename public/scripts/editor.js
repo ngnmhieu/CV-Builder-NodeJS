@@ -144,6 +144,15 @@ var Editor = (function($) {
         Materialize.updateTextFields();
     };
 
+    var openModal = function(id) {
+        $('#'+id).addClass('is-active');
+        // TODO: click outside also close the modal
+    };
+
+    var closeModal = function(id) {
+        $('#'+id).removeClass('is-active');
+    };
+
     var initEvents = function() {
 
         /** generic code for section **/
@@ -170,11 +179,17 @@ var Editor = (function($) {
                 // trigger edit mode
                 newSec.find('.section-edit-btn').click();
 
+                newSec.find('form input[name=name]').focus();
+
                 // refreshUI();
-            }).fail(function() {
+            }).fail(function(e) {
                 // TODO
-                console.log('fail to add seciton');
+                console.log('Fail to add seciton');
+                console.log(e);
             });
+
+            var modalId = $(this).closest('.modal').attr('id');
+            closeModal(modalId);
         });
 
         // delete section
@@ -276,7 +291,6 @@ var Editor = (function($) {
 
         // add item to list (temporarily)
         $(document).on('click', '.add-item-btn', function(e) {
-
             e.preventDefault();
 
             var container = $('#' + $(this).data('item-container-id'));
@@ -285,6 +299,7 @@ var Editor = (function($) {
 
             container.append(render(template, {
                 itemIndex: itemCount,
+                list: {}, // TODO: pass the list object here
                 order: itemCount + 1,
                 temporary: true // temporary items will be deleted when `Cancel` is clicked
             }));
@@ -558,6 +573,21 @@ var Editor = (function($) {
         // Enable ordering for the worklist items
         enableSortable('.worklist-item', '.item-move-up', '.item-move-down');
         
+        // modals
+        $(document).on('click', '.open-modal', function(e) {
+            e.preventDefault();
+            var id = $(this).data('modal-id');
+            openModal(id);
+        });
+
+        $(document).on('click', '.close-modal', function(e) {
+            e.preventDefault();
+            var id = $(this).data('modal-id');
+            if (!id) {
+                id = $(this).closest('.modal').attr('id');
+            }
+            closeModal(id);
+        });
     };
 
     // render the resume

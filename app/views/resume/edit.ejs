@@ -1,11 +1,6 @@
 <%- include ../common/header %>
 
-
     <div id="ResumeEditor" style="margin-top: 30px">
-
-        <!-- <div style="margin: 10px 0"> -->
-        <!--     <a href="/resumes" class="button">Back</a> -->
-        <!-- </div> -->
 
         <input type="hidden" id="ResumeId" value="<%= resume._id %>">
         <input type="hidden" id="UserId" value="<%= user._id %>">
@@ -20,28 +15,10 @@
         <div id="UnsortableSections"></div>
         <div id="SortableSections"></div>
 
-        <a href="#SectionAddModal" class="button is-outlined is-info modal-trigger" style="width: 100%; font-size: 1.3rem; font-weight: bold; margin-top: 15px">+ Add Section</a>
+        <button data-modal-id="AddSectionModal" class="button is-outlined is-info open-modal css-add-section-modal-btn">+ Add Section</button>
     </div>
 
-    <div class="modal" id="SectionAddModal">
-        <div class="modal-background"></div>
-        <div class="modal-content">
-            <h3>Add a new section</h3>
-
-            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/bulletlists" id="BulletlistAddForm" method="post" class="add-sec-form" data-item-template-id="bulletlist-template" data-item-container-id="SortableSections">
-                <button type="submit" class="btn">Bullet List</button>
-            </form>
-            <br>
-            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/worklists" id="WorklistAddForm" method="post" method="post" class="add-sec-form" data-item-template-id="worklist-template" data-item-container-id="SortableSections">
-                <button type="submit" class="btn">Occupation List</button>
-            </form>
-            <br>
-            <form action="/users/<%= user._id %>/resumes/<%= resume._id %>/textareas" id="TextareaAddForm" method="post" method="post" class="add-sec-form" data-item-template-id="textarea-template" data-item-container-id="SortableSections">
-                <button type="submit" class="btn">Text Section</button>
-            </form>
-        </div>
-        <button class="modal-close"></button>
-    </div>
+    <%- include _modals %>
 
     <script src="/scripts/editor.js"></script>
 
