@@ -4,7 +4,6 @@
 - Preview
 - Share (HTML page, Twitter, LinkedIn, XING, Facebook)
 
-
 - Placeholder for section name in editor; empty default section name
 - Portal
 - Embed CV Badge that links to HTML page
