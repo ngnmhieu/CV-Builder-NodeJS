@@ -1,5 +1,75 @@
 <%- include ../common/header %>
 
+<nav class="nav" style="border-bottom: 1px solid #ccc">
+  <div class="nav-left">
+    <a class="nav-item">
+      <img src="http://bulma.io/images/bulma-logo.png" alt="Bulma logo">
+    </a>
+  </div>
+
+  <!-- This "nav-toggle" hamburger menu is only visible on mobile -->
+  <!-- You need JavaScript to toggle the "is-active" class on "nav-menu" -->
+  <span class="nav-toggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </span>
+
+  <!-- This "nav-menu" is hidden on mobile -->
+  <!-- Add the modifier "is-active" to display it on mobile -->
+  <div class="nav-right nav-menu">
+
+
+
+    <!-- <a class="nav&#45;item open&#45;modal" data&#45;modal&#45;id="ShareModal"> -->
+    <!--   <span class="icon"><i class="fa fa&#45;share&#45;alt"></i></span> -->
+    <!--   &#38;nbsp; -->
+    <!--   <span>Share</span> -->
+    <!-- </a> -->
+    <!-- <a class="nav&#45;item"> -->
+    <!--   <span class="icon"> -->
+    <!--     <i class="fa fa&#45;file&#45;text"></i> -->
+    <!--   </span> -->
+    <!--   <span>Preview</span> -->
+    <!-- </a> -->
+    <!-- <a class="nav&#45;item " href="/resumes/<%= resume._id %>/pdf" target="blank"> -->
+    <!--   <span class="icon"> -->
+    <!--     <i class="fa fa&#45;download"></i> -->
+    <!--   </span> -->
+    <!--   &#38;nbsp; -->
+    <!--   <span>Download</span> -->
+    <!-- </a> -->
+
+    <!-- <div class="nav&#45;item"> -->
+      <!--   <div class="field is&#45;grouped"> -->
+        <!--     <p class="control"> -->
+        <!--     <a class="button" > -->
+          <!--       <span class="icon"><i class="fa fa&#45;share&#45;alt"></i></span> -->
+          <!--       <span>Share</span> -->
+          <!--     </a> -->
+        <!--     </p> -->
+        <!--     <p class="control"> -->
+        <!--     <a class="button"> -->
+          <!--       <span class="icon"> -->
+            <!--         <i class="fa fa&#45;file&#45;text"></i> -->
+            <!--       </span> -->
+          <!--       <span>Preview</span> -->
+          <!--     </a> -->
+        <!--     </p> -->
+        <!--     <p class="control"> -->
+        <!--     <a class="button is&#45;info"> -->
+          <!--       <span class="icon"> -->
+            <!--         <i class="fa fa&#45;download"></i> -->
+            <!--       </span> -->
+          <!--       <span>Download</span> -->
+          <!--     </a> -->
+        <!--     </p> -->
+        <!--   </div> -->
+      <!-- </div> -->
+  </div>
+</nav>
+
+<div class="container" id="MainContainer">
     <div id="ResumeEditor" style="margin-top: 30px">
 
         <input type="hidden" id="ResumeId" value="<%= resume._id %>">

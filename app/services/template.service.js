@@ -1,3 +1,4 @@
+const _          = require('lodash');
 const path       = require('path');
 const fs         = require('fs');
 const Handlebars = require('handlebars');
@@ -6,98 +7,135 @@ const debug      = require('debug')('cvbuilder.service.template');
 const config     = require('../../config/config');
 
 const TEMPLATE_DIR = path.join(config.app.root, 'resources', 'templates');
+const TEMPLATES_CONFIG_PATH = path.join(config.app.root, 'config', 'templates.json');
 
-// TODO: temporary - for testing purcose
-const TEMPLATE_NAME = 'classic';
+function loadTemplates() {
+  let data = fs.readFileSync(path.join(TEMPLATES_CONFIG_PATH));  
+  try {
+    let templates = JSON.parse(data);
+    debug(`Successfully load JSON file ${TEMPLATES_CONFIG_PATH}`);
+    return _.zipObject(_.map(templates,'id'), templates);
+  } catch(e) {
+    debug(`Cannot parse content of file ${TEMPLATES_CONFIG_PATH}: ${e}`);
+    return {};
+  }
+}
 
-/**
- * Render a page partial
- * @param {string} filename - filename of the partial template
- * @param {object} data     - the data needed to render the template
- *
- * @return {Promise} - a promise that resolve to html content
- */
-function renderPartial(filename, data) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path.join(
-      TEMPLATE_DIR, TEMPLATE_NAME, filename
-    ), "utf-8", (err, source) => {
-      if (err) {
-        reject(err);
-      } else {
-        let template = Handlebars.compile(source);
-        resolve(template(data));
-      }
+const templates = loadTemplates();
+
+const TemplateService = class {
+
+  constructor(resume) {
+    this.resume = resume;
+    this.template = templates['classic']; // TODO: replace with resume.templateId
+    this.registerHelpers();
+  }
+
+  /**
+   * Render a page partial
+   * @param {string} filename - filename of the partial template
+   * @param {object} data     - the data needed to render the template
+   *
+   * @return {Promise} - a promise that resolve to html content
+   */
+  _renderPartial(filename, data) {
+    return new Promise((resolve, reject) => {
+      fs.readFile(path.join(
+        TEMPLATE_DIR, this.template.id, filename
+      ), "utf-8", (err, source) => {
+        if (err) {
+          reject(err);
+        } else {
+          let template = Handlebars.compile(source);
+          resolve(template(data));
+        }
+      });
     });
-  });
-}
+  }
 
-function renderSection(resume, section) {
-  return renderPartial(`${section.type}.html`, {
-    resume: resume,
-    section: section
-  });
-}
+  renderSection(section) {
+    return this._renderPartial(`${section.type}.html`, {
+      resume: this.resume,
+      section: section
+    });
+  }
 
-function renderHead(resume) {
-  return renderPartial('html-head.html', {
-    resume: resume
-  });
-};
-
-function renderBasicinfo(resume) {
-  return renderPartial('basicinfo.html', {
-    resume: resume,
-    section: resume.basicinfo
-  });
-};
-
-function renderPageHeader(resume) {
-  return renderPartial('page-header.html', {
-    resume: resume
-  });
-}
-
-function renderPageFooter(resume) {
-  return renderPartial('page-footer.html', {
-    resume: resume
-  });
-}
-
-/**
- * @param {Resume} resume - resume object
- * @return {Promise} a promise that resolve to html content
- */
-function renderHtml(resume) {
-  return new Promise((resolve, reject) => {
+  renderHead() {
     let html = '';
-    let renderPromises = _.concat(
-      [],
-      Promise.resolve('<html>'),
-      renderHead(resume), 
-      Promise.resolve('<body>'),
-      renderPageHeader(resume),
-      renderBasicinfo(resume),
-      resume.sections.sort(() => {
-      }).map((section) => {
-        return renderSection(resume, section);
-      }),
-      renderPageFooter(resume),
-      Promise.resolve('</body>'),
-      Promise.resolve('</html>')
-    );
 
-    Promise.all(renderPromises).then((contents) => {
-      resolve(contents.join(''));
-    }, reject).catch((err) => {
-      reject(err);
+    html += `<head>`;
+    html += `  <meta charset="utf-8" />`;
+    this.template.stylesheets.forEach((style) => {
+      html += `  <link rel="stylesheet" href="{{localfile '${style}'}}" type="text/css" />`;
     });
-  });
+    html += `  <title>{{resume.name}}</title>`;
+    html += `</head>`;
+
+    let template = Handlebars.compile(html);
+
+    return Promise.resolve(template({
+      resume: this.resume
+    })); 
+  };
+
+  renderBasicinfo() {
+    return this._renderPartial('basicinfo.html', {
+      resume: this.resume,
+      section: this.resume.basicinfo
+    });
+  };
+
+  renderPageHeader() {
+    return this._renderPartial('header.html', {
+      resume: this.resume
+    });
+  }
+
+  renderPageFooter() {
+    return this._renderPartial('footer.html', {
+      resume: this.resume
+    });
+  }
+
+  renderHtml() {
+    let self = this;
+    return new Promise((resolve, reject) => {
+      let html = '';
+      let renderPromises = _.concat(
+        [],
+        Promise.resolve('<html>'),
+        this.renderHead(), 
+        Promise.resolve('<body>'),
+        this.renderPageHeader(),
+        this.renderBasicinfo(),
+        this.resume.sections.sort(() => {
+        }).map((section) => {
+          return this.renderSection(section);
+        }),
+        this.renderPageFooter(),
+        Promise.resolve('</body>'),
+        Promise.resolve('</html>')
+      );
+
+      Promise.all(renderPromises).then((contents) => {
+        resolve(contents.join(''));
+      }, reject).catch((err) => {
+        reject(err);
+      });
+    });
+  }
+
+  registerHelpers() {
+    // get the absolute path for local file
+    Handlebars.registerHelper('localfile', (filename) => {
+      return 'file://' + path.join(TEMPLATE_DIR, this.template.id, filename);
+    });
+  }
 }
 
-/*********************
- * Handlebars Helpers
- *********************/
+/****************************
+ * Common Handlebars Helpers
+ ****************************/
 
 // ternary expression
 Handlebars.registerHelper('tern', function(cond, pos, neg) {
@@ -106,20 +144,25 @@ Handlebars.registerHelper('tern', function(cond, pos, neg) {
 // join a number of strings with delimiter
 Handlebars.registerHelper('join', function(delim, ...args) {
   return args.slice(0, args.length-1)
-             .filter((arg) => { return !!arg  })
-             .join(delim);
+  .filter((arg) => { return !!arg  })
+  .join(delim);
 });
-// get the absolute path for local file
-Handlebars.registerHelper('localfile', function(filename) {
-  return 'file://' + path.join(TEMPLATE_DIR, TEMPLATE_NAME, filename);
-});
-
-// date formating
+// date pformating
 Handlebars.registerHelper('dateFormat', function(dateStr, format) {
   var format = typeof format != 'string' ? 'D MMM YYYY' : format;
   return moment(dateStr).format(format);
 });
 
 module.exports = {
-  renderHtml
+  /**
+   * @param {Resume} resume - resume object
+   * @return {Promise} a promise that resolve to html content
+   */
+  renderHtml: (resume) => {
+    let templateService = new TemplateService(resume);
+    return templateService.renderHtml();
+  },
+  getTemplates: () => {
+    return templates;
+  }
 }

@@ -1,6 +1,6 @@
 @font-face {
     font-family: ebgaramond;
-    src: url('ebgaramond.ttf');
+    src: url('../fonts/ebgaramond.ttf');
 }
 
 body {
@@ -32,6 +32,7 @@ p {
 }
 .section {
     margin-top: 20px;
+    margin-bottom: 30px;
 }
 .field-separator {
   color: #ddd;

@@ -647,6 +647,18 @@ var Editor = (function($) {
         });
     };
 
+    let renderModals = () => {
+      $.get("/templates").done((templates) => {
+
+        let settingModalTemplate = $('#setting-modal-template').html();
+
+        resumeEditor.append(render(settingModalTemplate, {
+          templates: _.values(templates)
+        }));
+
+      });
+    };
+
     that.init = function() {
 
         initUI();
@@ -654,6 +666,8 @@ var Editor = (function($) {
         initEvents();
 
         displayResume();
+
+        renderModals();
     };
 
     return that;

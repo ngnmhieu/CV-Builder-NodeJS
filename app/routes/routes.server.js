@@ -1,12 +1,13 @@
 module.exports = function(app) {
 
-    var user = require('../controllers/user.server.controller');
-    var resumes = require('../controllers/resume.server.controller');
-    var bulletlists = require('../controllers/bulletlist.server.controller');
-    var worklists = require('../controllers/worklist.server.controller');
-    var textareas = require('../controllers/textarea.server.controller');
-    var basicinfo = require('../controllers/basicinfo.server.controller');
-    var page = require('../controllers/page.server.controller');
+    let user = require('../controllers/user.server.controller');
+    let resumes = require('../controllers/resume.server.controller');
+    let bulletlists = require('../controllers/bulletlist.server.controller');
+    let worklists = require('../controllers/worklist.server.controller');
+    let textareas = require('../controllers/textarea.server.controller');
+    let basicinfo = require('../controllers/basicinfo.server.controller');
+    let page = require('../controllers/page.server.controller');
+    let templateController = require('../controllers/template.server.controller');
 
     app.use(user.setLoggedInUser);
 
@@ -41,6 +42,8 @@ module.exports = function(app) {
     app.get("/users/:user_id/resumes/:resume_id/sections", resumes.sections);
 
     app.param('resume_id', resumes.byId);
+
+    app.get("/templates", templateController.all);
 
     /***************
      * Web pages

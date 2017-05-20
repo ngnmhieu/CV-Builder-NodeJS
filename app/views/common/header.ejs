@@ -1,117 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8">
 
-        <link href="/components/components-font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/components/components-font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
-        <link rel="stylesheet" href="/components/bulma/css/bulma.css" />
+    <link rel="stylesheet" href="/components/bulma/css/bulma.css" />
 
-        <!--Let browser know website is optimized for mobile-->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <!-- App stylesheet -->
-        <link rel="stylesheet" href="/stylesheets/style.css">
+    <!-- App stylesheet -->
+    <link rel="stylesheet" href="/stylesheets/style.css">
 
-        <script src="/components/jquery/dist/jquery.min.js"></script>
-        <script src="/components/lodash/dist/lodash.min.js"></script>
-        <script src="/components/handlebars/handlebars.min.js"></script>
-        <script src="/components/moment/min/moment-with-locales.min.js"></script>
+    <script src="/components/jquery/dist/jquery.min.js"></script>
+    <script src="/components/lodash/dist/lodash.min.js"></script>
+    <script src="/components/handlebars/handlebars.min.js"></script>
+    <script src="/components/moment/min/moment-with-locales.min.js"></script>
 
-        <title><%= title %></title>
-    </head>
+    <title><%= title %></title>
+  </head>
 
-    <body>
-        <!-- <nav class="teal"> -->
-        <!--     <div class="nav&#45;wrapper container" id="HeaderContainer"> -->
+  <body>
+    <!-- <nav class="teal"> -->
+      <!--     <div class="nav&#45;wrapper container" id="HeaderContainer"> -->
         <!--         <a href="#" class="brand&#45;logo">CV Builder</a> -->
         <!--  -->
         <!--         <ul id="nav&#45;mobile" class="right hide&#45;on&#45;med&#45;and&#45;down"> -->
-        <!--             <% if (!user) { %> -->
-        <!--             <li> -->
-        <!--             <a class="modal&#45;trigger" href="#LoginModal" title="Login">Login <i class="material&#45;icons">account_circle</i></a> -->
-        <!--             </li> -->
-        <!--             <% } %> -->
-        <!--  -->
-        <!--             <% if (user) { %> -->
-        <!--             <li> -->
-        <!--             <a class='dropdown&#45;button' href='#' data&#45;beloworigin='true' data&#45;activates='UserDropdown'> -->
-        <!--                 <%= user.firstName + ' ' + user.lastName %> <i class="material&#45;icons">account_circle</i>  -->
-        <!--             </a> -->
-        <!--             <ul id="UserDropdown" class='dropdown&#45;content'> -->
-        <!--                 <li> -->
-        <!--                 <a href="/resumes" title="My CVs">My CVs</a> -->
-        <!--                 </li> -->
-        <!--                 <li> -->
-        <!--                 <a href="#" title="Account">Account</a> -->
-        <!--                 </li> -->
-        <!--                 <li> -->
-        <!--                 <a href="#" onclick="Homepage.logout()" id="logoutButton" title="Logout">Logout</a> -->
-        <!--                 </li> -->
-        <!--             </ul> -->
-        <!--             </li> -->
-        <!--             <% } %> -->
-        <!--         </ul> -->
+          <!--             <% if (!user) { %> -->
+          <!--             <li> -->
+          <!--             <a class="modal&#45;trigger" href="#LoginModal" title="Login">Login <i class="material&#45;icons">account_circle</i></a> -->
+          <!--             </li> -->
+          <!--             <% } %> -->
+          <!--  -->
+          <!--             <% if (user) { %> -->
+          <!--             <li> -->
+          <!--             <a class='dropdown&#45;button' href='#' data&#45;beloworigin='true' data&#45;activates='UserDropdown'> -->
+            <!--                 <%= user.firstName + ' ' + user.lastName %> <i class="material&#45;icons">account_circle</i>  -->
+            <!--             </a> -->
+          <!--             <ul id="UserDropdown" class='dropdown&#45;content'> -->
+            <!--                 <li> -->
+            <!--                 <a href="/resumes" title="My CVs">My CVs</a> -->
+            <!--                 </li> -->
+            <!--                 <li> -->
+            <!--                 <a href="#" title="Account">Account</a> -->
+            <!--                 </li> -->
+            <!--                 <li> -->
+            <!--                 <a href="#" onclick="Homepage.logout()" id="logoutButton" title="Logout">Logout</a> -->
+            <!--                 </li> -->
+            <!--             </ul> -->
+          <!--             </li> -->
+          <!--             <% } %> -->
+          <!--         </ul> -->
         <!--     </div> -->
-        <!-- </nav> -->
+      <!-- </nav> -->
 
-        <nav class="nav">
-            <div class="nav-left">
-                <a class="nav-item">
-                    <img src="http://bulma.io/images/bulma-logo.png" alt="Bulma logo">
-                </a>
-            </div>
-
-            <!-- This "nav-toggle" hamburger menu is only visible on mobile -->
-            <!-- You need JavaScript to toggle the "is-active" class on "nav-menu" -->
-            <span class="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </span>
-
-            <!-- This "nav-menu" is hidden on mobile -->
-            <!-- Add the modifier "is-active" to display it on mobile -->
-            <div class="nav-right nav-menu">
-                <a class="nav-item">
-                    Home
-                </a>
-                <a class="nav-item">
-                    Documentation
-                </a>
-                <a class="nav-item">
-                    <!-- <ul id="nav&#45;mobile" class="right hide&#45;on&#45;med&#45;and&#45;down"> -->
-                    <!--     <% if (!user) { %> -->
-                    <!--     <li> -->
-                    <!--     <a class="modal&#45;trigger" href="#LoginModal" title="Login">Login <i class="material&#45;icons">account_circle</i></a> -->
-                    <!--     </li> -->
-                    <!--     <% } %> -->
-                    <!--  -->
-                    <!--     <% if (user) { %> -->
-                    <!--     <li> -->
-                    <!--     <a class='dropdown&#45;button' href='#' data&#45;beloworigin='true' data&#45;activates='UserDropdown'> -->
-                    <!--         <%= user.firstName + ' ' + user.lastName %> <i class="material&#45;icons">account_circle</i>  -->
-                    <!--     </a> -->
-                    <!--     <ul id="UserDropdown" class='dropdown&#45;content'> -->
-                    <!--         <li> -->
-                    <!--         <a href="/resumes" title="My CVs">My CVs</a> -->
-                    <!--         </li> -->
-                    <!--         <li> -->
-                    <!--         <a href="#" title="Account">Account</a> -->
-                    <!--         </li> -->
-                    <!--         <li> -->
-                    <!--         <a href="#" onclick="Homepage.logout()" id="logoutButton" title="Logout">Logout</a> -->
-                    <!--         </li> -->
-                    <!--     </ul> -->
-                    <!--     </li> -->
-                    <!--     <% } %> -->
-                    <!-- </ul> -->
-                </a>
-            </div>
-        </nav>
-
-        <div class="clearfix"></div>
-
-        <%- include login-modal %>
-
-        <div class="container" id="MainContainer">
+    <%- include login-modal %>

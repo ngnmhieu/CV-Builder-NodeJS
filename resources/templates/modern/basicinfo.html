@@ -1,0 +1,22 @@
+<table width="100%" class="basicinfo section">
+  <tr>
+    <td>
+      <h1>{{section.name}}</h1>
+      <h4>
+        <i class="fa fa-fw fa-envelope-o icon" ></i>{{section.email}}
+      </h4>
+      <h4>
+        <i class="fa fa-fw fa-code icon" ></i>{{section.website}}
+      </h4>
+      <h4>
+        <i class="fa fa-fw fa-comment-o icon" ></i>{{section.phone}}
+      </h4>
+      <h4>
+        <i class="fa fa-fw fa-map-o icon" ></i>{{join ', ' section.address1 section.address2 section.address3}}
+      </h4>
+    </td>
+    <td align=right>
+      <img src="{{localfile '/img/grumpy-cat.jpg'}}" alt="" style="height: 220px; margin-top: -10px; margin-right: 0px; border-radius: 5px; border: 1px solid #eee" />
+    </td>
+  </tr>
+</table>

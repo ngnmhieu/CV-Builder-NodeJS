@@ -1,0 +1,17 @@
+[
+  {
+    "id": "classic",
+    "name": "Classic",
+    "stylesheets": [
+      "stylesheet/style.css"
+    ]
+  },
+  {
+    "id": "modern",
+    "name": "Modern",
+    "stylesheets": [
+      "stylesheet/style.css",
+      "fonts/font-awesome/css/font-awesome.min.css"
+    ]
+  }
+]

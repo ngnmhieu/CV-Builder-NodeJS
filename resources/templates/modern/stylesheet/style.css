@@ -1,0 +1,132 @@
+@font-face {
+    font-family: "roboto-bold";
+    src: url('../fonts/RobotoSlab/RobotoSlab-Bold.ttf');
+}
+@font-face {
+    font-family: "roboto";
+    src: url('../fonts/RobotoSlab/RobotoSlab-Regular.ttf');
+}
+
+body {
+  font-family: "MainFont", serif;
+  color: #333;
+  font-size: 17px;
+  line-height: 1.4;
+  text-align: justify;
+  margin: 0 35px;
+}
+
+.clearfix {
+  clear: both;
+}
+
+/* Typography */
+
+h1 {
+  font-size:2.5em;
+}
+
+h2 {
+  font-weight: normal;
+}
+
+h3 {
+  font-weight: normal;
+  font-style: italic;
+  margin-top: 3em;
+}
+
+h2, 
+h3{
+  text-align: center;
+}
+
+h2:after{
+  border-bottom: 1px solid #2f2f2f;
+  content: '';
+  width: 100px;
+  display: block;
+  margin: 0 auto;
+  height: 1px;
+}
+
+h1+h2, h2+h3 {
+  margin-top: 0.83em;
+}
+h4 {
+  margin: 0;
+  margin-bottom: 25px;
+  font-size: 1.05rem;
+}
+
+p {
+  margin-top: 0;
+  -webkit-hypens: auto;
+  -moz-hypens: auto;
+  hyphens: auto;
+}
+ul {
+  list-style: square;
+  padding-left: 1.2em;
+}
+ol {
+  padding-left: 1.2em;
+}
+li {
+  margin-top: 20px;
+}
+blockquote {
+  margin-left: 1em;
+  padding-left: 1em;
+  border-left: 1px solid #ddd;
+}
+code,
+pre {
+  font-family: "Consolas", "Menlo", "Monaco", monospace, serif;
+  font-size: .9em;
+  background: white;
+}
+a {
+  color: #2484c1;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+a img {
+  border: none;
+}
+h1 a,
+h1 a:hover {
+  color: #333;
+  text-decoration: none;
+}
+
+.icon {
+  margin-right: 10px;
+}
+
+.section {
+  margin-bottom: 50px;
+}
+
+.worklist .item {
+  page-break-inside: avoid;
+  margin-top: 20px;
+  margin-bottom: 25px;
+}
+
+.worklist .item .date,
+.worklist .item .title {
+  font-family: 'roboto-bold';
+}
+
+.worklist .item .title,
+.worklist .item .date,
+.worklist .item .institution {
+  font-size: 1.1rem;
+}
+.worklist .desc {
+  margin: 5px 3px; 
+  font-size: 1.05rem;
+}
