@@ -1,0 +1,48 @@
+<script id="setting-modal-template" type="text/x-handlebars-template">
+<div class="modal css-setting-modal" id="SettingModal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Settings</p>
+      <button class="delete close-modal"></button>
+    </header>
+    <section class="modal-card-body" style="overflow: scroll">
+      <input type="hidden" name="selected-template" id="SelectedTemplate" value="{{resume.template.id}}" />
+        <div class="tabs">
+            <ul>
+                <li class="is-active"><a>Templates</a></li>
+                <li><a>Other Settings</a></li>
+            </ul>
+        </div>
+        <div class="columns">
+            <div class="column is-12">
+                <div class="columns is-multiline">
+                    {{#each templates}}
+                    <div class="column is-4 template-item css-template-item {{eql id ../resume.template.id 'css-active'}}" data-template-id="{{id}}">
+                      <div class="template-item-thumb css-template-item-thumb" style="width: 100%; height: 230px; border: 1px solid #ddd; overflow: hidden">
+                        <img src="https://www.grumpycats.com/images/about/tardar.jpg" alt="" style="height: width: 100%" />
+                        <div class="css-template-item-selected">
+                            <div class="css-center-wrapper">
+                                <i class="fa fa-check-circle-o css-template-item-check"></i>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="has-text-centered" style=" margin-top: 5px">
+                        <span style="display:block">{{name}}</span>
+                        <a href="#">Preview</a>
+                      </div>
+                    </div>
+                    {{/each}}
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="modal-card-foot css-modal-controls">
+        <button class="button close-modal">Cancel</button>
+        <button class="button form-submit-btn" data-form-id="ResumeSaveForm">Apply</button>
+        <button class="button is-info form-submit-btn close-modal" data-form-id="ResumeSaveForm">Save</button>
+    </footer>
+  </div>
+</div>
+</script>

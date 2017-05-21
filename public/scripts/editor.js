@@ -75,6 +75,11 @@ var Editor = (function($) {
             return cond ? pos : neg;
         });
 
+        // equal comparison expression
+        Handlebars.registerHelper('eql', function(v1, v2, pos) {
+            return v1 == v2 ? pos : '';
+        });
+
         // return array sorted by key
         Handlebars.registerHelper('sortBy', function(array, key) {
             return array.sort((a, b) => {
@@ -344,13 +349,18 @@ var Editor = (function($) {
 
         saveSection('#ResumeSaveForm', function(form) {
             // resume name
-            var name = form.find('input[name=name]').val();
+            let name = form.find('input[name=name]').val();
             // calculate section order
-            var sections = [];
+            let sections = [];
             sortableSections.find('.cv-section').each((idx, section) => {
                 sections.push({ _id: $(section).data('section-id'), order: idx + 1 });
             });
-            return { name: name, sections: sections };
+            let templateId = $('#SelectedTemplate').val();
+            return {
+                name: name,
+                template_id: templateId,
+                sections: sections
+            };
         }, function(data, form, section, displayArea, editArea) {
 
             var template = $('#' + form.data('display-template-id')).html();
@@ -575,13 +585,13 @@ var Editor = (function($) {
 
         // Enable ordering for the sections
         enableSortable('.cv-section', '.section-move-up', '.section-move-down');
-        
+
         // Enable ordering for the bulletlist items
         enableSortable('.bulletlist-item', '.item-move-up', '.item-move-down');
 
         // Enable ordering for the worklist items
         enableSortable('.worklist-item', '.item-move-up', '.item-move-down');
-        
+
         // modals
         $(document).on('click', '.open-modal', function(e) {
             e.preventDefault();
@@ -590,12 +600,21 @@ var Editor = (function($) {
         });
 
         $(document).on('click', '.close-modal', function(e) {
-            e.preventDefault();
             var id = $(this).data('modal-id');
             if (!id) {
                 id = $(this).closest('.modal').attr('id');
             }
             closeModal(id);
+        });
+
+        $(document).on('click', '.template-item-thumb', function(e) {
+            let templateInput = $("#SelectedTemplate");
+            let templateItems = $('.template-item');
+            let templateItem = $(this).closest('.template-item')
+
+            templateInput.val(templateItem.data('template-id'));
+            templateItems.removeClass('css-active');
+            templateItem.addClass('css-active');
         });
     };
 
@@ -625,6 +644,8 @@ var Editor = (function($) {
                     container.append(html);
                 };
 
+                renderModals();
+
                 // resume information
                 renderSection({
                     type: 'resumeinfo'
@@ -648,15 +669,16 @@ var Editor = (function($) {
     };
 
     let renderModals = () => {
-      $.get("/templates").done((templates) => {
+        $.get("/templates").done((templates) => {
 
-        let settingModalTemplate = $('#setting-modal-template').html();
+            let settingModalTemplate = $('#setting-modal-template').html();
 
-        resumeEditor.append(render(settingModalTemplate, {
-          templates: _.values(templates)
-        }));
+            resumeEditor.append(render(settingModalTemplate, {
+                resume    : resume,
+                templates : _.values(templates)
+            }));
 
-      });
+        });
     };
 
     that.init = function() {
@@ -666,8 +688,6 @@ var Editor = (function($) {
         initEvents();
 
         displayResume();
-
-        renderModals();
     };
 
     return that;

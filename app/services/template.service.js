@@ -21,13 +21,15 @@ function loadTemplates() {
   }
 }
 
+const DEFAULT_TEMPLATE_ID = 'classic';
+
 const templates = loadTemplates();
 
 const TemplateService = class {
 
   constructor(resume) {
     this.resume = resume;
-    this.template = templates['classic']; // TODO: replace with resume.templateId
+    this.template = templates[this.resume.template.id];
     this.registerHelpers();
   }
 
@@ -153,16 +155,37 @@ Handlebars.registerHelper('dateFormat', function(dateStr, format) {
   return moment(dateStr).format(format);
 });
 
+/**
+ * @param {Resume} resume - resume object
+ * @return {Promise} a promise that resolve to html content
+ */
+let renderHtml = function(resume) {
+  let templateService = new TemplateService(resume);
+  return templateService.renderHtml();
+};
+/**
+ * @param {string} id - template id
+ * @return {Template}
+ */
+let findTemplate = function(id) {
+  return templates[id];
+};
+/**
+ * @return {Array[Template]}
+ */
+let getTemplates = function() {
+  return templates;
+};
+/**
+ * @return {Template}
+ */
+let getDefaultTemplate = function() {
+  return templates[DEFAULT_TEMPLATE_ID];
+};
+
 module.exports = {
-  /**
-   * @param {Resume} resume - resume object
-   * @return {Promise} a promise that resolve to html content
-   */
-  renderHtml: (resume) => {
-    let templateService = new TemplateService(resume);
-    return templateService.renderHtml();
-  },
-  getTemplates: () => {
-    return templates;
-  }
+  renderHtml,
+  getTemplates,
+  findTemplate,
+  getDefaultTemplate
 }

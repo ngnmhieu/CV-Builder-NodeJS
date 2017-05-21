@@ -1,9 +1,10 @@
-var mongodb  = require('../../config/mongodb').client;
-    resumes  = mongodb.collection('resumes'),
-    Joi      = require('joi'),
-    debug    = require('debug')('cvbuilder.model.resume'),
-    ObjectId = require('mongodb').ObjectId,
-    _        = require('lodash');
+let mongodb         = require('../../config/mongodb').client;
+    resumes         = mongodb.collection('resumes'),
+    Joi             = require('joi'),
+    debug           = require('debug')('cvbuilder.model.resume'),
+    ObjectId        = require('mongodb').ObjectId,
+    templateService = require('../services/template.service'),
+    _               = require('lodash');
 
 const SECTION_TYPES = {
     bulletlist: {
@@ -34,42 +35,47 @@ const BASICINFO_SCHEMA = Joi.object().keys({
 });
 
 const RESUME_SCHEMA = Joi.object().keys({
-    name      : Joi.string().required(),
-    sections  : Joi.array().items(Joi.object().keys({
-        _id   : Joi.string().hex().length(24).required(),
-        order : Joi.number().required()
+    name        : Joi.string().required(),
+    template_id : Joi.string().required(),
+    sections    : Joi.array().items(Joi.object().keys({
+        _id     : Joi.string().hex().length(24).required(),
+        order   : Joi.number().required()
     })),
     basicinfo : BASICINFO_SCHEMA
 });
 
-var validateResume = function(params) {
-    var result = Joi.validate(params, RESUME_SCHEMA);
+/**
+ * Validates the DTO from request
+ */
+let validateResume = function(params) {
+    let result = Joi.validate(params, RESUME_SCHEMA);
     return result.error;
 };
 
-var validateBasicInfo = function(params) {
-    var result = Joi.validate(params, BASICINFO_SCHEMA);
+let validateBasicInfo = function(params) {
+    let result = Joi.validate(params, BASICINFO_SCHEMA);
     return result.error;
 };
 
 /**
  * @return {object} database representation of a resume
  */
-var getDBResume = function(options) {
+let getDBResume = function(options) {
 
-    var attr = options || {};
+    let attr = options || {};
 
-    var lang = String(attr.lang).toLowerCase();
+    let lang = String(attr.lang).toLowerCase();
 
     return {
-        _id: attr._id || null,
-        name: attr.name ? String(attr.name) : "Unnamed CV",
-        createdAt: attr.createdAt || new Date(),
-        updatedAt: attr.updatedAt || new Date(),
-        sections: attr.sections || [],
-        lang: lang && LANGS.indexOf(lang) != -1 ? attr.lang : 'en',
-        basicinfo: getDBBasicInfo(attr.basicinfo),
-        user_id: attr.user_id || null
+        _id         : attr._id || null,
+        name        : attr.name ? String(attr.name) : "Unnamed CV",
+        createdAt   : attr.createdAt || new Date(),
+        updatedAt   : attr.updatedAt || new Date(),
+        sections    : attr.sections || [],
+        lang        : lang && LANGS.indexOf(lang) != -1 ? attr.lang : 'en',
+        basicinfo   : getDBBasicInfo(attr.basicinfo),
+        template_id : attr.template_id ? attr.template_id : "classic",
+        user_id     : attr.user_id || null
     };
 };
 
@@ -80,7 +86,7 @@ var getDBResume = function(options) {
  */
 exports.createEmpty = function(user, callback) {
 
-    var resume = getDBResume({
+    let resume = getDBResume({
         user_id: user._id
     });
 
@@ -102,7 +108,7 @@ exports.createEmpty = function(user, callback) {
 exports.updateById = function(id, params) {
     return new Promise((resolve, reject) => {
 
-        var errors = validateResume(params);
+        let errors = validateResume(params);
         if (errors)
             return reject(errors);
 
@@ -110,20 +116,24 @@ exports.updateById = function(id, params) {
             _id: id
         }).then((resume) => {
 
-            var changes = {};
+            let changes = {};
 
             if (params.name) {
                 changes.name = params.name;
             }
 
+            if (params.template_id) {
+                changes.template_id = params.template_id;
+            }
+
             if (params.sections) {
-                var sectionLookup = {};
+                let sectionLookup = {};
                 params.sections.forEach((section) => {
                     sectionLookup[section._id] = section;
                 });
 
                 changes.sections = resume.sections.map((section) => {
-                    var sectionId = section._id.toHexString();
+                    let sectionId = section._id.toHexString();
                     if (_.has(sectionLookup, sectionId)) {
                         section.order = sectionLookup[sectionId].order;
                     }
@@ -136,7 +146,7 @@ exports.updateById = function(id, params) {
                 });
             }
 
-            var newResume = _.extend(resume, changes);
+            let newResume = _.extend(resume, changes);
             delete newResume._id;
 
             resumes.updateOne({
@@ -150,9 +160,9 @@ exports.updateById = function(id, params) {
     });
 };
 
-var getDBBasicInfo = function(options) {
+let getDBBasicInfo = function(options) {
 
-    var attr = options || {};
+    let attr = options || {};
 
     return {
         name     : _.toString(attr.name),
@@ -176,11 +186,11 @@ exports.updateBasicInfo = function(resume, params, callback) {
 
     return new Promise((resolve, reject) => {
 
-        var errors = validateBasicInfo(params);
+        let errors = validateBasicInfo(params);
         if (errors)
             return reject(errors);
 
-        var basicinfo = getDBBasicInfo(params);
+        let basicinfo = getDBBasicInfo(params);
 
         resumes.updateOne({ _id: resume._id }, { '$set': { basicinfo: basicinfo } })
         .then((result) => {
@@ -198,8 +208,8 @@ exports.findByUser = function(user, callback) {
     resumes.find({
         user_id: user._id
     }).toArray(function(err, result) {
-        var resumePromises = (result || []).map(function(r) {
-            return getResume(r, false);
+        let resumePromises = (result || []).map(function(r) {
+            return getResumeDto(r, false);
         });
         Promise.all(resumePromises).then((resumes) => {
             callback(resumes);
@@ -218,58 +228,64 @@ exports.findById = function(id) {
             _id: id
         }, (err, result) => {
             if (err) reject(err);
-            else getResume(result).then(resolve, reject);
+            else getResumeDto(result).then(resolve, reject);
         });
     });
 };
 
 /**
  * @param result - result from DB query
- * @param {function} done - callback that is called upon finish
  * @param {boolean} fetchSections - should sections be queried
  *
  * @return {Promise}
  */
-var getResume = function(result, fetchSections = true) {
+let getResumeDto = function(result, fetchSections = true) {
 
-    return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
 
-        if (typeof result == 'undefined' || result == null)
-            return resolve(null);
+    if (typeof result == 'undefined' || result == null) {
+      return resolve(null);
+    }
 
-        var resume = {
-            _id       : result._id,
-            name      : _.toString(result.name),
-            lang      : _.toString(result.lang),
-            createdAt : result.createdAt,
-            updatedAt : result.updatedAt,
-            sections  : result.sections,
-            basicinfo : {
-                name     : _.toString(result.basicinfo.name),
-                email    : _.toString(result.basicinfo.email),
-                website  : _.toString(result.basicinfo.website),
-                phone    : _.toString(result.basicinfo.phone),
-                fax      : _.toString(result.basicinfo.fax),
-                address1 : _.toString(result.basicinfo.address1),
-                address2 : _.toString(result.basicinfo.address2),
-                address3 : _.toString(result.basicinfo.address3)
-            }
-        };
+    let template = templateService.findTemplate(result.template_id) || templateService.getDefaultTemplate();
 
-        // fetch the sections
-        if (fetchSections) {
-            var sectionPromises = result.sections.map((section) => {
-                return SECTION_TYPES[section.type].model.findById(section._id);
-            });
+    let resume = {
+      _id       : result._id,
+      name      : _.toString(result.name),
+      lang      : _.toString(result.lang),
+      createdAt : result.createdAt,
+      updatedAt : result.updatedAt,
+      sections  : result.sections,
+      template  : {
+        id  : template.id,
+        name: template.name
+      },
+      basicinfo : {
+        name     : _.toString(result.basicinfo.name),
+        email    : _.toString(result.basicinfo.email),
+        website  : _.toString(result.basicinfo.website),
+        phone    : _.toString(result.basicinfo.phone),
+        fax      : _.toString(result.basicinfo.fax),
+        address1 : _.toString(result.basicinfo.address1),
+        address2 : _.toString(result.basicinfo.address2),
+        address3 : _.toString(result.basicinfo.address3)
+      },
+    };
 
-            Promise.all(sectionPromises).then((sections) => {
-                resume.sections = sections;
-                resolve(resume);
-            }, reject);
-        } else {
-            resolve(resume);
-        }
-    });
+    // fetch the sections
+    if (fetchSections) {
+      let sectionPromises = result.sections.map((section) => {
+        return SECTION_TYPES[section.type].model.findById(section._id);
+      });
+
+      Promise.all(sectionPromises).then((sections) => {
+        resume.sections = sections;
+        resolve(resume);
+      }, reject);
+    } else {
+      resolve(resume);
+    }
+  });
 };
 
 /**
@@ -283,7 +299,7 @@ exports.findByUserAndId = function(user, id) {
             _id: id,
             user_id: user._id
         }).then(function(result) {
-            getResume(result).then(resolve, reject);
+            getResumeDto(result).then(resolve, reject);
         }, reject);
     });
 };
@@ -297,7 +313,7 @@ exports.isSectionOf = function(resume, section) {
     if (typeof resume == 'undefined' || resume == null || typeof section == 'undefined' || section == null)
         return false;
 
-    var sectionId = section._id || section;
+    let sectionId = section._id || section;
 
     return resume.sections.some(function(sec) {
         return sec._id.equals(sectionId);
@@ -313,9 +329,9 @@ exports.isSectionOf = function(resume, section) {
  *
  * @return {Promise}
  */
-var addSection = function(id, type, resume) {
+let addSection = function(id, type, resume) {
 
-    var section = {
+    let section = {
         _id: id,
         type: type,
         order: resume.sections.length + 1
