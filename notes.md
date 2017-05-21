@@ -1,6 +1,5 @@
 ### Notes
 
-- Choose template
 - Preview
 - Share (HTML page, Twitter, LinkedIn, XING, Facebook)
 

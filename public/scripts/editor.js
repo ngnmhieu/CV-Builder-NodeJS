@@ -607,6 +607,7 @@ var Editor = (function($) {
             closeModal(id);
         });
 
+        // select template events
         $(document).on('click', '.template-item-thumb', function(e) {
             let templateInput = $("#SelectedTemplate");
             let templateItems = $('.template-item');
@@ -616,6 +617,20 @@ var Editor = (function($) {
             templateItems.removeClass('css-active');
             templateItem.addClass('css-active');
         });
+
+        // copy events
+        $(document).on('click', '.input-copy-btn', function(e) {
+            e.preventDefault();
+            let targetId = $(this).data('input-id');
+            $('#' + targetId).select();
+            try {
+                if (!document.execCommand('copy'))
+                    console.log("Cannot copy to clipboard.");
+            } catch (e) {
+                console.log("Browser doesn't support executing copy.");
+            }
+        });
+
     };
 
     // render the resume
@@ -669,16 +684,17 @@ var Editor = (function($) {
     };
 
     let renderModals = () => {
+        let settingModalTemplate = $('#setting-modal-template').html();
+        let shareModalTemplate = $('#share-modal-template').html();
+
         $.get("/templates").done((templates) => {
-
-            let settingModalTemplate = $('#setting-modal-template').html();
-
             resumeEditor.append(render(settingModalTemplate, {
                 resume    : resume,
                 templates : _.values(templates)
             }));
-
         });
+
+        resumeEditor.append(render(shareModalTemplate, { resume : resume }));
     };
 
     that.init = function() {
