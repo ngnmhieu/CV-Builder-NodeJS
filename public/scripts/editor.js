@@ -535,9 +535,6 @@ var Editor = (function($) {
             };
 
             var swapItem = function(itemBefore, itemAfter) {
-                itemBefore.insertAfter(itemAfter);
-                decreaseOrder(itemAfter);
-                increaseOrder(itemBefore);
             };
 
             var addDirection = function(direction) {
@@ -558,7 +555,10 @@ var Editor = (function($) {
                     if (direction == 'down') {
                         if (item.next(itemSelector).length > 0) { // is there any item after
                             sortItems.forEach((item) => {
-                                swapItem(item, item.next(itemSelector));
+                                let nextItem = item.next(itemSelector);
+                                nextItem.insertBefore(item);
+                                decreaseOrder(nextItem);
+                                increaseOrder(item);
                             });
                             orderChanged = true;
                         }
@@ -566,7 +566,9 @@ var Editor = (function($) {
                         if (item.prev(itemSelector).length > 0) { // is there any item before
                             sortItems.forEach((item) => {
                                 var prevItem = item.prev(itemSelector);
-                                swapItem(prevItem, item);
+                                prevItem.insertAfter(item);
+                                decreaseOrder(item);
+                                increaseOrder(prevItem);
                             });
                             orderChanged = true;
                         }

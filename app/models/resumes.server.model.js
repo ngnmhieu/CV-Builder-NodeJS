@@ -127,11 +127,7 @@ exports.updateById = function(id, params) {
             }
 
             if (params.sections) {
-                let sectionLookup = {};
-                params.sections.forEach((section) => {
-                    sectionLookup[section._id] = section;
-                });
-
+                let sectionLookup = _.keyBy(params.sections, '_id');
                 changes.sections = resume.sections.map((section) => {
                     let sectionId = section._id.toHexString();
                     if (_.has(sectionLookup, sectionId)) {
