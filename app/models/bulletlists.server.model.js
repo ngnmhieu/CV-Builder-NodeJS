@@ -1,4 +1,4 @@
-var db          = require('../../config/mongodb').client,
+let db          = require('../../config/mongodb').client,
     _           = require('lodash'),
     Joi         = require('joi'),
     debug       = require('debug')('cvbuilder.model.bulletlist'),
@@ -21,8 +21,8 @@ const BULLETLIST_SCHEMA = Joi.object().keys({
  * @param a bulletlist object
  * @return errors validation fails
  */
-var validateBulletlist = function(params) {
-    var result = Joi.validate(params, BULLETLIST_SCHEMA);
+let validateBulletlist = function(params) {
+    let result = Joi.validate(params, BULLETLIST_SCHEMA);
     return result.error;
 };
 
@@ -32,9 +32,10 @@ var validateBulletlist = function(params) {
  *               a default value is used instead.
  * @return bulletlist object
  */
-var getNewList = function (params = {}) {
+let getNewList = function (params) {
 
-    var items = Array.isArray(params.items) ? params.items : [];
+    params = params ? params : {};
+    let items = Array.isArray(params.items) ? params.items : [];
 
     items = items.map((item) => {
         return {
@@ -61,11 +62,11 @@ exports.getNewList = getNewList;
  */
 exports.createEmpty = function (resume, callback) {
 
-    var list = getNewList();
+    let list = getNewList();
 
     bulletlists.insertOne(list, function (err, result) {
 
-        var section = {
+        let section = {
             _id: result.insertedId,
             type: "bulletlist"
         };
@@ -103,11 +104,11 @@ exports.deleteById = function (resume, list, callback) {
 exports.updateById = function (id, params) {
     return new Promise(function(resolve, reject) {
         bulletlists.findOne({_id: id}).then((bulletlist) => {
-            var errors = validateBulletlist(params);
+            let errors = validateBulletlist(params);
             if (errors)
                 return reject(errors);
 
-            var changes = {};
+            let changes = {};
 
             if (params.name)
                 changes.name = params.name;
@@ -124,7 +125,7 @@ exports.updateById = function (id, params) {
                 })
             }
 
-            var newList = _.extend(bulletlist, changes);
+            let newList = _.extend(bulletlist, changes);
             delete newList._id;
 
             bulletlists.updateOne({_id: id}, newList).then(() => {
@@ -152,11 +153,11 @@ exports.findById = function(id, callback) {
     }
 };
 
-var getNewItem = function (params) {
+let getNewItem = function (params) {
 
     params = typeof params !== 'undefined' && params !== null ? params : {};
 
-    var order = parseInt(params.order);
+    let order = parseInt(params.order);
 
     return {
         content : params.content || '',

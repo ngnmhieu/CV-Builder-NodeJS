@@ -1,4 +1,4 @@
-let mongodb         = require('../../config/mongodb').client;
+let mongodb         = require('../../config/mongodb').client,
     resumes         = mongodb.collection('resumes'),
     Joi             = require('joi'),
     debug           = require('debug')('cvbuilder.model.resume'),
@@ -73,7 +73,7 @@ let getDBResume = function(options) {
         updatedAt   : attr.updatedAt || new Date(),
         sections    : attr.sections || [],
         lang        : lang && LANGS.indexOf(lang) != -1 ? attr.lang : 'en',
-        basicinfo   : getDBBasicInfo(attr.basicinfo),
+            basicinfo   : getDBBasicInfo(attr.basicinfo),
         template_id : attr.template_id ? attr.template_id : "classic",
         user_id     : attr.user_id || null
     };
@@ -237,51 +237,51 @@ exports.findById = function(id) {
  */
 let getResumeDto = function(result, fetchSections = true) {
 
-  return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
 
-    if (typeof result == 'undefined' || result == null) {
-      return resolve(null);
-    }
+        if (typeof result == 'undefined' || result == null) {
+            return resolve(null);
+        }
 
-    let template = templateService.findTemplate(result.template_id) || templateService.getDefaultTemplate();
+        let template = templateService.findTemplate(result.template_id) || templateService.getDefaultTemplate();
 
-    let resume = {
-      _id       : result._id,
-      name      : _.toString(result.name),
-      lang      : _.toString(result.lang),
-      createdAt : result.createdAt,
-      updatedAt : result.updatedAt,
-      sections  : result.sections,
-      template  : {
-        id  : template.id,
-        name: template.name
-      },
-      basicinfo : {
-        name     : _.toString(result.basicinfo.name),
-        email    : _.toString(result.basicinfo.email),
-        website  : _.toString(result.basicinfo.website),
-        phone    : _.toString(result.basicinfo.phone),
-        fax      : _.toString(result.basicinfo.fax),
-        address1 : _.toString(result.basicinfo.address1),
-        address2 : _.toString(result.basicinfo.address2),
-        address3 : _.toString(result.basicinfo.address3)
-      },
-    };
+        let resume = {
+            _id       : result._id,
+            name      : _.toString(result.name),
+            lang      : _.toString(result.lang),
+            createdAt : result.createdAt,
+            updatedAt : result.updatedAt,
+            sections  : result.sections,
+            template  : {
+                id  : template.id,
+                name: template.name
+            },
+            basicinfo : {
+                name     : _.toString(result.basicinfo.name),
+                email    : _.toString(result.basicinfo.email),
+                website  : _.toString(result.basicinfo.website),
+                phone    : _.toString(result.basicinfo.phone),
+                fax      : _.toString(result.basicinfo.fax),
+                address1 : _.toString(result.basicinfo.address1),
+                address2 : _.toString(result.basicinfo.address2),
+                address3 : _.toString(result.basicinfo.address3)
+            },
+        };
 
-    // fetch the sections
-    if (fetchSections) {
-      let sectionPromises = result.sections.map((section) => {
-        return SECTION_TYPES[section.type].model.findById(section._id);
-      });
+        // fetch the sections
+        if (fetchSections) {
+            let sectionPromises = result.sections.map((section) => {
+                return SECTION_TYPES[section.type].model.findById(section._id);
+            });
 
-      Promise.all(sectionPromises).then((sections) => {
-        resume.sections = sections;
-        resolve(resume);
-      }, reject);
-    } else {
-      resolve(resume);
-    }
-  });
+            Promise.all(sectionPromises).then((sections) => {
+                resume.sections = sections;
+                resolve(resume);
+            }, reject);
+        } else {
+            resolve(resume);
+        }
+    });
 };
 
 /**
