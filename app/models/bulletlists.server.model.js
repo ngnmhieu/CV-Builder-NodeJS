@@ -49,7 +49,6 @@ let getNewList = function (params) {
         type     : "bulletlist",
         name     : _.toString(params.name),
         items    : items,
-        order    : isNaN(parseInt(params.order)) ? -1 : parseInt(params.order),
         numbered : params.numbered ? Boolean(params.numbered) : false,
     };
 };

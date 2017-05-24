@@ -31,15 +31,17 @@ const BASICINFO_SCHEMA = Joi.object().keys({
     fax      : Joi.string().allow(''),
     address1 : Joi.string().allow(''),
     address2 : Joi.string().allow(''),
-    address3 : Joi.string().allow('')
+    address3 : Joi.string().allow(''),
+    pageBreak: Joi.boolean().required()
 });
 
 const RESUME_SCHEMA = Joi.object().keys({
     name        : Joi.string().required(),
     template_id : Joi.string().required(),
     sections    : Joi.array().items(Joi.object().keys({
-        _id     : Joi.string().hex().length(24).required(),
-        order   : Joi.number().required()
+        _id       : Joi.string().hex().length(24).required(),
+        pageBreak : Joi.boolean().required(),
+        order     : Joi.number().required()
     })),
     basicinfo : BASICINFO_SCHEMA
 });
@@ -73,7 +75,7 @@ let getDBResume = function(options) {
         updatedAt   : attr.updatedAt || new Date(),
         sections    : attr.sections || [],
         lang        : lang && LANGS.indexOf(lang) != -1 ? attr.lang : 'en',
-            basicinfo   : getDBBasicInfo(attr.basicinfo),
+        basicinfo   : getDBBasicInfo(attr.basicinfo),
         template_id : attr.template_id ? attr.template_id : "classic",
         user_id     : attr.user_id || null
     };
@@ -132,6 +134,7 @@ exports.updateById = function(id, params) {
                     let sectionId = section._id.toHexString();
                     if (_.has(sectionLookup, sectionId)) {
                         section.order = sectionLookup[sectionId].order;
+                        section.pageBreak = sectionLookup[sectionId].pageBreak;
                     }
                     return section;
                 }).sort((secA, secB) => {
@@ -161,14 +164,15 @@ let getDBBasicInfo = function(options) {
     let attr = options || {};
 
     return {
-        name     : _.toString(attr.name),
-        email    : _.toString(attr.email),
-        website  : _.toString(attr.website),
-        phone    : _.toString(attr.phone),
-        fax      : _.toString(attr.fax),
-        address1 : _.toString(attr.address1),
-        address2 : _.toString(attr.address2),
-        address3 : _.toString(attr.address3)
+        name      : _.toString(attr.name),
+        email     : _.toString(attr.email),
+        website   : _.toString(attr.website),
+        phone     : _.toString(attr.phone),
+        fax       : _.toString(attr.fax),
+        address1  : _.toString(attr.address1),
+        address2  : _.toString(attr.address2),
+        address3  : _.toString(attr.address3),
+        pageBreak : Boolean(attr.pageBreak)
     };
 };
 
@@ -271,7 +275,11 @@ let getResumeDto = function(result, fetchSections = true) {
         // fetch the sections
         if (fetchSections) {
             let sectionPromises = result.sections.map((section) => {
-                return SECTION_TYPES[section.type].model.findById(section._id);
+                return new Promise((resolve, reject) => {
+                    SECTION_TYPES[section.type].model.findById(section._id).then((sectionDetail) => {
+                        resolve(_.extend(section,sectionDetail));
+                    });
+                });
             });
 
             Promise.all(sectionPromises).then((sections) => {

@@ -126,29 +126,6 @@ var Editor = (function($) {
         });
     };
 
-    // reinitializes some UI elements upon DOM change
-    // TODO: do we need date picker any more? search for 'refreshUI' in this file
-    var refreshUI = function() {
-
-        var datepickerOpts = {
-            selectMonths: true, // Creates a dropdown to control month
-            selectYears: 100, // Creates a dropdown of 15 years to control year
-            formatSubmit: 'yyyy-mm-dd',
-            format: 'dd mmm yyyy'
-        };
-
-        // enable datepicker
-        $('.worklist .datepicker').pickadate(datepickerOpts);
-
-        dobDatePicker = $('.basicinfo .datepicker').pickadate(_.extend(datepickerOpts, {
-            max: true
-        }));
-
-        $('select').material_select();
-
-        Materialize.updateTextFields();
-    };
-
     var openModal = function(id) {
         $('#'+id).addClass('is-active');
 
@@ -195,7 +172,6 @@ var Editor = (function($) {
 
                 newSec.find('form input[name=name]').focus();
 
-                // refreshUI();
             }).fail(function(e) {
                 // TODO
                 console.log('Fail to add seciton');
@@ -319,8 +295,6 @@ var Editor = (function($) {
             }));
 
             container.data('item-count', itemCount + 1)
-
-            // refreshUI();
         });
 
         // delete item from list
@@ -353,7 +327,11 @@ var Editor = (function($) {
             // calculate section order
             let sections = [];
             sortableSections.find('.cv-section').each((idx, section) => {
-                sections.push({ _id: $(section).data('section-id'), order: idx + 1 });
+                sections.push({
+                    _id: $(section).data('section-id'),
+                    order: idx + 1,
+                    pageBreak: false
+                });
             });
             let templateId = $('#SelectedTemplate').val();
             return {
@@ -419,7 +397,8 @@ var Editor = (function($) {
                 fax: form.find('input[name=fax]').val() || "",
                 address1: form.find('input[name=address1]').val() || "",
                 address2: form.find('input[name=address2]').val() || "",
-                address3: form.find('input[name=address3]').val() || ""
+                address3: form.find('input[name=address3]').val() || "",
+                pageBreak: false
             };
         });
 
@@ -460,7 +439,6 @@ var Editor = (function($) {
         $(document).on('change', 'input.tillNow', function(e) {
             var disableDate = $(this).is(':checked');
             $(this).closest('.worklist-item').find('.workitem-end-date select').prop('disabled', disableDate);
-            // refreshUI();
         });
 
         // toggle numbered list / bulletlist
@@ -499,8 +477,6 @@ var Editor = (function($) {
                 editArea.find('.temporarily-removed')
                 .removeClass('temporarily-removed').show();
 
-                // refreshUI();
-
                 displayArea.show();
             });
 
@@ -509,9 +485,10 @@ var Editor = (function($) {
             displayArea.hide();
         });
 
-        // by saving the form, the order of the sections is also saved
-        var updateSectionOrder = function() {
-        };
+        // TODO
+        $(document).on('click', '.add-page-break', (e) => {
+            e.preventDefault();
+        });
 
         /**
          * Enable ordering on a set of items
@@ -632,7 +609,6 @@ var Editor = (function($) {
                 console.log("Browser doesn't support executing copy.");
             }
         });
-
     };
 
     // render the resume
@@ -679,8 +655,6 @@ var Editor = (function($) {
                 }).forEach((section) => {
                     renderSection(section, sortableSections);
                 });
-
-                // refreshUI();
             });
         });
     };
