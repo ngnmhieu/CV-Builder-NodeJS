@@ -1,21 +1,23 @@
 <script id="textarea-template" type="text/x-handlebars-template">
-  <div class="card cv-section css-section css-textarea-section" id="textarea_{{param._id}}"
-        data-section-id="{{param._id}}">
-    <div class="card-content">
+    <div class="cv-section css-section-wrap" id="textarea_{{param._id}}" data-section-id="{{param._id}}">
+        <div class="card css-section css-textarea-section">
+            <div class="card-content">
+                <form action="/users/{{user._id}}/resumes/{{resume._id}}/textareas/{{param._id}}" class="section-delete-form" id="section-{{param._id}}-delete-form"></form>
 
-      <form action="/users/{{user._id}}/resumes/{{resume._id}}/textareas/{{param._id}}" class="section-delete-form" id="section-{{param._id}}-delete-form"></form>
+                <div class="edit-mode css-edit-mode">
+                    {{> textareaEdit param=param user=user resume=resume }}
+                </div>
 
-      <div class="edit-mode css-edit-mode">
-        {{> textareaEdit param=param user=user resume=resume }}
-      </div>
+                <div class="display-mode css-display-mode">
+                    {{> textareaDisplay param=param user=user resume=resume }}
+                </div>
 
-      <div class="display-mode css-display-mode">
-        {{> textareaDisplay param=param user=user resume=resume }}
-      </div>
+                {{> addPageBreak param=param}}
+            </div>
+        </div>
 
-    {{> addPageBreak }}
+        {{> removePageBreak param=param }}
     </div>
-  </div>
 </script>
 
 <script id="textarea-edit-template" type="text/x-handlebars-template">

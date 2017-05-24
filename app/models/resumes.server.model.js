@@ -257,18 +257,19 @@ let getResumeDto = function(result, fetchSections = true) {
             updatedAt : result.updatedAt,
             sections  : result.sections,
             template  : {
-                id  : template.id,
-                name: template.name
+                id   : template.id,
+                name : template.name
             },
             basicinfo : {
-                name     : _.toString(result.basicinfo.name),
-                email    : _.toString(result.basicinfo.email),
-                website  : _.toString(result.basicinfo.website),
-                phone    : _.toString(result.basicinfo.phone),
-                fax      : _.toString(result.basicinfo.fax),
-                address1 : _.toString(result.basicinfo.address1),
-                address2 : _.toString(result.basicinfo.address2),
-                address3 : _.toString(result.basicinfo.address3)
+                name      : _.toString(result.basicinfo.name),
+                email     : _.toString(result.basicinfo.email),
+                website   : _.toString(result.basicinfo.website),
+                phone     : _.toString(result.basicinfo.phone),
+                fax       : _.toString(result.basicinfo.fax),
+                address1  : _.toString(result.basicinfo.address1),
+                address2  : _.toString(result.basicinfo.address2),
+                address3  : _.toString(result.basicinfo.address3),
+                pageBreak : Boolean(result.basicinfo.pageBreak)
             },
         };
 
@@ -277,7 +278,7 @@ let getResumeDto = function(result, fetchSections = true) {
             let sectionPromises = result.sections.map((section) => {
                 return new Promise((resolve, reject) => {
                     SECTION_TYPES[section.type].model.findById(section._id).then((sectionDetail) => {
-                        resolve(_.extend(section,sectionDetail));
+                        resolve(_.extend(section, sectionDetail));
                     });
                 });
             });

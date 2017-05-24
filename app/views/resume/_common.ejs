@@ -39,7 +39,21 @@
 </script>
 
 <script id="add-page-break-template" type="text/x-handlebars-template">
+    <input type="hidden" name="page-break" value={{param.pageBreak}}>
+    {{#unless param.pageBreak}}
     <div class="add-page-break css-add-page-break">
         <a class="button is-small">+ Page break</a>
     </div>
+    {{/unless}}
+</script>
+
+<script id="remove-page-break-template" type="text/x-handlebars-template">
+    {{#if param.pageBreak}}
+    <div style="position:relative">
+        <div class="remove-page-break css-remove-page-break">
+            <a class="button is-small">- Page break</a>
+        </div>
+        <hr />
+    </div>
+    {{/if}}
 </script>

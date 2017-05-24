@@ -1,20 +1,23 @@
 <script id="worklist-template" type="text/x-handlebars-template">
-    <div class="card cv-section css-section css-worklist-section" id="worklist_{{param._id}}"
-        data-section-id="{{param._id}}">
-        <div class="card-content">
+    <div class="cv-section css-section-wrap" id="worklist_{{param._id}}" data-section-id="{{param._id}}">
+        <div class="card css-section css-worklist-section">
+            <div class="card-content">
 
-            <form action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}" class="section-delete-form" id="section-{{param._id}}-delete-form">
-            </form>
+                <form action="/users/{{user._id}}/resumes/{{resume._id}}/worklists/{{param._id}}" class="section-delete-form" id="section-{{param._id}}-delete-form">
+                </form>
 
-            <div class="edit-mode css-edit-mode">
-                {{> worklistEdit param=param user=user resume=resume}}
+                <div class="edit-mode css-edit-mode">
+                    {{> worklistEdit param=param user=user resume=resume}}
+                </div>
+
+                <div class="display-mode css-display-mode">
+                    {{> worklistDisplay param=param user=user resume=resume }}
+                </div>
             </div>
-
-            <div class="display-mode css-display-mode">
-                {{> worklistDisplay param=param user=user resume=resume }}
-            </div>
+            {{> addPageBreak param=param }}
         </div>
-        {{> addPageBreak }}
+
+        {{> removePageBreak param=param }}
     </div>
 </script>
 

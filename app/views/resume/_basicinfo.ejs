@@ -1,18 +1,22 @@
 <script id="basicinfo-template" type="text/x-handlebars-template">
-  <div class="cv-section card basicinfo css-section css-basicinfo">
-    <div class="card-content">
+    <div class="cv-section css-section-wrap">
+        <div class="card basicinfo css-section css-basicinfo">
+            <div class="card-content">
 
-      <div class="edit-mode css-edit-mode">
-        {{> basicinfoEdit param=param}}
-      </div>
+                <div class="edit-mode css-edit-mode">
+                    {{> basicinfoEdit param=param}}
+                </div>
 
-      <div class="display-mode css-display-mode">
-        {{> basicinfoDisplay param=param }}
-      </div>
+                <div class="display-mode css-display-mode">
+                    {{> basicinfoDisplay param=param }}
+                </div>
 
-    {{> addPageBreak }}
+                {{> addPageBreak param=param }}
+            </div>
+        </div>
+
+        {{> removePageBreak param=param }}
     </div>
-  </div>
 </script>
 
 <script id="basicinfo-edit-template" type="text/x-handlebars-template">

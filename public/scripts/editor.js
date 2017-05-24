@@ -39,6 +39,7 @@ var Editor = (function($) {
         Handlebars.registerPartial('sectionHeaderDisplay', $('#section-header-display-template').html());
         Handlebars.registerPartial('sectionHeaderEdit', $('#section-header-edit-template').html());
         Handlebars.registerPartial('addPageBreak', $('#add-page-break-template').html());
+        Handlebars.registerPartial('removePageBreak', $('#remove-page-break-template').html());
         Handlebars.registerPartial('resumeinfoDisplay', $('#resumeinfo-display-template').html());
         Handlebars.registerPartial('basicinfoDisplay', $('#basicinfo-display-template').html());
         Handlebars.registerPartial('basicinfoEdit', $('#basicinfo-edit-template').html());
@@ -213,12 +214,11 @@ var Editor = (function($) {
         });
 
         /**
-         * @param {String} formSelector
+         * @param {String}   formSelector
          * @param {Function} dataExtractor will be passed the jQuery form object
          *                   and should return data object
          * @param {Function} (optional) function to run when request succeeds
          * @param {Function} (optional) function to run when request fails
-         * @return {jqXHR} done() and fail() can be chained (see jqXHR of jQuery)
          */
         var saveSection = function(formSelector, dataExtractor, done, fail) {
 
@@ -233,7 +233,7 @@ var Editor = (function($) {
 
                 editArea.find('.temporarily-removed').remove();
 
-                var data = dataExtractor(form);
+                var data = dataExtractor(form, section);
 
                 return $.ajax({
                     type: 'PUT',
@@ -276,7 +276,6 @@ var Editor = (function($) {
 
                 });
             });
-
         };
 
         // add item to list (temporarily)
@@ -327,11 +326,10 @@ var Editor = (function($) {
             // calculate section order
             let sections = [];
             sortableSections.find('.cv-section').each((idx, section) => {
-                sections.push({
-                    _id: $(section).data('section-id'),
-                    order: idx + 1,
-                    pageBreak: false
-                });
+                let sectionElement = $(section);
+                let id = sectionElement.data('section-id');
+                let pageBreak = sectionElement.find('input[name=page-break]').val() == 'true';
+                sections.push({ _id: id, order: idx + 1, pageBreak: pageBreak });
             });
             let templateId = $('#SelectedTemplate').val();
             return {
@@ -388,7 +386,7 @@ var Editor = (function($) {
         });
 
         // save basicinfo
-        saveSection('.basicinfo-edit-form', function(form) {
+        saveSection('.basicinfo-edit-form', function(form, section) {
             return {
                 name: form.find('input[name=name]').val() || "",
                 email: form.find('input[name=email]').val() || "",
@@ -398,7 +396,7 @@ var Editor = (function($) {
                 address1: form.find('input[name=address1]').val() || "",
                 address2: form.find('input[name=address2]').val() || "",
                 address3: form.find('input[name=address3]').val() || "",
-                pageBreak: false
+                pageBreak: section.find('input[name=page-break]').val() == 'true'
             };
         });
 
@@ -485,9 +483,19 @@ var Editor = (function($) {
             displayArea.hide();
         });
 
-        // TODO
-        $(document).on('click', '.add-page-break', (e) => {
+        $(document).on('click', '.add-page-break', function(e) {
             e.preventDefault();
+            $(this).prev('input[name=page-break]')
+                   .val(true);
+            $('#ResumeSaveForm').submit();
+        });
+
+        $(document).on('click', '.remove-page-break', function(e) {
+            e.preventDefault();
+            $(this).closest('.cv-section')
+                   .find('input[name=page-break]')
+                   .val(false);
+            $('#ResumeSaveForm').submit();
         });
 
         /**
@@ -509,9 +517,6 @@ var Editor = (function($) {
             var decreaseOrder = function(item) {
                 var order = parseInt(item.data('order'));
                 item.data('order', order - 1);
-            };
-
-            var swapItem = function(itemBefore, itemAfter) {
             };
 
             var addDirection = function(direction) {

@@ -202,6 +202,16 @@ body.modal-opened {
     left: -50%;
 }
 
+.css-remove-page-break {
+    position: absolute;
+    margin-top: -14px;
+    left:50%;
+}
+.css-remove-page-break .button {
+    position: relative;
+    left: -50%;
+}
+
 .css-edit-mode {
     display: none;
 }
@@ -240,8 +250,8 @@ body.modal-opened {
     margin-left: 15px
 }
 
-.css-section:first-child .css-section-control .css-control-up,
-.css-section:last-child .css-section-control .css-control-down {
+.css-section-wrap:first-child .css-section-control .css-control-up,
+.css-section-wrap:last-child .css-section-control .css-control-down {
     display:none;
 }
 

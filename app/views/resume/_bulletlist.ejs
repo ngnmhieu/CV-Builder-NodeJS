@@ -1,24 +1,24 @@
 <script id="bulletlist-template" type="text/x-handlebars-template">
+    <div class="cv-section css-section-wrap" id="bulletlist_{{param._id}}" data-section-id="{{param._id}}">
+        <div class="card css-section bulletlist-card">
+            <div class="card-content">
+                <form action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}"
+                    class="section-delete-form" id="section-{{param._id}}-delete-form">
+                </form>
 
-    <div class="card cv-section css-section bulletlist-card" id="bulletlist_{{param._id}}"
-        data-section-id="{{param._id}}">
+                <div class="edit-mode css-edit-mode">
+                    {{> bulletlistEdit param=param user=user resume=resume }}
+                </div>
 
-        <div class="card-content">
-            <form action="/users/{{user._id}}/resumes/{{resume._id}}/bulletlists/{{param._id}}"
-                class="section-delete-form" id="section-{{param._id}}-delete-form">
-            </form>
+                <div class="display-mode css-display-mode">
+                    {{> bulletlistDisplay param=param user=user resume=resume }}
+                </div>
 
-            <div class="edit-mode css-edit-mode">
-                {{> bulletlistEdit param=param user=user resume=resume }}
+                {{> addPageBreak param=param }}
             </div>
-
-            <div class="display-mode css-display-mode">
-                {{> bulletlistDisplay param=param user=user resume=resume }}
-            </div>
-
-            {{> addPageBreak }}
         </div>
 
+        {{> removePageBreak param=param }}
     </div>
 </script>
 
