@@ -5,7 +5,9 @@
 .clearfix {
     clear: both;
 }
-
+.hide {
+    display: none !important;
+}
 
 /* Remove auto-filled input field background in webkit */
 
@@ -203,6 +205,9 @@ body.modal-opened {
 }
 
 .css-remove-page-break {
+    position: relative;
+}
+.css-remove-page-break-btn {
     position: absolute;
     margin-top: -14px;
     left:50%;

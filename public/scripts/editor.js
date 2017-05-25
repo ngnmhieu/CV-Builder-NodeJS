@@ -485,17 +485,23 @@ var Editor = (function($) {
 
         $(document).on('click', '.add-page-break', function(e) {
             e.preventDefault();
-            $(this).prev('input[name=page-break]')
-                   .val(true);
-            $('#ResumeSaveForm').submit();
+            let section = $(this).closest('.cv-section')
+            $(this).prev('input[name=page-break]').val(true);
+
+            $('#' + $(this).data('form-id')).submit();
+
+            section.find('.remove-page-break').removeClass('hide');
+            $(this).addClass('hide');
         });
 
         $(document).on('click', '.remove-page-break', function(e) {
             e.preventDefault();
-            $(this).closest('.cv-section')
-                   .find('input[name=page-break]')
-                   .val(false);
-            $('#ResumeSaveForm').submit();
+            let section = $(this).closest('.cv-section')
+            section.find('input[name=page-break]').val(false);
+            $('#' + $(this).data('form-id')).submit();
+
+            section.find('.add-page-break').removeClass('hide');
+            $(this).addClass('hide');
         });
 
         /**
