@@ -127,24 +127,6 @@ var Editor = (function($) {
         });
     };
 
-    var openModal = function(id) {
-        $('#'+id).addClass('is-active');
-
-        // disable scroll
-        $('body').addClass('modal-opened');
-        $('html').addClass('modal-opened');
-
-        // TODO: click outside also close the modal
-    };
-
-    var closeModal = function(id) {
-        $('#'+id).removeClass('is-active');
-
-        // enable scroll
-        $('body').removeClass('modal-opened');
-        $('html').removeClass('modal-opened');
-    };
-
     var initEvents = function() {
 
         /** generic code for section **/
@@ -180,7 +162,7 @@ var Editor = (function($) {
             });
 
             var modalId = $(this).closest('.modal').attr('id');
-            closeModal(modalId);
+            Common.closeModal(modalId);
         });
 
         // delete section
@@ -581,21 +563,6 @@ var Editor = (function($) {
 
         // Enable ordering for the worklist items
         enableSortable('.worklist-item', '.item-move-up', '.item-move-down');
-
-        // modals
-        $(document).on('click', '.open-modal', function(e) {
-            e.preventDefault();
-            var id = $(this).data('modal-id');
-            openModal(id);
-        });
-
-        $(document).on('click', '.close-modal', function(e) {
-            var id = $(this).data('modal-id');
-            if (!id) {
-                id = $(this).closest('.modal').attr('id');
-            }
-            closeModal(id);
-        });
 
         // select template events
         $(document).on('click', '.template-item-thumb', function(e) {

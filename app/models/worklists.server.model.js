@@ -2,6 +2,7 @@ var db       = require('../../config/mongodb').client;
 var ObjectId = require('mongodb').ObjectId;
 var debug    = require('debug')('cvbuilder.model.worklist');
 var Joi      = require('Joi');
+var _        = require('lodash');
 
 var resumes   = db.collection('resumes');
 var worklists = db.collection('worklists');

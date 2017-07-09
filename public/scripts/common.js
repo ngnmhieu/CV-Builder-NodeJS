@@ -1,5 +1,7 @@
 var Common = (function($) {
 
+    var self = {};
+
     /**
      * Show .show-on-hover elements when mouse is hovered 
      * on descendants of this element that can be reached by the given parentSelector.
@@ -71,12 +73,40 @@ var Common = (function($) {
         });
     };
 
-    var that = {};
+    self.openModal = function(id) {
+        $('#'+id).addClass('is-active');
 
-    that.init = function() {
+        // disable scroll
+        $('body').addClass('modal-opened');
+        $('html').addClass('modal-opened');
+
+        // TODO: click outside also close the modal
+    };
+    self.closeModal = function(id) {
+        $('#'+id).removeClass('is-active');
+
+        // enable scroll
+        $('body').removeClass('modal-opened');
+        $('html').removeClass('modal-opened');
     };
 
-    return that;
+    $(document).on('click', '.open-modal', function(e) {
+      e.preventDefault();
+      var id = $(this).data('modal-id');
+      self.openModal(id);
+    });
+    $(document).on('click', '.close-modal', function(e) {
+      var id = $(this).data('modal-id');
+      if (!id) {
+        id = $(this).closest('.modal').attr('id');
+      }
+      self.closeModal(id);
+    });
+
+    self.init = function() {
+    };
+
+    return self;
 
 })(jQuery);
 

@@ -44,10 +44,6 @@ body.modal-opened {
     margin-top: 10px;
 }
 
-#LoginModal {
-    margin-top: 100px;
-}
-
 #LoginNotice {
     display: none;
     margin: 0;
@@ -65,11 +61,8 @@ body.modal-opened {
 #ResumesListing .collection-item {
     padding: 16px 90px;
     height: 100px;
+    margin-bottom: 10px;
     box-sizing: border-box;
-}
-
-#ResumesListing .collection-item:hover {
-    background: #ddd;
 }
 
 #ResumesListing .lang-circle {
@@ -82,7 +75,6 @@ body.modal-opened {
     line-height: 60px;
     border-radius: 50%;
     margin: 0;
-    color: #fff;
     border: 1px solid #bbb;
     text-align: center;
 }

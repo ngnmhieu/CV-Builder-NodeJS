@@ -1,26 +1,18 @@
 <%- include ../common/header %>
 
-    <div id="ResumesListing">
+    <div class="container" id="ResumesListing">
 
-        <form action='/users/<%= user._id %>/resumes' class="right" method="post" id="NewResumeBtn">
-            <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
-                <a class="btn-floating btn-large " onclick="document.getElementById('NewResumeBtn').submit();">
-                    <i class="material-icons">add</i>
-                </a>
-            </div>
-        </form>
-
-        <h5 style="margin-bottom: 25px">Your Resumes</h5>
+        <h2 style="margin-bottom: 25px">My Resumes</h2>
 
         <ul class="collection">
             <% resumes.forEach(function (r) {  %>
-                <li class="collection-item avatar">
+                <li class="collection-item avatar card">
                     <a href="/resumes/<%= r._id %>" class="lang-circle grey"><%= r.lang.toUpperCase() %></a>
                     <ul class="action-panel show-on-hover">
-                      <li class="action"><a href="/resumes/<%= r._id %>" class="btn-floating orange"><i class="material-icons">edit</i></a></li>
-                      <li class="action"><a class="btn-floating light-blue accent-3"><i class="material-icons">share</i></a></li>
-                      <li class="action"><a class="btn-floating green"><i class="material-icons">file_download</i></a></li>
-                      <li class="action"><a class="btn-floating red"><i class="material-icons">delete</i></a></li>
+                      <li class="action"><a href="/resumes/<%= r._id %>" class="btn-floating orange"><i class="fa fa-pencil"></i></a></li>
+                      <li class="action"><a class="btn-floating light-blue accent-3"><i class="fa fa-share-alt"></i></a></li>
+                      <li class="action"><a class="btn-floating green"><i class="fa fa-download"></i></a></li>
+                      <li class="action"><a class="btn-floating red"><i class="fa fa-trash"></i></a></li>
                     </ul>
                     <a href="/resumes/<%= r._id %>" class="resume-title">
                         <%= r.name %>
@@ -30,6 +22,13 @@
                 </li>
                 <% }); %>
         </ul>
+
+        <form action='/users/<%= user._id %>/resumes' class="right" method="post" id="NewResumeBtn">
+            <div class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
+                <button onclick="document.getElementById('NewResumeBtn').submit();" class="button is-outlined is-info open-modal css-add-section-modal-btn">+ New Resume</button>
+            </div>
+        </form>
+
     </div>
 
     <script src="/scripts/resume_listing.js"></script>

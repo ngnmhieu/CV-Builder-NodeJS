@@ -1,41 +1,55 @@
 <%- include common/header %>
 
-    <div class="row">
-        <form id="RegisterForm" method="post" class="col s4 offset-s8" autocomplete=off>
-            <h3>Start creating CVs for free!</h3>
-            <div class="row">
-                <div class="input-field col s6" style="padding-right: 5px">
-                    <label for="firstName">First Name: </label>
-                    <input type="text" name="firstName">
-                </div>
-                <div class="input-field col s6" style="padding-left: 5px">
-                    <label for="lastName">Last Name: </label>
-                    <input type="text" name="lastName">
-                </div>
-            </div>
-            <div class="input-field">
-                <label for="email">Email: </label>
-                <input type="text" name="email">
-            </div>
+<div class="container">
+  <div class="columns">
+    <form id="RegisterForm" method="post" class="column is-4 is-offset-8" autocomplete=off>
+      <h2 class="title">Start creating resumes for free!</h2>
+      <div class="field">
+        <label class="label" for="firstName">First Name: </label>
+        <p class="control">
+        <input type="text" class="input" name="firstName">
+        </p>
+      </div>
 
-            <div class="input-field">
-                <label for="password">Password: </label>
-                <input type="password" name="password">
-            </div>
-            <div class="input-field">
-                <label for="passwordConfirm">Password Confirmation: </label>
-                <input type="password" name="passwordConfirm">
-            </div>
-            <button type="submit" class="btn right">Register</button>
+      <div class="field">
+        <label class="label" for="lastName">Last Name: </label>
+        <p class="control">
+        <input type="text" class="input" name="lastName">
+        </p>
+      </div>
 
-            <div class="clearfix"></div>
+      <div class="field">
+        <label class="label" for="email">Email: </label>
+        <p class="control">
+        <input type="text" class="input" name="email">
+        </p>
+      </div>
 
-            <div class="alert alert-warning" id="RegisterNotice" role="alert">
-                <span class="content">
-                Can't register, please check your information again.
-            </span>
-            </div>
-        </form>
-    </div>
+      <div class="field">
+        <label for="password" class="label">Password: </label>
+        <p class="control">
+        <input type="password" class="input" name="password">
+        </p>
+      </div>
 
-    <%- include common/footer %>
+      <div class="field">
+        <label for="passwordConfirm" class="label">Password Confirmation: </label>
+        <p class="control">
+        <input type="password" class="input" name="passwordConfirm">
+        </p>
+      </div>
+
+      <button type="submit" class="button is-pulled-right">Register</button>
+
+      <div class="is-clearfix"></div>
+
+      <div class="alert alert-warning" id="RegisterNotice" role="alert">
+        <span class="content">
+          Can't register, please check your information again.
+        </span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include common/footer %>

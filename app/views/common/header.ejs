@@ -20,39 +20,60 @@
 
     <title><%= title %></title>
   </head>
-
   <body>
-    <!-- <nav class="teal"> -->
-      <!--     <div class="nav&#45;wrapper container" id="HeaderContainer"> -->
-        <!--         <a href="#" class="brand&#45;logo">CV Builder</a> -->
-        <!--  -->
-        <!--         <ul id="nav&#45;mobile" class="right hide&#45;on&#45;med&#45;and&#45;down"> -->
-          <!--             <% if (!user) { %> -->
-          <!--             <li> -->
-          <!--             <a class="modal&#45;trigger" href="#LoginModal" title="Login">Login <i class="material&#45;icons">account_circle</i></a> -->
-          <!--             </li> -->
-          <!--             <% } %> -->
-          <!--  -->
-          <!--             <% if (user) { %> -->
-          <!--             <li> -->
-          <!--             <a class='dropdown&#45;button' href='#' data&#45;beloworigin='true' data&#45;activates='UserDropdown'> -->
-            <!--                 <%= user.firstName + ' ' + user.lastName %> <i class="material&#45;icons">account_circle</i>  -->
-            <!--             </a> -->
-          <!--             <ul id="UserDropdown" class='dropdown&#45;content'> -->
-            <!--                 <li> -->
-            <!--                 <a href="/resumes" title="My CVs">My CVs</a> -->
-            <!--                 </li> -->
-            <!--                 <li> -->
-            <!--                 <a href="#" title="Account">Account</a> -->
-            <!--                 </li> -->
-            <!--                 <li> -->
-            <!--                 <a href="#" onclick="Homepage.logout()" id="logoutButton" title="Logout">Logout</a> -->
-            <!--                 </li> -->
-            <!--             </ul> -->
-          <!--             </li> -->
-          <!--             <% } %> -->
-          <!--         </ul> -->
-        <!--     </div> -->
-      <!-- </nav> -->
+
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        CV Builder
+      </a>
+
+      <a class="navbar-item is-hidden-desktop" href="https://github.com/jgthms/bulma" target="_blank">
+        <span class="icon" style="color: #333;">
+          <i class="fa fa-github"></i>
+        </span>
+      </a>
+
+      <a class="navbar-item is-hidden-desktop" href="https://twitter.com/jgthms" target="_blank">
+        <span class="icon" style="color: #55acee;">
+          <i class="fa fa-twitter"></i>
+        </span>
+      </a>
+
+      <div class="navbar-burger burger" data-target="navMenuExample">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div id="navMenuExample" class="navbar-menu">
+      <div class="navbar-start">
+      </div>
+
+      <div class="navbar-end">
+
+        <% if (user) { %>
+        <a class="navbar-item" href="/resumes">My Resumes</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link  is-active" href="#">
+            Account
+          </a>
+          <div class="navbar-dropdown ">
+            <a class="navbar-item" href="#">Settings</a>
+            <hr class="navbar-divider">
+            <a class="navbar-item" onclick="Homepage.logout()">
+              Logout
+            </a>
+          </div>
+        </div>
+        <% } %>
+
+        <% if (!user) { %>
+        <a class="open-modal navbar-item" data-modal-id="LoginModal" title="Login">Login</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
 
     <%- include login-modal %>

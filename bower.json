@@ -16,7 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "bulma": "^0.4.1",
+    "bulma": "^0.4.3",
     "handlebars": "^4.0.5",
     "lodash": "^4.16.4",
     "moment": "^2.15.1",
